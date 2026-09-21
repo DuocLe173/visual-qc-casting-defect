@@ -1,0 +1,232 @@
+---
+title: "Dataset Phân Loại Thùng Hàng Đóng Gói (Damaged vs Intact Package) — DHL Group"
+subtitle: "Kiểm Soát Tự Động Chất Lượng Thùng Carton Trên Băng Chuyền Phân Loại Thông Minh (DHL Smart Sorter)"
+author: "Project 13 — Visual QC Team"
+date: today
+lang: vi
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: show
+    number-sections: true
+    highlight-style: github
+---
+
+# 1. Giới Thiệu Doanh Nghiệp & Lý Do Đây Là Bài Toán Dễ Tiếp Cận Nhất
+
+## 1.1. Thông tin doanh nghiệp
+- **Doanh nghiệp:** **DHL Group** (Deutsche Post DHL — Bonn, CHLB Đức).
+- **Vị thế:** Tập đoàn logistics, chuyển phát nhanh và chuỗi cung ứng hàng đầu hành tinh, hiện diện tại hơn 220 quốc gia và vùng lãnh thổ, xử lý hàng tỷ bưu kiện và thùng hàng mỗi năm.
+- **Hệ thống ứng dụng:** **DHL Automated Parcel Sorting & Vision Inspection System** — Hệ thống camera vòm lắp trên băng chuyền tự động nhằm soi chiếu 100% thùng hàng carton trước khi đưa lên xe tải hoặc máy bay vận chuyển.
+
+## 1.2. Vì sao phân loại thùng hàng (Package / Carton Box) lại là đề tài "dễ nhất & trực quan nhất"?
+
+So với các bài toán kiểm tra chip vi mạch, đúc gang hay tấm thép thì bài toán **Phân loại thùng hàng** có 4 ưu điểm vượt trội cho sinh viên và người mới làm AI:
+
+1. **Đặc trưng thị giác vĩ mô (Macro Features), không cần kính hiển vi:**
+   - Vết móp méo (dents), rách bìa (tears), bẹp góc (crushing) trên hộp carton có kích thước lớn, tương phản rõ rệt với nền hộp carton màu nâu/trắng. Mạng CNN rất dễ học trích xuất đặc trưng mà không sợ bị nhiễu vi mô.
+2. **Mô hình hội tụ cực nhanh, không lo Overfitting:**
+   - Dùng các mạng nhẹ như **MobileNetV2** hoặc **ResNet50** là có thể đạt ngay **Accuracy 93–97%** chỉ sau 10–15 epoch huấn luyện.
+3. **Cực kỳ dễ kiếm thêm dữ liệu thực tế (+Điểm thưởng Bonus):**
+   - Ngoài dữ liệu có sẵn từ Kaggle/Roboflow, bạn hoàn toàn có thể dùng điện thoại tự chụp 20–30 ảnh các thùng hàng Shopee, Tiki, Lazada (cả thùng nguyên vẹn lẫn thùng bị móp khi vận chuyển) để làm tập Test thực tế bên ngoài — Đảm bảo lấy trọn điểm thưởng **Bonus (+5 đến +10 điểm)** của giảng viên!
+4. **Ý nghĩa kinh doanh (Business Impact) rõ ràng, dễ thuyết trình:**
+   - Nếu phát hiện thùng rách/móp sớm: Băng chuyền tự động gạt thùng sang làn **Repack Station** để dán lại băng dính hoặc thay hộp mới. Tránh tình trạng hàng bị rơi vỡ bên trong dẫn đến khách hàng khiếu nại, từ chối nhận hàng (COD thất bại) và đền bù bảo hiểm.
+
+---
+
+# 2. Đặc Tả Dữ Liệu & Mẫu Bảng Siêu Dữ Liệu (Data Specification)
+
+## 2.1. Phân loại trạng thái thùng hàng
+
+Hệ thống phân loại thành 2 lớp chính (Binary Classification):
+- **Lớp 0 — `Intact` (Thùng đạt chuẩn / Nguyên vẹn):** Thùng carton vuông vức, nắp dán kín mép, không rách, chịu lực tốt.
+- **Lớp 1 — `Damaged` (Thùng hư hỏng / Khuyết tật):** Gồm 4 dạng hư hại phổ biến:
+  - `Crushed / Dented`: Bẹp góc, móp cạnh do va đập hoặc bị kiện hàng nặng đè lên.
+  - `Torn / Punctured`: Thủng lỗ, rách bìa carton làm lộ hàng hóa bên trong.
+  - `Tape_Loose / Open`: Bung băng keo dán mép, hở miệng thùng.
+  - `Wet / Stained`: Bìa carton bị ngấm nước, ẩm ướt, loang dầu (nguy cơ mủn vỡ đáy thùng).
+
+## 2.2. Bảng mẫu siêu dữ liệu (Sample DataFrame)
+
+```{python}
+import pandas as pd
+import numpy as np
+
+# Mẫu 10 bản ghi tiêu biểu đại diện cho dữ liệu kiểm tra thùng hàng DHL
+dhl_package_sample = pd.DataFrame({
+    'package_barcode': [
+        'DHL_VN_89230192', 'DHL_VN_89230193', 'DHL_VN_89230194', 'DHL_VN_89230195',
+        'DHL_VN_89230196', 'DHL_VN_89230197', 'DHL_VN_89230198', 'DHL_VN_89230199',
+        'DHL_VN_89230200', 'DHL_VN_89230201'
+    ],
+    'box_type': ['Carton_Box_M', 'Carton_Box_S', 'Carton_Box_L', 'Carton_Box_M', 'Carton_Box_XL',
+                 'Carton_Box_M', 'Carton_Box_S', 'Carton_Box_L', 'Carton_Box_M', 'Carton_Box_S'],
+    'conveyor_camera_id': ['CAM_INBOUND_01'] * 10,
+    'status_label': ['Intact', 'Intact', 'Intact', 'Intact', 'Intact',
+                     'Damaged', 'Damaged', 'Damaged', 'Damaged', 'Damaged'],
+    'is_damaged': [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], # 0: Thùng nguyên vẹn, 1: Thùng hư hỏng
+    'defect_detail': [
+        'None', 'None', 'None', 'None', 'None',
+        'Crushed_Corner',    # Móp bẹp góc hộp
+        'Punctured_Hole',    # Thủng một lỗ đường kính 5cm
+        'Torn_Seam',         # Rách đường ghép mép
+        'Tape_Opened',       # Nứt bung đường băng dính
+        'Water_Stain_Soft'   # Ẩm nước ở mặt đáy hộp
+    ],
+    'automated_action': [
+        'Pass_To_Sorter', 'Pass_To_Sorter', 'Pass_To_Sorter', 'Pass_To_Sorter', 'Pass_To_Sorter',
+        'Divert_To_Repack', 'Divert_To_Repack', 'Divert_To_Repack', 'Divert_To_Repack', 'Divert_To_Repack'
+    ]
+})
+
+dhl_package_sample
+```
+
+## 2.3. Cấu trúc thư mục tổ chức dữ liệu chuẩn
+
+```
+dhl_package_inspection/
+├── train/
+│   ├── intact/          <-- Hộp vuông vắn, nguyên vẹn (khoảng 70% dữ liệu)
+│   └── damaged/         <-- Hộp móp méo, rách, thủng
+├── val/
+│   ├── intact/
+│   └── damaged/
+└── test/
+    ├── intact/
+    └── damaged/
+```
+
+---
+
+# 3. Pipeline Máy Học Hoàn Chỉnh Cho Bài Toán Thùng Hàng
+
+Mã nguồn dưới đây sử dụng **MobileNetV2** (hoặc **ResNet50**) trên TensorFlow/Keras, tối ưu cho tốc độ phân loại siêu nhanh trên băng chuyền (Inference > 60 FPS).
+
+## 3.1. Data Augmentation mô phỏng thùng hàng trên băng tải
+
+Thùng hàng khi di chuyển trên băng tải có thể xoay hướng bất kỳ và khoảng cách từ camera đến thùng thay đổi tuỳ kích thước thùng:
+
+```{python}
+#| eval: false
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+IMG_SIZE = (224, 224)
+BATCH_SIZE = 32
+
+package_augmentation = tf.keras.Sequential([
+    layers.RandomRotation(0.1),        # Thùng hàng có thể xoay chéo trên băng chuyền
+    layers.RandomFlip("horizontal"),   # Lật ngang
+    layers.RandomZoom(0.1),            # Thùng to/nhỏ khiến khoảng cách quang học thay đổi
+    layers.RandomBrightness(0.15),     # Đèn trần kho vận sáng tối thất thường
+], name="package_augmentation")
+```
+
+## 3.2. Xây dựng mô hình MobileNetV2 (Siêu nhẹ, Tốc độ cao)
+
+```{python}
+#| eval: false
+def build_package_classifier():
+    # Backbone MobileNetV2 pretrained từ ImageNet
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=(224, 224, 3),
+        include_top=False,
+        weights='imagenet'
+    )
+    base_model.trainable = False  # Đóng băng mạng nền trong giai đoạn 1
+    
+    inputs = tf.keras.Input(shape=(224, 224, 3))
+    x = package_augmentation(inputs)
+    x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
+    x = base_model(x, training=False)
+    
+    # Classification Head
+    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.Dropout(0.3)(x)
+    x = layers.Dense(64, activation='relu')(x)
+    x = layers.Dropout(0.2)(x)
+    outputs = layers.Dense(1, activation='sigmoid')(x)  # Xác suất bị Hư Hỏng (Damaged)
+    
+    model = tf.keras.Model(inputs, outputs, name="DHL_Package_Inspector")
+    
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
+        loss='binary_crossentropy',
+        metrics=[
+            'accuracy',
+            tf.keras.metrics.Recall(name='recall'),       # Ưu tiên không để lọt thùng rách
+            tf.keras.metrics.Precision(name='precision')
+        ]
+    )
+    return model
+
+model = build_package_classifier()
+model.summary()
+```
+
+## 3.3. Tinh chỉnh ngưỡng (Threshold Tuning) đạt chuẩn Recall ≥ 95%
+
+Trong logistics, chuyển nhầm một thùng nguyên vẹn sang bàn dán lại băng keo chỉ tốn 5 giây kiểm tra lại của nhân viên; nhưng để lọt một thùng rách rơi mất đồ ra đường sẽ bị khách bồi thường tiền triệu. Vì thế, ta hạ ngưỡng phân loại từ `0.5` xuống `0.35`:
+
+$$\text{Quyết định} = \begin{cases} \text{Báo thùng hỏng (Divert Repack)}, & \text{nếu } P(\text{Damaged}) \ge 0.35 \\ \text{Cho qua (Pass Sorter)}, & \text{nếu } P(\text{Damaged}) < 0.35 \end{cases}$$
+
+```{python}
+#| eval: false
+from sklearn.metrics import classification_report, confusion_matrix
+import numpy as np
+
+def evaluate_logistics_decision(y_true, y_pred_probs, threshold=0.35):
+    y_pred = (y_pred_probs >= threshold).astype(int)
+    print(f"=== KẾT QUẢ ĐÁNH GIÁ VỚI THRESHOLD = {threshold} ===")
+    print(classification_report(y_true, y_pred, target_names=['Thùng Nguyên Vẹn (Intact)', 'Thùng Hư Hỏng (Damaged)']))
+    print("Confusion Matrix:")
+    print(confusion_matrix(y_true, y_pred))
+```
+
+## 3.4. Grad-CAM: Kiểm tra vùng móp méo của thùng hàng
+
+Mô hình sẽ sinh ra bản đồ nhiệt đỏ cam tập trung chính xác vào góc bị móp hoặc đường nứt rách của bìa carton:
+
+```{python}
+#| eval: false
+def explain_damage_with_gradcam(img_tensor, model, last_conv="Conv_1"):
+    grad_model = tf.keras.models.Model(
+        [model.inputs], 
+        [model.get_layer(last_conv).output, model.output]
+    )
+    with tf.GradientTape() as tape:
+        conv_out, preds = grad_model(img_tensor)
+        loss = preds[:, 0]
+        
+    grads = tape.gradient(loss, conv_out)
+    weights = tf.reduce_mean(grads, axis=(0, 1, 2))
+    cam = conv_out[0] @ weights[..., tf.newaxis]
+    cam = tf.squeeze(cam)
+    cam = tf.maximum(cam, 0) / (tf.math.reduce_max(cam) + 1e-8)
+    return cam.numpy()
+```
+
+---
+
+# 4. Các Nguồn Tải Dữ Liệu Thùng Hàng Sẵn Có (Download Links)
+
+Bạn có thể tải ngay các bộ dữ liệu thùng hàng miễn phí sau đây để chạy thử nghiệm:
+
+1. **Kaggle — Damaged and Intact Packages Dataset:**
+   - Link: [https://www.kaggle.com/datasets/ahmetrodoplu/damaged-and-intact-packages](https://www.kaggle.com/datasets/ahmetrodoplu/damaged-and-intact-packages)
+   - Đặc điểm: Đã chia sẵn 2 thư mục `damaged` và `intact`, dung lượng nhẹ, tải về là train được ngay.
+   - Lệnh tải Colab:
+     ```bash
+     kaggle datasets download -d ahmetrodoplu/damaged-and-intact-packages --unzip -p ./data/packages/
+     ```
+
+2. **Kaggle — Cardboard Defects (Dents, Holes, Dirt):**
+   - Link: [https://www.kaggle.com/datasets/warcoder/cardboard-defects](https://www.kaggle.com/datasets/warcoder/cardboard-defects)
+   - Chuyên biệt về các vết móp, lỗ thủng và vết bẩn trên bề mặt bìa carton.
+
+3. **Amazon Science — Kaputt Dataset (Quy mô lớn):**
+   - Link bài báo: [https://www.amazon.science/publications/kaputt-a-dataset-for-visual-defect-detection-in-retail-logistics](https://www.amazon.science/publications/kaputt-a-dataset-for-visual-defect-detection-in-retail-logistics)
+   - Hơn 238.000 ảnh thùng hàng và kiện hàng từ các trung tâm hoàn tất đơn hàng (Fulfillment Centers) của Amazon.

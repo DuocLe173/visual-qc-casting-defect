@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches & Checkpoints
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Large Datasets (không đẩy lên GitHub vì dung lượng nặng)
+data/
+*.zip
+*.tar.gz
+
+# Trained Models & Weights
+models/*.h5
+models/*.keras
+models/*.tflite
+models/*.onnx
+
+# API Keys & Secrets
+kaggle.json
+*.env
