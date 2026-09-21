@@ -33,15 +33,15 @@ Tuần 4  │ Tổng hợp kết quả · Viết báo cáo · Chuẩn bị thuy�
 
 ### Lịch làm việc chi tiết theo ngày
 
-| Tuần | Ngày | Công việc cụ thể | Thời lượng ước tính |
-|------|------|-------------------|---------------------|
-| **1** | Ngày 1 | Tạo tài khoản Kaggle + Google Colab, cài đặt môi trường | 1–2h |
-| | Ngày 2 | Tải dataset Casting Defect từ Kaggle, tổ chức thư mục | 1h |
-| | Ngày 3 | EDA: đếm ảnh mỗi lớp, xem phân phối, kích thước ảnh, plot mẫu | 2–3h |
-| | Ngày 4 | Chia train/val/test (70/15/15), kiểm tra class imbalance | 2h |
-| | Ngày 5 | Viết pipeline Data Augmentation (chỉ trên tập Train!) | 2–3h |
-| | Ngày 6–7 | Review lại notebook EDA, chỉnh sửa, commit lên GitHub | 1–2h |
-| **2** | Ngày 8 | Xây Baseline CNN (3–5 Conv layers) | 3h |
+| Tuần | Ngày | Công việc cụ thể | Thời lượng ước tính | Trạng thái |
+|:---:|:---:|---|:---:|:---:|
+| **1** | Ngày 1 | Tạo tài khoản Kaggle + Google Colab, cài đặt môi trường | 1–2h | ✅ Hoàn thành |
+| | Ngày 2 | Tải dataset Casting Defect từ Kaggle, tổ chức thư mục | 1h | ✅ Hoàn thành |
+| | Ngày 3 | EDA: đếm ảnh mỗi lớp, xem phân phối, kích thước ảnh, plot mẫu | 2–3h | ✅ Hoàn thành |
+| | Ngày 4 | Chia train/val/test (70/15/15), kiểm tra class imbalance | 2h | ✅ Hoàn thành |
+| | Ngày 5 | Viết pipeline Data Augmentation (chỉ trên tập Train!) | 2–3h | ✅ Hoàn thành |
+| | Ngày 6–7 | Review lại notebook EDA, chỉnh sửa, commit lên GitHub | 1–2h | ✅ Đã đẩy lên GitHub |
+| **2** | Ngày 8 | Xây Baseline CNN (3–5 Conv layers) | 3h | ⏳ Chuẩn bị bắt đầu |
 | | Ngày 9 | Train Baseline 20–30 epochs, vẽ Learning Curves | 2–3h |
 | | Ngày 10 | Đánh giá overfitting, thêm Dropout/L2, ghi metrics | 2h |
 | | Ngày 11 | Transfer Learning Phase 1: Load VGG16, freeze, train head | 3h |
