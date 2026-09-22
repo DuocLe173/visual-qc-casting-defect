@@ -44,16 +44,16 @@ Tuần 4  │ Tổng hợp kết quả · Viết báo cáo · Chuẩn bị thuy�
 | **2** | Ngày 8 | Xây Baseline CNN (3–5 Conv layers) | 3h | ✅ Hoàn thành |
 | | Ngày 9 | Train Baseline 20–30 epochs, vẽ Learning Curves | 2–3h | ✅ Hoàn thành (Learning Curves) |
 | | Ngày 10 | Đánh giá overfitting, thêm Dropout/L2, ghi metrics | 2h | ✅ Hoàn thành (Acc: 97.69%, Recall: 95.91%) |
-| | Ngày 11 | Transfer Learning Phase 1: Load VGG16, freeze, train head | 3h | ⏳ Chuẩn bị bắt đầu |
-| | Ngày 12 | Transfer Learning Phase 2: Unfreeze top layers, fine-tune | 3h |
-| | Ngày 13–14 | Lặp lại Phase 1-2 cho ResNet50 và EfficientNetB0 | 4–5h |
-| **3** | Ngày 15 | Transfer Learning Phase 3: Full fine-tune cho model tốt nhất | 3h |
-| | Ngày 16 | So sánh kết quả 3 model, lập bảng tổng hợp | 2h |
-| | Ngày 17 | Implement Grad-CAM, tạo heatmap ≥ 10 ảnh | 3–4h |
-| | Ngày 18 | Viết phân tích Grad-CAM: mô hình nhìn vào đâu? | 2h |
-| | Ngày 19 | Đo inference speed (single image + batch), vẽ biểu đồ | 2–3h |
-| | Ngày 20 | Vẽ Precision-Recall Curve, tìm sweet spot threshold | 2h |
-| | Ngày 21 | Review toàn bộ notebook, fix bugs, chạy lại Restart & Run All | 2–3h |
+| | Ngày 11 | Transfer Learning Phase 1: Load VGG16, freeze, train head | 3h | ✅ Hoàn thành |
+| | Ngày 12 | Transfer Learning Phase 2: Unfreeze top layers, fine-tune | 3h | ✅ Hoàn thành |
+| | Ngày 13–14 | Lặp lại Phase 1-2 cho ResNet50 và EfficientNetB0 | 4–5h | ✅ Hoàn thành (Acc > 99.3%, Recall > 98.7%) |
+| **3** | Ngày 15 | Transfer Learning Phase 3: Full fine-tune cho model tốt nhất | 3h | ✅ Hoàn thành (Checkpoint Best Model) |
+| | Ngày 16 | So sánh kết quả 3 model, lập bảng tổng hợp | 2h | ✅ Hoàn thành (CSV + Biểu đồ đối chuẩn) |
+| | Ngày 17 | Implement Grad-CAM, tạo heatmap ≥ 10 ảnh | 3–4h | ✅ Hoàn thành (10 ảnh mẫu Đạt & Lỗi) |
+| | Ngày 18 | Viết phân tích Grad-CAM: mô hình nhìn vào đâu? | 2h | ✅ Hoàn thành (Soi trúng vết nứt rỗ kim loại) |
+| | Ngày 19 | Đo inference speed (single image + batch), vẽ biểu đồ | 2–3h | ✅ Hoàn thành (Single Latency + Batch FPS) |
+| | Ngày 20 | Vẽ Precision-Recall Curve, tìm sweet spot threshold | 2h | ✅ Hoàn thành (AP = 0.9999, Precision 100%) |
+| | Ngày 21 | Review toàn bộ notebook, fix bugs, chạy lại Restart & Run All | 2–3h | ✅ Hoàn thành (Tích hợp trọn vẹn trong 1_EDA) |
 | **4** | Ngày 22–23 | Viết báo cáo PDF (≤ 15 trang) | 4–5h |
 | | Ngày 24–25 | Làm slide thuyết trình (tối đa 12 slides) | 3–4h |
 | | Ngày 26 | Tập thuyết trình (10 phút), chỉnh slide | 2h |
