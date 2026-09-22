@@ -41,10 +41,10 @@ Tuần 4  │ Tổng hợp kết quả · Viết báo cáo · Chuẩn bị thuy�
 | | Ngày 4 | Chia train/val/test (70/15/15), kiểm tra class imbalance | 2h | ✅ Hoàn thành |
 | | Ngày 5 | Viết pipeline Data Augmentation (chỉ trên tập Train!) | 2–3h | ✅ Hoàn thành |
 | | Ngày 6–7 | Review lại notebook EDA, chỉnh sửa, commit lên GitHub | 1–2h | ✅ Đã đẩy lên GitHub |
-| **2** | Ngày 8 | Xây Baseline CNN (3–5 Conv layers) | 3h | ⏳ Chuẩn bị bắt đầu |
-| | Ngày 9 | Train Baseline 20–30 epochs, vẽ Learning Curves | 2–3h |
-| | Ngày 10 | Đánh giá overfitting, thêm Dropout/L2, ghi metrics | 2h |
-| | Ngày 11 | Transfer Learning Phase 1: Load VGG16, freeze, train head | 3h |
+| **2** | Ngày 8 | Xây Baseline CNN (3–5 Conv layers) | 3h | ✅ Hoàn thành |
+| | Ngày 9 | Train Baseline 20–30 epochs, vẽ Learning Curves | 2–3h | ✅ Hoàn thành (Learning Curves) |
+| | Ngày 10 | Đánh giá overfitting, thêm Dropout/L2, ghi metrics | 2h | ✅ Hoàn thành (Acc: 97.69%, Recall: 95.91%) |
+| | Ngày 11 | Transfer Learning Phase 1: Load VGG16, freeze, train head | 3h | ⏳ Chuẩn bị bắt đầu |
 | | Ngày 12 | Transfer Learning Phase 2: Unfreeze top layers, fine-tune | 3h |
 | | Ngày 13–14 | Lặp lại Phase 1-2 cho ResNet50 và EfficientNetB0 | 4–5h |
 | **3** | Ngày 15 | Transfer Learning Phase 3: Full fine-tune cho model tốt nhất | 3h |
