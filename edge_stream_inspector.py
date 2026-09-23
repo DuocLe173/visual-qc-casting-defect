@@ -17,12 +17,8 @@ import numpy as np
 # CONFIGURATION PARAMETERS
 # ==============================================================================
 STREAM_CONFIG = {
-    # 1. STREAM SOURCE OPTIONS:
-    # Mode A (USB ADB Forwarding - Recommended): "http://127.0.0.1:8080/video"
-    # Mode B (Wi-Fi IP Webcam):                  "http://192.168.1.150:8080/video"
-    # Mode C (Wi-Fi RTSP Stream):                 "rtsp://192.168.1.150:8554/live"
-    # Mode D (Laptop Built-in Webcam):           0
-    "source": "http://127.0.0.1:8080/video",
+    # 1. STREAM SOURCE: DroidCam Verified Address
+    "source": "http://10.209.6.170:4747/video",
     
     # 2. CAPTURE & INFERENCE GEOMETRY
     "frame_width": 1280,
@@ -31,7 +27,7 @@ STREAM_CONFIG = {
     
     # 3. INDUSTRIAL DEFECT DECISION THRESHOLDS
     "defect_threshold": 0.40,      # P(Rotten) >= 0.40 triggers REJECT actuator
-    "reconnect_timeout_sec": 3.0,  # Auto-reconnection retry interval
+    "reconnect_timeout_sec": 1.5,  # Auto-reconnection retry interval
 }
 
 # ==============================================================================
@@ -52,6 +48,7 @@ class ThreadedCamera:
         self.connected = False
         self.last_frame_time = time.time()
         self.fps_inbound = 0.0
+        self.consecutive_failures = 0
         
         self._init_capture()
 
@@ -62,6 +59,7 @@ class ThreadedCamera:
                 self.cap.release()
             except Exception:
                 pass
+            time.sleep(0.3)  # Allow remote socket to reset
             
         print(f"[INGESTION] Connecting to video source: {self.src} ...")
         # Enforce direct buffer size limit
@@ -71,6 +69,7 @@ class ThreadedCamera:
         if self.cap.isOpened():
             self.connected = True
             self.last_frame_time = time.time()
+            self.consecutive_failures = 0
             print("[INGESTION] Video link established successfully.")
         else:
             self.connected = False
@@ -86,7 +85,7 @@ class ThreadedCamera:
         return self
 
     def _capture_worker(self):
-        """Infinite loop grabbing frames at maximum wire speed"""
+        """Infinite loop grabbing frames at maximum wire speed with Wi-Fi drop resilience"""
         frame_count = 0
         fps_timer = time.time()
 
@@ -99,12 +98,12 @@ class ThreadedCamera:
             # cap.grab() queries hardware without full JPEG decode (extremely fast, <2ms)
             grabbed = self.cap.grab()
             if grabbed:
-                # Retrieve and decode only the newest available frame
                 ret, decoded_frame = self.cap.retrieve()
                 if ret and decoded_frame is not None:
                     with self.lock:
                         self.frame = decoded_frame
                         self.last_frame_time = time.time()
+                        self.consecutive_failures = 0
 
                     # Inbound frame rate calculation
                     frame_count += 1
@@ -113,7 +112,10 @@ class ThreadedCamera:
                         frame_count = 0
                         fps_timer = time.time()
                 else:
-                    self.connected = False
+                    self.consecutive_failures += 1
+                    if self.consecutive_failures > 25:
+                        print("[INGESTION WARNING] Multiple frame decoding failures. Reconnecting...")
+                        self.connected = False
             else:
                 # Frame dropped or connection severed
                 if time.time() - self.last_frame_time > 3.0:
@@ -317,11 +319,69 @@ def draw_industrial_hud(frame, defect_prob, bbox, latency_ms, fps_live, engine_n
 # 4. MAIN CONTINUOUS PROCESSING PIPELINE
 # ==============================================================================
 def main():
-    print("=" * 70)
-    print("FRUIT VISUAL QC: REAL-TIME STREAM INSPECTION COMMENCED")
-    print(f"Target Stream: {STREAM_CONFIG['source']}")
-    print("Press 'Q' or 'ESC' on the visual window to terminate.")
-    print("=" * 70)
+    import argparse
+    parser = argparse.ArgumentParser(description="Fruit Visual QC Real-Time Stream Inspector")
+    parser.add_argument("--source", type=str, default=None,
+                        help="Camera source: '0' for PC webcam, or IP URL (e.g. http://192.168.2.xxx:8080/video)")
+    args = parser.parse_args()
+
+    source = args.source
+    if source is None:
+        print("\n" + "=" * 70)
+        print("🍎 FRUIT VISUAL QC: KHỞI TẢO HỆ THỐNG QUÉT VIDEO THỜI GIAN THỰC")
+        print("=" * 70)
+        print("👉 LỰA CHỌN NGUỒN CAMERA:")
+        print("   [1] Dùng Camera Điện Thoại (http://10.209.6.170:4747/video) -> Nhấn ENTER")
+        print("   [2] Dùng Webcam laptop tích hợp                           -> Gõ '0'")
+        print("   [3] Dán địa chỉ IP / Cổng khác (vd: 192.168.x.x:4747)")
+        print("-" * 70)
+        while True:
+            user_input = input("Nhập lựa chọn của bạn: ").strip()
+            
+            if not user_input or user_input == "1":
+                source = "http://10.209.6.170:4747/video"
+                break
+            elif user_input in ["0", "2"]:
+                source = 0
+                break
+            elif user_input.lower() in ["adb"]:
+                source = "http://127.0.0.1:8080/video"
+                break
+            else:
+                # Clean input and check for IP pattern
+                import re
+                raw = user_input.replace("http://", "").replace("https://", "").replace("rtsp://", "")
+                
+                # Search for IP address:port or IP address
+                match = re.search(r'(\d{1,3}(?:\.\d{1,3}){3})(?::(\d+))?', raw)
+                if match:
+                    ip = match.group(1)
+                    port = match.group(2) if match.group(2) else "8080"
+                    
+                    # Validate octets <= 255
+                    octets = [int(x) for x in ip.split('.')]
+                    if all(0 <= o <= 255 for o in octets):
+                        source = f"http://{ip}:{port}/video"
+                        break
+                    else:
+                        print("⚠️ Địa chỉ IP không hợp lệ (mỗi số phải từ 0 đến 255). Vui lòng nhập lại:")
+                else:
+                    if user_input.startswith("http://") or user_input.startswith("rtsp://"):
+                        source = user_input
+                        break
+                    print("⚠️ Không nhận diện được định dạng IP (ví dụ chuẩn: 192.168.2.28:8080). Vui lòng nhập lại:")
+
+    # Convert numeric string to int for local webcams
+    if isinstance(source, str) and source.isdigit():
+        source = int(source)
+
+    STREAM_CONFIG["source"] = source
+
+    print("\n" + "=" * 70)
+    print("FRUIT VISUAL QC: BẮT ĐẦU KIỂM ĐỊNH LUỒNG VIDEO THỜI GIAN THỰC")
+    print(f"📡 Đang kết nối nguồn camera: {STREAM_CONFIG['source']}")
+    print("💡 Mẹo: Nhấn phím 'Q' hoặc 'ESC' trên cửa sổ video để dừng.")
+    print("=" * 70 + "\n")
 
     # 1. Initialize threaded camera ingestion
     cam = ThreadedCamera(STREAM_CONFIG["source"]).start()
