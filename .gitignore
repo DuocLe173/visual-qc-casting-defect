@@ -10,6 +10,8 @@ __pycache__/
 
 # Large Datasets (không đẩy lên GitHub vì dung lượng nặng)
 data/
+data_backup1/
+data_backup2/
 *.zip
 *.tar.gz
 

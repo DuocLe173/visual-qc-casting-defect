@@ -47,16 +47,18 @@
 Project SIC/
 ├── data/                      # Thư mục chứa dữ liệu ảnh nông sản (Train / Test)
 ├── notebooks/                 # Chuỗi 5 Jupyter Notebook theo quy trình chuẩn
-│   ├── 1_EDA.ipynb            # Khám phá dữ liệu, phân tích RGB & Data Augmentation
-│   ├── 2_Baseline_CNN.ipynb   # Baseline CNN từ đầu & phân tích Learning Curves
-│   ├── 3_Transfer_Learning.ipynb # VGG16, ResNet50, EfficientNet (Quy trình 3-Phase)
-│   ├── 4_GradCAM.ipynb        # Bản đồ nhiệt giải thích vị trí vết thâm dập/mốc
-│   ├── 5_Inference_Speed.ipynb # Benchmark tốc độ suy luận & Tối ưu PR Threshold
-│   └── Full_Pipeline.ipynb    # Master Pipeline chạy trọn vẹn từ A - Z
+│   ├── 1_Fruit_EDA_Augmentation.ipynb            # Khám phá dữ liệu, phân tích RGB & Data Augmentation
+│   ├── 2_Fruit_Baseline_CNN.ipynb                # Baseline CNN từ đầu & phân tích Learning Curves
+│   ├── 3_Fruit_Transfer_Learning.ipynb           # VGG16, ResNet50, EfficientNet (Quy trình 3-Phase)
+│   ├── 4_Fruit_GradCAM_ExplainableAI.ipynb       # Bản đồ nhiệt giải thích vị trí vết thâm dập/mốc
+│   ├── 5_Fruit_Inference_Speed_Benchmark.ipynb   # Benchmark tốc độ suy luận & Tối ưu PR Threshold
+│   └── Fruit_Full_Pipeline.ipynb                 # Master Pipeline chạy trọn vẹn từ A - Z
 ├── models/                    # Lưu trọng số mô hình đã huấn luyện (.keras)
 ├── results/                   # Biểu đồ đánh giá, Confusion Matrix, Heatmaps
 ├── report/                    # Báo cáo kỹ thuật tổng kết (PDF) & Slide
 ├── app.py                     # Demo Web App (Streamlit) với Grad-CAM & Camera Live
+├── DOLE.qmd                   # Đặc tả dữ liệu chuẩn doanh nghiệp (Dole Food Company)
+├── download_fruit_data.py     # Script tải đa nguồn 3 bộ dữ liệu từ Kaggle
 ├── Trienkhai.md               # Hồ sơ triển khai toàn diện (Kế hoạch, hướng dẫn, phản biện)
 ├── requirements.txt           # Danh mục thư viện phụ thuộc
 └── README.md
@@ -71,18 +73,22 @@ Project SIC/
 pip install -r requirements.txt
 ```
 
-### 2. Tải Dataset Nông Sản từ Kaggle
-Sử dụng bộ dữ liệu chuẩn doanh nghiệp **Fruits fresh and rotten for classification** (~13,600 ảnh RGB):
+### 2. Tải Dataset Nông Sản từ Kaggle (3 Nguồn Chuẩn Doanh Nghiệp)
+Sử dụng script tự động:
+```bash
+python download_fruit_data.py --all
+```
+Hoặc tải trực tiếp bộ dữ liệu chính:
 ```bash
 kaggle datasets download -d sriramr/fruits-fresh-and-rotten-for-classification --unzip -p data/
 ```
 
-*Các nguồn dự phòng bổ sung:*
-- `kaggle datasets download -d raghavrbi/fruit-freshness-dataset --unzip -p data_backup1/`
-- `kaggle datasets download -d khandakerdipro/fruit-quality-classification --unzip -p data_backup2/`
-
 ### 3. Thứ tự thực thi Notebooks
-1. Chạy `notebooks/1_EDA.ipynb` để khám phá, trích xuất metadata và tạo data pipeline.
+1. Chạy `notebooks/1_Fruit_EDA_Augmentation.ipynb` để khám phá, trích xuất metadata và tạo data pipeline.
+2. Chạy `notebooks/2_Fruit_Baseline_CNN.ipynb` để huấn luyện mô hình cơ sở Custom CNN.
+3. Chạy `notebooks/3_Fruit_Transfer_Learning.ipynb` để huấn luyện 3 mô hình Transfer Learning (Phase 1 -> Phase 2 -> Phase 3).
+4. Chạy `notebooks/4_Fruit_GradCAM_ExplainableAI.ipynb` để xuất heatmap giải thích trực quan vết khuyết tật.
+5. Chạy `notebooks/5_Fruit_Inference_Speed_Benchmark.ipynb` để benchmark tốc độ suy luận ($ms$) và tìm ngưỡng Sweet Spot.
 2. Chạy `notebooks/2_Baseline_CNN.ipynb` để huấn luyện mô hình cơ sở Custom CNN.
 3. Chạy `notebooks/3_Transfer_Learning.ipynb` để huấn luyện 3 mô hình Transfer Learning (Phase 1 -> Phase 2 -> Phase 3).
 4. Chạy `notebooks/4_GradCAM.ipynb` để xuất heatmap giải thích trực quan vết khuyết tật.

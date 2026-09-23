@@ -191,7 +191,7 @@ Do đó, hệ thống bắt buộc phải **ưu tiên tối đa Recall $\ge 95\%
 
 Hệ thống được tổ chức thành chuỗi 5 Jupyter Notebook độc lập, chuẩn hóa theo nguyên lý module:
 
-### 5.1. `notebooks/1_EDA.ipynb` — Khám Phá & Xây Dựng Dữ Liệu
+### 5.1. `notebooks/1_Fruit_EDA_Augmentation.ipynb` — Khám Phá & Xây Dựng Dữ Liệu
 - **Mục tiêu:** Tải dataset từ Kaggle, trích xuất siêu dữ liệu, trực quan hóa và tiền xử lý.
 - **Các bước mã hóa chính:**
   1. Tự động kiểm tra token Kaggle và tải giải nén dataset `sriramr/fruits-fresh-and-rotten-for-classification`.
@@ -200,7 +200,7 @@ Hệ thống được tổ chức thành chuỗi 5 Jupyter Notebook độc lập
   4. Trực quan hóa lưới ảnh 4x4 đại diện cho trái cây tươi (vỏ căng bóng, màu đồng nhất) và trái cây hư hỏng (đốm đen, thâm dập, mốc trắng).
   5. Xây dựng hàm `tf.data.Dataset` với bộ tiền xử lý chuẩn và xuất danh sách các tập dữ liệu ra file `processed_data/metadata.csv`.
 
-### 5.2. `notebooks/2_Baseline_CNN.ipynb` — Huấn Luyện Mô Hình Cơ Sở
+### 5.2. `notebooks/2_Fruit_Baseline_CNN.ipynb` — Huấn Luyện Mô Hình Cơ Sở
 - **Mục tiêu:** Xây dựng mạng tích chập thuần túy (Custom CNN) để tạo mốc so sánh hiệu năng.
 - **Kiến trúc mạng:**
   - `Conv2D(32, (3,3), activation='relu')` + `MaxPooling2D((2,2))`
@@ -209,7 +209,7 @@ Hệ thống được tổ chức thành chuỗi 5 Jupyter Notebook độc lập
   - `Flatten()` + `Dropout(0.5)` + `Dense(128, activation='relu')` + `Dense(1, activation='sigmoid')`
 - **Đánh giá:** Xuất biểu đồ Training Loss vs Validation Loss qua 20 epochs, phát hiện điểm bắt đầu Overfitting và lưu mô hình `models/baseline_cnn.keras`.
 
-### 5.3. `notebooks/3_Transfer_Learning.ipynb` — Đột Phá Hiệu Năng Với 3 Kiến Trúc
+### 5.3. `notebooks/3_Fruit_Transfer_Learning.ipynb` — Đột Phá Hiệu Năng Với 3 Kiến Trúc
 - **Mục tiêu:** Áp dụng mô hình đã huấn luyện trước trên ImageNet để trích xuất đặc trưng bậc cao của thực vật/trái cây.
 - **Quy trình 3 Phase huấn luyện cho từng mô hình:**
   1. **Phase 1 — Feature Extraction (Frozen Base):** Đóng băng toàn bộ trọng số ImageNet, chỉ huấn luyện GlobalAveragePooling2D + Dense classification head ($lr = 10^{-3}$).
@@ -217,7 +217,7 @@ Hệ thống được tổ chức thành chuỗi 5 Jupyter Notebook độc lập
   3. **Phase 3 — Tinh chỉnh sâu & Đánh giá toàn diện:** Chạy EarlyStopping và ReduceLROnPlateau để đạt điểm hội tụ tối ưu.
 - **Lưu trữ kết quả:** Xuất bảng so sánh tổng hợp Accuracy, Precision, Recall và lưu các file trọng số `models/vgg16_best.keras`, `models/resnet50_best.keras`, `models/efficientnetb0_best.keras`.
 
-### 5.4. `notebooks/4_GradCAM.ipynb` — Giải Thích Quyết Định Bằng Bản Đồ Nhiệt
+### 5.4. `notebooks/4_Fruit_GradCAM_ExplainableAI.ipynb` — Giải Thích Quyết Định Bằng Bản Đồ Nhiệt
 - **Mục tiêu:** Sử dụng Gradient-weighted Class Activation Mapping (Grad-CAM) để xem mô hình nơ-ron "nhìn" vào đâu trước khi ra quyết định.
 - **Nguyên lý toán học:**
   - Tính đạo hàm của điểm số đầu ra lớp mục tiêu $y^c$ theo các bản đồ đặc trưng $A^k$ của tầng tích chập cuối cùng:
@@ -226,7 +226,7 @@ Hệ thống được tổ chức thành chuỗi 5 Jupyter Notebook độc lập
     $$L_{\text{Grad-CAM}}^c = \text{ReLU}\left(\sum_{k} \alpha_k^c A^k\right)$$
 - **Ứng dụng:** Trực quan hóa các vùng màu đỏ/vàng tập trung chính xác vào ổ nấm mốc hoặc vết thâm tím trên quả, chứng minh mô hình không bị "học vẹt" bối cảnh nền.
 
-### 5.5. `notebooks/5_Inference_Speed.ipynb` — Tối Ưu Độ Trễ & Ngưỡng Quyết Định
+### 5.5. `notebooks/5_Fruit_Inference_Speed_Benchmark.ipynb` — Tối Ưu Độ Trễ & Ngưỡng Quyết Định
 - **Mục tiêu:** Đảm bảo hệ thống đạt chuẩn thời gian thực (Real-time Industrial Throughput).
 - **Benchmark kỹ thuật:**
   - Đo thời gian suy luận trên CPU và GPU cho từng ảnh ($ms/image$) sử dụng Direct Execution (`model(x, training=False)` thay vì `model.predict()` để loại bỏ overhead).
