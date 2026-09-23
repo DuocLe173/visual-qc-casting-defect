@@ -4,11 +4,13 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=flat&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![Keras](https://img.shields.io/badge/Keras-Deep%20Learning-D00000?style=flat&logo=keras&logoColor=white)](https://keras.io/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-FF4B4B?style=flat&logo=streamlit&logoColor=white)](http://localhost:8501)
 [![Colab](https://img.shields.io/badge/Google%20Colab-GPU%20T4-F9AB00?style=flat&logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
 
 > **Project 13 — Môn học: Trí Tuệ Nhân Tạo (AI & Deep Learning)**  
-> Ứng dụng Convolutional Neural Networks (CNN), Transfer Learning và Explainable AI (Grad-CAM) trong bài toán phân loại và kiểm soát chất lượng nông sản xuất khẩu (*Fruit Quality Control: Fresh vs. Rotten / Defective*).
+> Ứng dụng Convolutional Neural Networks (CNN), Transfer Learning và Explainable AI (Grad-CAM) trong bài toán phân loại và kiểm soát chất lượng nông sản xuất khẩu (*Fruit Quality Control: Fresh vs. Rotten / Defective*).  
+> 
+> 🌐 **Link Truy Cập Web Demo Trực Tiếp:** [http://localhost:8501](http://localhost:8501) (hoặc xem bản mô phỏng [preview_app.html](file:///e:/Project%20SIC/preview_app.html))
 
 ---
 
@@ -89,15 +91,18 @@ kaggle datasets download -d sriramr/fruits-fresh-and-rotten-for-classification -
 3. Chạy `notebooks/3_Fruit_Transfer_Learning.ipynb` để huấn luyện 3 mô hình Transfer Learning (Phase 1 -> Phase 2 -> Phase 3).
 4. Chạy `notebooks/4_Fruit_GradCAM_ExplainableAI.ipynb` để xuất heatmap giải thích trực quan vết khuyết tật.
 5. Chạy `notebooks/5_Fruit_Inference_Speed_Benchmark.ipynb` để benchmark tốc độ suy luận ($ms$) và tìm ngưỡng Sweet Spot.
-2. Chạy `notebooks/2_Baseline_CNN.ipynb` để huấn luyện mô hình cơ sở Custom CNN.
-3. Chạy `notebooks/3_Transfer_Learning.ipynb` để huấn luyện 3 mô hình Transfer Learning (Phase 1 -> Phase 2 -> Phase 3).
-4. Chạy `notebooks/4_GradCAM.ipynb` để xuất heatmap giải thích trực quan vết khuyết tật.
-5. Chạy `notebooks/5_Inference_Speed.ipynb` để benchmark tốc độ suy luận ($ms$) và tìm ngưỡng Sweet Spot.
 
 ### 4. Khởi chạy Ứng dụng Web Demo
+
+Khởi động máy chủ giao diện Streamlit:
 ```bash
 streamlit run app.py
 ```
+
+Sau khi chạy lệnh, truy cập ứng dụng tại các địa chỉ:
+- 💻 **Trình duyệt máy tính (Local):** [http://localhost:8501](http://localhost:8501)
+- 📱 **Thiết bị trong cùng mạng Wi-Fi (Camera điện thoại):** `http://192.168.2.173:8501`
+- 🖥️ **Bản xem trước tĩnh (Static Preview):** [preview_app.html](file:///e:/Project%20SIC/preview_app.html) (Mở trực tiếp trên bất kỳ trình duyệt nào)
 
 ---
 
