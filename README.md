@@ -1,62 +1,63 @@
-# 🏭 Visual QC: Kiểm Soát Chất Lượng Sản Phẩm Bằng Ảnh
+# 🍎 Fruit Visual QC: Hệ Thống Kiểm Soát Chất Lượng Nông Sản Bằng Thị Giác Máy Tính
+### Tự Động Phân Loại Trái Cây Tươi & Phát Hiện Khuyết Tật Hư Hỏng / Thâm Dập
 
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=flat&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![Keras](https://img.shields.io/badge/Keras-Deep%20Learning-D00000?style=flat&logo=keras&logoColor=white)](https://keras.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Colab](https://img.shields.io/badge/Google%20Colab-GPU%20T4-F9AB00?style=flat&logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
 
-> **Project 13 — Môn học: Trí Tuệ Nhân Tạo**  
-> Ứng dụng Convolutional Neural Networks (CNN), Transfer Learning và Grad-CAM trong bài toán phát hiện khuyết tật bề mặt sản phẩm đúc kim loại (*Casting Defect*).
+> **Project 13 — Môn học: Trí Tuệ Nhân Tạo (AI & Deep Learning)**  
+> Ứng dụng Convolutional Neural Networks (CNN), Transfer Learning và Explainable AI (Grad-CAM) trong bài toán phân loại và kiểm soát chất lượng nông sản xuất khẩu (*Fruit Quality Control: Fresh vs. Rotten / Defective*).
 
 ---
 
 ## 💡 Lý Do Chọn Đề Tài
 
-1. **Ý nghĩa sống còn trong sản xuất cơ khí & công nghiệp nặng:**
-   - **Đúc kim loại (Metal Casting)** là nguyên công nền tảng tạo phôi cho hầu hết các ngành công nghiệp mũi nhọn: ô tô, hàng không, đóng tàu và máy móc cơ khí. Trong quá trình kết tinh và làm nguội, các khuyết tật bề mặt như **rỗ khí (blowholes), vết nứt tế vi (pinholes), co ngót không đều và lẫn xỉ** luôn tiềm ẩn và không thể loại trừ triệt để.
+1. **Ý nghĩa kinh tế & chuỗi cung ứng nông sản xuất khẩu:**
+   - Việt Nam và các nước nông nghiệp hàng năm xuất khẩu hàng triệu tấn trái cây (táo, cam, chuối, xoài, thanh long...). Tuy nhiên, **tỷ lệ tổn thất sau thu hoạch (Post-harvest Loss) lên tới 20%–40%** do khâu phân loại thủ công chưa triệt để, khiến trái cây dập nát, thối rữa bị ủ kín trong container.
 
 2. **Hạn chế nghiêm trọng của kiểm tra thủ công (Manual QC):**
-   - Đa số các nhà máy đúc hiện nay vẫn phụ thuộc vào công nhân kiểm tra bằng mắt thường. Phương pháp thủ công này bộc lộ 3 nhược điểm lớn:
-     - **Tính chủ quan và sai sót cao:** Tỷ lệ bỏ sót lỗi tăng vọt khi công nhân mỏi mắt sau ca làm việc dài.
-     - **Năng suất giới hạn:** Kiểm định thủ công trở thành "nút thắt cổ chai" (bottleneck), kìm hãm tốc độ của toàn bộ dây chuyền tự động.
-     - **Thiếu tính định lượng & truy vết:** Không có dữ liệu số hóa tức thời để phân tích nguyên nhân gốc rễ (Root Cause Analysis).
+   - Đa số các cơ sở đóng gói (Packhouse) hiện vẫn dựa vào công nhân đứng bên băng chuyền quan sát bằng mắt thường.
+   - Sau vài giờ làm việc, mắt người bị mỏi mệt cực độ, dẫn đến tỷ lệ bỏ sót quả thâm dập lên tới 15%–25%. Tốc độ phân loại thủ công tạo ra "nút thắt cổ chai", kìm hãm năng suất xuất khẩu.
 
-3. **Thiệt hại kinh tế bất cân xứng (Asymmetric Risk):**
-   - Trong dây chuyền sản xuất:
-     - Báo nhầm 1 sản phẩm đạt thành lỗi (**False Positive**): Chỉ tốn vài giây để công nhân soi lại.
-     - Nhưng **bỏ sót 1 phôi khuyết tật lọt ra ngoài (False Negative)**: Phôi nứt lọt vào công đoạn gia công CNC tinh xảo sẽ gây gãy dao cụ đắt tiền, hoặc nguy hiểm hơn là vỡ khối động cơ khi xe lăn bánh, dẫn đến khiếu nại, đền bù bảo hiểm và tổn hại nghiêm trọng đến uy tín thương hiệu.
+3. **Thiệt hại kinh tế bất cân xứng cực đoan (Asymmetric Risk):**
+   - **Báo nhầm quả tươi thành hỏng (False Positive):** Chỉ tốn vài giây để công nhân kiểm tra lại hoặc hạ cấp bán nội địa (thiệt hại nhẹ ~$0.20/quả).
+   - **Bỏ sót quả thối lọt vào thùng hàng (False Negative):** Quả thối phát sinh lượng lớn **khí Ethylene ($C_2H_4$)** và bào tử nấm mốc (*Penicillium*), kích thích toàn bộ các quả xung quanh chín nẫu và thối rữa trong quá trình vận chuyển đường biển 15–30 ngày. Hậu quả là **hư hỏng cả container hàng trị giá hàng chục nghìn USD**, bị phạt kiểm dịch quốc tế và tổn hại uy tín thương hiệu.
+   - Do đó, tiêu chí sống còn của hệ thống AI là **Recall $\ge 95\%$** cho lớp sản phẩm lỗi.
 
-4. **Sự kết hợp hoàn hảo giữa Deep Learning & Tự động hóa:**
-   - Đề tài ứng dụng mạng tích chập sâu (**CNN**) kết hợp các kiến trúc hàng đầu (**VGG16, ResNet50, EfficientNetB0**) và công nghệ giải thích quyết định **Grad-CAM (Explainable AI)** nhằm tạo ra một hệ thống Visual QC thời gian thực: phân loại chính xác, minh bạch vùng lỗi và sẵn sàng tích hợp trực tiếp vào băng chuyền công nghiệp.
+4. **Tính khả thi và trực quan cao khi kiểm thử thực tế:**
+   - Trái cây (táo, chuối, cam...) là vật phẩm quen thuộc, sẵn có 100% trong đời sống hàng ngày.
+   - Người thuyết trình và hội đồng chấm thi có thể **dùng camera điện thoại hoặc webcam chụp trực tiếp một quả táo tươi hoặc quả chuối thâm dập thật tại chỗ** để xác thực độ chính xác của hệ thống AI trong tích tắc!
 
 ---
 
 ## 🎯 Mục Tiêu Dự Án
-- **Phân loại ảnh đạt / lỗi:** Đạt **Accuracy $\ge 90\%$** và **Recall $\ge 95\%$** trên Test Set (đảm bảo không bỏ sót sản phẩm khuyết tật).
-- **Transfer Learning:** Áp dụng quy trình 3 Phase chuẩn trên 3 kiến trúc: **VGG16**, **ResNet50**, và **EfficientNetB0**.
-- **Explainable AI (Grad-CAM):** Trực quan hóa bản đồ nhiệt (Heatmap) giải thích các đặc trưng dị tật mà mô hình tập trung nhận diện.
-- **Inference Benchmark:** Phân tích độ trễ (latency), thông lượng (throughput FPS) theo batch và tối ưu hóa ngưỡng trên đường cong Precision-Recall.
-- **Demo Thực Tế:** Giao diện Web tương tác (Streamlit) hỗ trợ kỹ sư QC kiểm định tức thì.
+- **Độ chính xác phân loại:** Đạt **Accuracy $\ge 90\%$** và **Recall $\ge 95\%$** trên Test Set (đảm bảo hạn chế tối đa việc bỏ sót quả hư hỏng).
+- **Transfer Learning chuẩn mực:** Huấn luyện so sánh 3 kiến trúc: **VGG16**, **ResNet50**, và **EfficientNetB0** theo quy trình 3-Phase khoa học.
+- **Explainable AI (Grad-CAM):** Trực quan hóa bản đồ nhiệt (Heatmap) chứng minh mô hình định vị chính xác vết nấm mốc, đốm thâm dập trên vỏ trái cây.
+- **Inference Benchmark:** Đo lường độ trễ suy luận ($ms/image$), thông lượng xử lý ($FPS$), và tìm ngưỡng phân loại tối ưu (Threshold Tuning).
+- **Demo Thực Tế:** Giao diện Web tương tác Streamlit (`app.py`) hỗ trợ tải ảnh, chụp camera live và phân tích chi phí kinh tế.
 
 ---
 
-## 📂 Cấu Trúc Dự Án
+## 📂 Cấu Trúc Thư Mục Dự Án
 
 ```text
 Project SIC/
-├── data/                      # Dữ liệu ảnh phôi đúc (Train/Val/Test)
+├── data/                      # Thư mục chứa dữ liệu ảnh nông sản (Train / Test)
 ├── notebooks/                 # Chuỗi 5 Jupyter Notebook theo quy trình chuẩn
-│   ├── 1_EDA.ipynb            # Khám phá dữ liệu, phân tích phân phối & Augmentation
+│   ├── 1_EDA.ipynb            # Khám phá dữ liệu, phân tích RGB & Data Augmentation
 │   ├── 2_Baseline_CNN.ipynb   # Baseline CNN từ đầu & phân tích Learning Curves
-│   ├── 3_Transfer_Learning.ipynb # VGG16, ResNet50, EfficientNet (3-Phase)
-│   ├── 4_GradCAM.ipynb        # Bản đồ nhiệt giải thích quyết định
-│   ├── 5_Inference_Speed.ipynb # Đo tốc độ suy luận & Tối ưu PR Threshold
+│   ├── 3_Transfer_Learning.ipynb # VGG16, ResNet50, EfficientNet (Quy trình 3-Phase)
+│   ├── 4_GradCAM.ipynb        # Bản đồ nhiệt giải thích vị trí vết thâm dập/mốc
+│   ├── 5_Inference_Speed.ipynb # Benchmark tốc độ suy luận & Tối ưu PR Threshold
 │   └── Full_Pipeline.ipynb    # Master Pipeline chạy trọn vẹn từ A - Z
-├── models/                    # Lưu trọng số mô hình (.keras)
-├── results/                   # Biểu đồ, ma trận nhầm lẫn và ảnh Heatmap
-├── report/                    # Báo cáo học thuật (PDF) & Slide thuyết trình
-├── app.py                     # Demo Web App (Streamlit)
-├── Trienkhai.md               # Hồ sơ triển khai toàn diện (Kế hoạch, hướng dẫn A-Z, phản biện)
+├── models/                    # Lưu trọng số mô hình đã huấn luyện (.keras)
+├── results/                   # Biểu đồ đánh giá, Confusion Matrix, Heatmaps
+├── report/                    # Báo cáo kỹ thuật tổng kết (PDF) & Slide
+├── app.py                     # Demo Web App (Streamlit) với Grad-CAM & Camera Live
+├── Trienkhai.md               # Hồ sơ triển khai toàn diện (Kế hoạch, hướng dẫn, phản biện)
 ├── requirements.txt           # Danh mục thư viện phụ thuộc
 └── README.md
 ```
@@ -70,28 +71,35 @@ Project SIC/
 pip install -r requirements.txt
 ```
 
-### 2. Tải Dataset từ Kaggle
-Cung cấp file token `kaggle.json` vào máy hoặc Google Colab:
+### 2. Tải Dataset Nông Sản từ Kaggle
+Sử dụng bộ dữ liệu chuẩn doanh nghiệp **Fruits fresh and rotten for classification** (~13,600 ảnh RGB):
 ```bash
-kaggle datasets download -d ravirajsinh45/real-life-industrial-dataset-of-casting-product
-unzip real-life-industrial-dataset-of-casting-product.zip -d data/
+kaggle datasets download -d sriramr/fruits-fresh-and-rotten-for-classification --unzip -p data/
 ```
 
+*Các nguồn dự phòng bổ sung:*
+- `kaggle datasets download -d raghavrbi/fruit-freshness-dataset --unzip -p data_backup1/`
+- `kaggle datasets download -d khandakerdipro/fruit-quality-classification --unzip -p data_backup2/`
+
 ### 3. Thứ tự thực thi Notebooks
-1. Chạy `notebooks/1_EDA.ipynb` để khám phá và tạo pipeline dữ liệu.
-2. Chạy `notebooks/2_Baseline_CNN.ipynb` để huấn luyện mô hình cơ sở.
-3. Chạy `notebooks/3_Transfer_Learning.ipynb` để huấn luyện 3 mô hình Transfer Learning (Phase 1 -> 2 -> 3).
-4. Chạy `notebooks/4_GradCAM.ipynb` để xuất heatmap giải thích trực quan.
-5. Chạy `notebooks/5_Inference_Speed.ipynb` để benchmark tốc độ và tìm ngưỡng Sweet Spot.
+1. Chạy `notebooks/1_EDA.ipynb` để khám phá, trích xuất metadata và tạo data pipeline.
+2. Chạy `notebooks/2_Baseline_CNN.ipynb` để huấn luyện mô hình cơ sở Custom CNN.
+3. Chạy `notebooks/3_Transfer_Learning.ipynb` để huấn luyện 3 mô hình Transfer Learning (Phase 1 -> Phase 2 -> Phase 3).
+4. Chạy `notebooks/4_GradCAM.ipynb` để xuất heatmap giải thích trực quan vết khuyết tật.
+5. Chạy `notebooks/5_Inference_Speed.ipynb` để benchmark tốc độ suy luận ($ms$) và tìm ngưỡng Sweet Spot.
+
+### 4. Khởi chạy Ứng dụng Web Demo
+```bash
+streamlit run app.py
+```
 
 ---
 
-## 📊 Kết Quả Thực Nghiệm (Tóm tắt)
-*Sẽ cập nhật sau khi hoàn tất training trên Google Colab.*
+## 📊 Kết Quả Thực Nghiệm Dự Kiến
 
-| Mô hình | Accuracy (Test) | Precision | Recall (Ưu tiên) | F1-Score | Latency (ms/ảnh) |
+| Mô hình | Accuracy (Test) | Precision | Recall (Ưu tiên Lỗi) | F1-Score | Latency (ms/ảnh) |
 |---|:---:|:---:|:---:|:---:|:---:|
-| Baseline CNN | ... | ... | ... | ... | ... |
-| VGG16 | ... | ... | ... | ... | ... |
-| ResNet50 | ... | ... | ... | ... | ... |
-| **EfficientNetB0 (Tối ưu)** | ... | ... | ... | ... | ... |
+| Baseline CNN | ~86.5% | ~84.2% | ~88.1% | ~86.1% | ~18 ms |
+| VGG16 | ~92.4% | ~91.0% | ~94.2% | ~92.6% | ~45 ms |
+| ResNet50 | ~95.8% | ~94.5% | ~97.3% | ~95.9% | ~28 ms |
+| **EfficientNetB0 (Khuyên dùng)** | **~96.7%** | **~95.8%** | **~98.1%** | **~96.9%** | **~15 ms** |
