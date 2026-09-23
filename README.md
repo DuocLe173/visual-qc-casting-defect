@@ -65,6 +65,7 @@ Project SIC/
 ├── DOLE.qmd                   # Đặc tả dữ liệu chuẩn doanh nghiệp (Dole Food Company)
 ├── download_fruit_data.py     # Script tải đa nguồn 3 bộ dữ liệu từ Kaggle
 ├── Trienkhai.md               # Hồ sơ triển khai toàn diện (Kế hoạch, hướng dẫn, phản biện)
+├── chayweb.md                 # Sổ tay tra cứu lệnh Terminal mở Web & Camera Demo
 ├── requirements.txt           # Danh mục thư viện phụ thuộc
 └── README.md
 ```
