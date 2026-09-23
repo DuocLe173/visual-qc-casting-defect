@@ -56,8 +56,7 @@ Project SIC/
 ├── results/                   # Biểu đồ, ma trận nhầm lẫn và ảnh Heatmap
 ├── report/                    # Báo cáo học thuật (PDF) & Slide thuyết trình
 ├── app.py                     # Demo Web App (Streamlit)
-├── huongdan.md                # Cẩm nang hướng dẫn A - Z chi tiết
-├── kehoach13.md               # Kế hoạch thực hiện theo ngày & rubric
+├── Trienkhai.md               # Hồ sơ triển khai toàn diện (Kế hoạch, hướng dẫn A-Z, phản biện)
 ├── requirements.txt           # Danh mục thư viện phụ thuộc
 └── README.md
 ```
