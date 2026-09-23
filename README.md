@@ -10,6 +10,27 @@
 
 ---
 
+## 💡 Lý Do Chọn Đề Tài
+
+1. **Ý nghĩa sống còn trong sản xuất cơ khí & công nghiệp nặng:**
+   - **Đúc kim loại (Metal Casting)** là nguyên công nền tảng tạo phôi cho hầu hết các ngành công nghiệp mũi nhọn: ô tô, hàng không, đóng tàu và máy móc cơ khí. Trong quá trình kết tinh và làm nguội, các khuyết tật bề mặt như **rỗ khí (blowholes), vết nứt tế vi (pinholes), co ngót không đều và lẫn xỉ** luôn tiềm ẩn và không thể loại trừ triệt để.
+
+2. **Hạn chế nghiêm trọng của kiểm tra thủ công (Manual QC):**
+   - Đa số các nhà máy đúc hiện nay vẫn phụ thuộc vào công nhân kiểm tra bằng mắt thường. Phương pháp thủ công này bộc lộ 3 nhược điểm lớn:
+     - **Tính chủ quan và sai sót cao:** Tỷ lệ bỏ sót lỗi tăng vọt khi công nhân mỏi mắt sau ca làm việc dài.
+     - **Năng suất giới hạn:** Kiểm định thủ công trở thành "nút thắt cổ chai" (bottleneck), kìm hãm tốc độ của toàn bộ dây chuyền tự động.
+     - **Thiếu tính định lượng & truy vết:** Không có dữ liệu số hóa tức thời để phân tích nguyên nhân gốc rễ (Root Cause Analysis).
+
+3. **Thiệt hại kinh tế bất cân xứng (Asymmetric Risk):**
+   - Trong dây chuyền sản xuất:
+     - Báo nhầm 1 sản phẩm đạt thành lỗi (**False Positive**): Chỉ tốn vài giây để công nhân soi lại.
+     - Nhưng **bỏ sót 1 phôi khuyết tật lọt ra ngoài (False Negative)**: Phôi nứt lọt vào công đoạn gia công CNC tinh xảo sẽ gây gãy dao cụ đắt tiền, hoặc nguy hiểm hơn là vỡ khối động cơ khi xe lăn bánh, dẫn đến khiếu nại, đền bù bảo hiểm và tổn hại nghiêm trọng đến uy tín thương hiệu.
+
+4. **Sự kết hợp hoàn hảo giữa Deep Learning & Tự động hóa:**
+   - Đề tài ứng dụng mạng tích chập sâu (**CNN**) kết hợp các kiến trúc hàng đầu (**VGG16, ResNet50, EfficientNetB0**) và công nghệ giải thích quyết định **Grad-CAM (Explainable AI)** nhằm tạo ra một hệ thống Visual QC thời gian thực: phân loại chính xác, minh bạch vùng lỗi và sẵn sàng tích hợp trực tiếp vào băng chuyền công nghiệp.
+
+---
+
 ## 🎯 Mục Tiêu Dự Án
 - **Phân loại ảnh đạt / lỗi:** Đạt **Accuracy $\ge 90\%$** và **Recall $\ge 95\%$** trên Test Set (đảm bảo không bỏ sót sản phẩm khuyết tật).
 - **Transfer Learning:** Áp dụng quy trình 3 Phase chuẩn trên 3 kiến trúc: **VGG16**, **ResNet50**, và **EfficientNetB0**.
@@ -29,7 +50,8 @@ Project SIC/
 │   ├── 2_Baseline_CNN.ipynb   # Baseline CNN từ đầu & phân tích Learning Curves
 │   ├── 3_Transfer_Learning.ipynb # VGG16, ResNet50, EfficientNet (3-Phase)
 │   ├── 4_GradCAM.ipynb        # Bản đồ nhiệt giải thích quyết định
-│   └── 5_Inference_Speed.ipynb # Đo tốc độ suy luận & Tối ưu PR Threshold
+│   ├── 5_Inference_Speed.ipynb # Đo tốc độ suy luận & Tối ưu PR Threshold
+│   └── Full_Pipeline.ipynb    # Master Pipeline chạy trọn vẹn từ A - Z
 ├── models/                    # Lưu trọng số mô hình (.keras)
 ├── results/                   # Biểu đồ, ma trận nhầm lẫn và ảnh Heatmap
 ├── report/                    # Báo cáo học thuật (PDF) & Slide thuyết trình
