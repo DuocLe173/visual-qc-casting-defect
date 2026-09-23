@@ -59,6 +59,9 @@ Project SIC/
 ├── results/                   # Biểu đồ đánh giá, Confusion Matrix, Heatmaps
 ├── report/                    # Báo cáo kỹ thuật tổng kết (PDF) & Slide
 ├── app.py                     # Demo Web App (Streamlit) với Grad-CAM & Camera Live
+├── edge_stream_inspector.py   # Script kiểm định video luồng trực tiếp (Live Stream HUD OSD)
+├── me.md                      # Hồ sơ kỹ thuật: Kiến trúc streaming thời gian thực (<100ms lag)
+├── preview_app.html           # Bản xem trước giao diện giả lập Smart Packhouse
 ├── DOLE.qmd                   # Đặc tả dữ liệu chuẩn doanh nghiệp (Dole Food Company)
 ├── download_fruit_data.py     # Script tải đa nguồn 3 bộ dữ liệu từ Kaggle
 ├── Trienkhai.md               # Hồ sơ triển khai toàn diện (Kế hoạch, hướng dẫn, phản biện)
