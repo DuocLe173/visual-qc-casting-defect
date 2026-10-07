@@ -24,3 +24,4 @@ models/*.onnx
 # API Keys & Secrets
 kaggle.json
 *.env
+camera_history.json

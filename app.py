@@ -329,44 +329,271 @@ with tab_upload:
         new_image = Image.open(uploaded_file).convert("RGB")
         new_caption = f"Ảnh tải lên: {uploaded_file.name}"
 
+# ==============================================================================
+# QUẢN LÝ LỊCH SỬ KẾT NỐI CAMERA ĐIỆN THOẠI (DROIDCAM IP MANAGER)
+# ==============================================================================
+CAMERA_HISTORY_FILE = "camera_history.json"
+
+def load_camera_history():
+    import json
+    default_history = ["10.209.6.170:4747", "192.168.2.173:4747", "192.168.1.15:4747"]
+    if os.path.exists(CAMERA_HISTORY_FILE):
+        try:
+            with open(CAMERA_HISTORY_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list) and len(data) > 0:
+                    return data
+        except Exception:
+            pass
+    return default_history
+
+def save_camera_history(new_ip):
+    import json
+    if not new_ip or not isinstance(new_ip, str):
+        return
+    clean_ip = new_ip.strip()
+    clean_ip = clean_ip.replace("http://", "").replace("https://", "").replace("/video", "").strip()
+    if not clean_ip or clean_ip in ["0", "webcam"]:
+        return
+    history = load_camera_history()
+    if clean_ip in history:
+        history.remove(clean_ip)
+    history.insert(0, clean_ip)
+    history = history[:10]  # Giữ tối đa 10 IP gần nhất
+    try:
+        with open(CAMERA_HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+def normalize_camera_source(raw_input):
+    if raw_input is None:
+        return 0
+    raw_str = str(raw_input).strip()
+    if raw_str in ["0", "webcam", "laptop"]:
+        return 0
+    if not (raw_str.startswith("http://") or raw_str.startswith("https://") or raw_str.startswith("rtsp://")):
+        raw_str = "http://" + raw_str
+    if "4747" in raw_str and not raw_str.endswith("/video"):
+        raw_str = raw_str.rstrip("/") + "/video"
+    return raw_str
+
 with tab_camera:
-    st.markdown("**📸 Chụp ảnh trái cây thật tại chỗ:** Cầm quả táo, chuối hoặc cam trước webcam/camera để kiểm định trực tiếp.")
-    camera_file = st.camera_input("Bấm chụp ảnh quả để hệ thống phân tích")
-    if camera_file is not None:
-        new_image = Image.open(camera_file).convert("RGB")
-        new_caption = "Ảnh chụp trực tiếp từ Camera/Webcam"
+    st.markdown("### 📡 KẾT NỐI CAMERA ĐIỆN THOẠI TRỰC TIẾP (DROIDCAM PACKHOUSE)")
+    st.caption("Linh hoạt kết nối với bất kỳ mạng Wi-Fi nào bằng cách nhập IP thủ công hoặc chọn nhanh từ lịch sử đã lưu.")
+
+    # 1. Quản lý lịch sử IP
+    history_list = load_camera_history()
+
+    col_cam1, col_cam2 = st.columns([1.1, 1.4])
+    with col_cam1:
+        selected_hist = st.selectbox(
+            "🕒 Chọn từ Lịch Sử IP đã lưu:",
+            ["➕ Nhập IP mới..."] + [f"📱 {ip}" for ip in history_list],
+            help="Chọn nhanh địa chỉ IP đã từng kết nối thành công trước đó để không phải gõ lại."
+        )
+    
+    with col_cam2:
+        if selected_hist.startswith("📱 "):
+            prefill_val = selected_hist.replace("📱 ", "").strip()
+        else:
+            prefill_val = history_list[0] if history_list else "192.168.1.15:4747"
+
+        raw_ip_input = st.text_input(
+            "📱 Nhập Địa Chỉ IP Camera (VD: 192.168.1.15:4747 hoặc 0 cho Webcam):",
+            value=prefill_val,
+            help="Mở app DroidCam trên điện thoại, nhìn vào dòng 'WiFi IP' và 'DroidCam Port' rồi nhập vào đây (VD: 192.168.1.20:4747 hoặc 10.209.6.170:4747)."
+        )
+
+    stream_url = normalize_camera_source(raw_ip_input)
+    
+    col_help, col_del = st.columns([3, 1])
+    with col_help:
+        st.caption(f"🔗 Luồng kết nối thực tế: `{stream_url}` *(Hệ thống tự động thêm `http://` và `/video`, bạn chỉ cần gõ đúng IP:Port)*")
+    with col_del:
+        if st.button("🗑️ Xóa Lịch Sử IP"):
+            if os.path.exists(CAMERA_HISTORY_FILE):
+                os.remove(CAMERA_HISTORY_FILE)
+            st.rerun()
+
+    st.markdown("---")
+    col_btn_snap, col_btn_live = st.columns([1, 1])
+    with col_btn_snap:
+        snap_quick = st.button("📸 BẮT ẢNH TỪ CAMERA ĐIỆN THOẠI", use_container_width=True, type="primary")
+    with col_btn_live:
+        run_live = st.toggle("🔴 BẬT LUỒNG QUÉT OSD HUD LIÊN TỤC", value=False)
+
+    if snap_quick:
+        with st.spinner(f"Đang kết nối tới Camera: {stream_url} ..."):
+            import cv2
+            cap = cv2.VideoCapture(stream_url)
+            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            ret, frame = False, None
+            for _ in range(5):  # Lọc bỏ buffer cũ để lấy frame tươi nhất
+                r, f = cap.read()
+                if r:
+                    ret, frame = r, f
+            cap.release()
+            
+        if ret and frame is not None:
+            save_camera_history(raw_ip_input)  # Tự động lưu IP vào lịch sử khi thành công!
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            new_image = Image.fromarray(frame_rgb)
+            new_caption = f"Ảnh chụp trực tiếp từ Camera ({stream_url})"
+            st.success(f"✅ Đã kết nối và bắt ảnh thành công từ Camera ({stream_url})! Địa chỉ IP đã được lưu vào lịch sử.")
+        else:
+            st.error(f"❌ Không thể kết nối tới nguồn Camera '{stream_url}'. Vui lòng kiểm tra lại địa chỉ IP/Port trên màn hình DroidCam điện thoại và đảm bảo cả hai đang kết nối cùng mạng Wi-Fi.")
+
+    if run_live:
+        import cv2
+        from edge_stream_inspector import ThreadedCamera, RealTimeEdgeQCModel, draw_industrial_hud
+
+        st.info("🟢 **BĂNG CHUYỀN ĐANG HOẠT ĐỘNG:** Hệ thống đang quét liên tục theo thời gian thực (Real-Time Conveyor Stream). Bạn có thể đưa lần lượt các quả táo, cam, chuối qua trước camera điện thoại.")
+        
+        # Nút điều khiển dừng quét
+        col_ctrl1, col_ctrl2 = st.columns([1, 1])
+        with col_ctrl1:
+            stop_btn = st.button("⏹️ DỪNG QUÉT CAMERA BĂNG CHUYỀN", type="secondary", use_container_width=True)
+        with col_ctrl2:
+            snap_freeze = st.button("📸 BẮT QUẢ HIỆN TẠI ĐỂ SOI GRAD-CAM CHI TIẾT", type="primary", use_container_width=True)
+
+        stream_placeholder = st.empty()
+        telemetry_placeholder = st.empty()
+
+        # Khởi động camera đa luồng chống trễ (Zero-Buffer Lag)
+        cam = ThreadedCamera(stream_url).start()
+        edge_model = RealTimeEdgeQCModel()
+        
+        # Đợi camera kết nối tối đa 3 giây
+        connect_wait = 0
+        while not cam.connected and connect_wait < 30:
+            time.sleep(0.1)
+            connect_wait += 1
+
+        if not cam.connected:
+            st.error(f"❌ Không thể kết nối tới nguồn Camera '{stream_url}'. Vui lòng kiểm tra lại DroidCam trên điện thoại.")
+            cam.stop()
+        else:
+            save_camera_history(raw_ip_input)  # Tự động lưu IP vào lịch sử khi stream thành công!
+            prev_t = time.time()
+            total_scanned_count = 0
+            rotten_detected_count = 0
+            
+            try:
+                # VÒNG LẶP QUÉT LIÊN TỤC KHÔNG GIỚI HẠN (CONVEYOR STREAM 24/7)
+                while run_live and not stop_btn:
+                    has_frame, frame, fps_inbound = cam.read()
+                    if not has_frame or frame is None:
+                        time.sleep(0.01)
+                        continue
+
+                    cur_t = time.time()
+                    fps_live = 1.0 / max(cur_t - prev_t, 1e-4)
+                    prev_t = cur_t
+
+                    # Thực hiện suy luận thời gian thực cho từng quả trên băng chuyền
+                    defect_prob, bbox, lat_ms = edge_model.infer(frame)
+                    is_defective = defect_prob >= threshold
+
+                    total_scanned_count += 1
+                    if is_defective:
+                        rotten_detected_count += 1
+
+                    # Vẽ OSD HUD chuyên dụng
+                    frame_hud = draw_industrial_hud(frame.copy(), defect_prob, bbox, lat_ms, fps_live, edge_model.mode_label)
+                    frame_rgb = cv2.cvtColor(frame_hud, cv2.COLOR_BGR2RGB)
+
+                    # Chiếu khung hình trực tiếp lên trang Web
+                    stream_placeholder.image(frame_rgb, channels="RGB", use_container_width=True)
+
+                    # Cập nhật thông số băng chuyền trực tiếp
+                    status_text = "🚨 **PHÁT HIỆN QUẢ LỖI (KÍCH HOẠT CẦN GẠT)**" if is_defective else "🟢 **QUẢ ĐẠT CHUẨN XUẤT KHẨU (GRADE A)**"
+                    telemetry_placeholder.markdown(
+                        f"📊 **Trạng Thái:** {status_text} | "
+                        f"⚡ **Tốc độ:** `{fps_live:.1f} FPS` | "
+                        f"⏱️ **Độ trễ:** `{lat_ms:.1f} ms` | "
+                        f"🎯 **Rủi ro khuyết tật:** `{defect_prob*100:.1f}%`"
+                    )
+
+                    # Kiểm tra nếu người dùng bấm nút chụp khung hình hiện tại
+                    if snap_freeze:
+                        new_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                        new_caption = f"Ảnh chụp tức thời từ băng chuyền camera ({stream_url})"
+                        st.session_state['current_image'] = new_image
+                        st.session_state['current_caption'] = new_caption
+                        break
+
+                    time.sleep(0.015)  # Duy trì 45-60 FPS mượt mà
+            finally:
+                cam.stop()
+
+            if snap_freeze:
+                st.rerun()
+
+    with st.expander("📷 Hoặc chụp bằng Camera tích hợp của Trình duyệt (Browser Camera)"):
+        camera_file = st.camera_input("Chụp ảnh nhanh qua Webcam trình duyệt")
+        if camera_file is not None:
+            new_image = Image.open(camera_file).convert("RGB")
+            new_caption = "Ảnh chụp trực tiếp từ Camera Trình Duyệt"
 
 with tab_sample:
-    col_s1, col_s2 = st.columns(2)
-    with col_s1:
-        st.markdown("**Mẫu 1: Quả Hư Hỏng / Thâm Dập / Nấm Mốc (Defective / Rotten)**")
-        st.caption("Trái cây có đốm thối rữa màu nâu sẫm, bào tử nấm mốc hoặc thâm tím do va đập.")
-        if st.button("🍎 Kiểm tra Mẫu: Quả Thối Dập (Rotten Sample)"):
-            # Sinh ảnh mô phỏng quả bị thâm dập & nấm mốc
-            sample_arr = np.full((224, 224, 3), 40, dtype=np.uint8)
-            # Màu quả cơ bản (nền đỏ quả táo)
-            import cv2
-            cv2.circle(sample_arr, (112, 112), 85, (180, 50, 45), -1)
-            # Tạo ổ nấm mốc màu nâu sẫm và xám trắng
-            cv2.circle(sample_arr, (90, 95), 32, (65, 38, 25), -1)
-            cv2.circle(sample_arr, (90, 95), 18, (140, 135, 120), -1)
-            # Thêm các đốm thâm lây lan
-            cv2.circle(sample_arr, (135, 125), 20, (75, 42, 30), -1)
-            new_image = Image.fromarray(sample_arr)
-            new_caption = "Ảnh mẫu thử nghiệm: Quả táo bị ổ nấm hoại tử & thâm dập"
+    st.markdown("**Chọn mẫu trái cây chuẩn từ tập kiểm thử `data/test/` để phân tích ngay:**")
+    cs1, cs2, cs3, cs4 = st.columns(4)
+    
+    with cs1:
+        if st.button("🍎 Táo Thối Dập (Rotten Apple)"):
+            path = "data/test/rotten/rotten_apple_001.jpg"
+            if os.path.exists(path):
+                new_image = Image.open(path).convert("RGB")
+                new_caption = f"Mẫu thực tế: Quả táo thối dập / nấm mốc ({path})"
+            else:
+                sample_arr = np.full((224, 224, 3), 40, dtype=np.uint8)
+                import cv2
+                cv2.circle(sample_arr, (112, 112), 85, (180, 50, 45), -1)
+                cv2.circle(sample_arr, (90, 95), 32, (65, 38, 25), -1)
+                cv2.circle(sample_arr, (90, 95), 18, (140, 135, 120), -1)
+                new_image = Image.fromarray(sample_arr)
+                new_caption = "Ảnh mẫu: Quả táo bị ổ nấm hoại tử & thâm dập"
 
-    with col_s2:
-        st.markdown("**Mẫu 2: Quả Tươi Đạt Chuẩn Xuất Khẩu (Fresh / Grade A)**")
-        st.caption("Bề mặt vỏ căng bóng đồng nhất, màu sắc tươi sáng, không có vết thâm dập hay nấm mốc.")
-        if st.button("🍏 Kiểm tra Mẫu: Quả Tươi Đạt Chuẩn (Fresh Sample)"):
-            # Sinh ảnh quả táo tươi đồng nhất
-            sample_arr = np.full((224, 224, 3), 40, dtype=np.uint8)
-            import cv2
-            cv2.circle(sample_arr, (112, 112), 85, (220, 60, 50), -1)
-            # Điểm phản quang bóng nhẹ
-            cv2.ellipse(sample_arr, (95, 80), (35, 15), 30, 0, 360, (250, 120, 110), -1)
-            new_image = Image.fromarray(sample_arr)
-            new_caption = "Ảnh mẫu thử nghiệm: Quả táo tươi tiêu chuẩn GlobalGAP"
+    with cs2:
+        if st.button("🍏 Táo Tươi Grade A (Fresh Apple)"):
+            path = "data/test/fresh/fresh_apple_001.jpg"
+            if os.path.exists(path):
+                new_image = Image.open(path).convert("RGB")
+                new_caption = f"Mẫu thực tế: Quả táo tươi GlobalGAP ({path})"
+            else:
+                sample_arr = np.full((224, 224, 3), 40, dtype=np.uint8)
+                import cv2
+                cv2.circle(sample_arr, (112, 112), 85, (220, 60, 50), -1)
+                new_image = Image.fromarray(sample_arr)
+                new_caption = "Ảnh mẫu: Quả táo tươi tiêu chuẩn GlobalGAP"
+
+    with cs3:
+        if st.button("🍊 Cam Nhiễm Mốc (Rotten Orange)"):
+            path = "data/test/rotten/rotten_orange_001.jpg"
+            if os.path.exists(path):
+                new_image = Image.open(path).convert("RGB")
+                new_caption = f"Mẫu thực tế: Quả cam nhiễm nấm mốc Penicillium ({path})"
+            else:
+                sample_arr = np.full((224, 224, 3), 40, dtype=np.uint8)
+                import cv2
+                cv2.circle(sample_arr, (112, 112), 85, (200, 90, 20), -1)
+                cv2.circle(sample_arr, (120, 100), 30, (40, 60, 50), -1)
+                new_image = Image.fromarray(sample_arr)
+                new_caption = "Ảnh mẫu: Quả cam nhiễm nấm mốc Penicillium"
+
+    with cs4:
+        if st.button("🍊 Cam Tươi Đạt Chuẩn (Fresh Orange)"):
+            path = "data/test/fresh/fresh_orange_001.jpg"
+            if os.path.exists(path):
+                new_image = Image.open(path).convert("RGB")
+                new_caption = f"Mẫu thực tế: Quả cam tươi bóng đồng nhất ({path})"
+            else:
+                sample_arr = np.full((224, 224, 3), 40, dtype=np.uint8)
+                import cv2
+                cv2.circle(sample_arr, (112, 112), 85, (245, 120, 25), -1)
+                new_image = Image.fromarray(sample_arr)
+                new_caption = "Ảnh mẫu: Quả cam tươi tiêu chuẩn xuất khẩu"
 
 if new_image is not None:
     st.session_state['current_image'] = new_image
