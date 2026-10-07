@@ -1,0 +1,5 @@
+Mô hình,Số tham số (Triệu),Accuracy (%),Recall (%),Precision (%),F1-Score (%)
+Baseline CNN (Tự xây),11.17,98.31,99.7,97.38,98.52
+VGG16 (3-Phase),14.85,100.0,100.0,100.0,100.0
+ResNet50 (3-Phase),24.12,100.0,100.0,100.0,100.0
+EfficientNetB0 (3-Phase),4.38,100.0,100.0,100.0,100.0
