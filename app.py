@@ -191,56 +191,50 @@ def generate_fruit_gradcam(img_array, model):
             import tensorflow as tf
             img_tensor = tf.expand_dims(tf.cast(img_array, tf.float32), axis=0)
 
-            last_conv_name = "conv5_block3_out"
-            base_model = None
-            try:
-                base_model = model.get_layer("resnet50_base")
-                target_conv_layer = base_model.get_layer(last_conv_name)
-                conv_inputs = base_model.inputs
-            except Exception:
-                conv_layers = [l for l in model.layers if "conv" in l.name.lower()]
-                target_conv_layer = conv_layers[-1] if conv_layers else model.layers[-3]
-                conv_inputs = model.inputs
+            # Xác định tầng tích chập cuối phù hợp cho từng kiến trúc (EfficientNet, ResNet50, VGG16, Baseline)
+            target_conv_layer = None
+            known_targets = ["top_conv", "top_activation", "conv5_block3_out", "block5_conv3"]
+            for name in known_targets:
+                try:
+                    target_conv_layer = model.get_layer(name)
+                    break
+                except Exception:
+                    pass
 
-            conv_model = tf.keras.models.Model(conv_inputs, target_conv_layer.output)
+            if target_conv_layer is None:
+                # Quét tự động tầng tích chập cuối cùng
+                conv_layers = [l for l in model.layers if "conv" in l.name.lower() or "block" in l.name.lower()]
+                target_conv_layer = conv_layers[-1] if conv_layers else model.layers[-3]
+
+            # Xây dựng mô hình xuất đồng thời Feature Map và Dự đoán (Multi-Output Grad Model)
+            grad_model = tf.keras.models.Model(
+                inputs=model.inputs,
+                outputs=[target_conv_layer.output, model.output]
+            )
 
             with tf.GradientTape() as tape:
-                if base_model is not None:
-                    conv_outputs = conv_model(img_tensor)
-                    tape.watch(conv_outputs)
-                    
-                    x = conv_outputs
-                    x = model.get_layer("global_avg_pool")(x)
-                    x = model.get_layer("batch_norm")(x)
-                    x = model.get_layer("dense_256")(x)
-                    x = model.get_layer("dropout_0.4")(x, training=False)
-                    preds = model.get_layer("prediction")(x)
-                else:
-                    conv_outputs = conv_model(img_tensor)
-                    tape.watch(conv_outputs)
-                    preds = model(img_tensor)
-                
+                conv_outputs, preds = grad_model(img_tensor)
                 loss = preds[:, 0]
 
             grads = tape.gradient(loss, conv_outputs)
-            pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+            if grads is not None:
+                pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+                conv_outputs = conv_outputs[0]
+                heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
+                heatmap = tf.squeeze(heatmap)
 
-            conv_outputs = conv_outputs[0]
-            heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
-            heatmap = tf.squeeze(heatmap)
+                heatmap = tf.maximum(heatmap, 0.0) / (tf.math.reduce_max(heatmap) + 1e-10)
+                heatmap_np = heatmap.numpy()
 
-            heatmap = tf.maximum(heatmap, 0.0) / (tf.math.reduce_max(heatmap) + 1e-10)
-            heatmap_np = heatmap.numpy()
+                heatmap_resized = cv2.resize(heatmap_np, (224, 224))
+                heatmap_colored = np.uint8(255 * heatmap_resized)
+                heatmap_colored = cv2.applyColorMap(heatmap_colored, cv2.COLORMAP_JET)
+                heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
 
-            heatmap_resized = cv2.resize(heatmap_np, (224, 224))
-            heatmap_colored = np.uint8(255 * heatmap_resized)
-            heatmap_colored = cv2.applyColorMap(heatmap_colored, cv2.COLORMAP_JET)
-            heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+                overlay = heatmap_colored * 0.45 + np.uint8(img_array) * 0.55
+                overlay = np.clip(overlay, 0, 255).astype(np.uint8)
 
-            overlay = heatmap_colored * 0.45 + np.uint8(img_array) * 0.55
-            overlay = np.clip(overlay, 0, 255).astype(np.uint8)
-
-            return heatmap_resized, overlay
+                return heatmap_resized, overlay
         except Exception:
             pass
 
