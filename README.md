@@ -184,10 +184,13 @@ Project SIC/
 │   └── fruit_metadata.csv             # Bảng metadata tổng hợp thuộc tính
 │
 ├── download_fruit_data.py             # Script tải tự động 3 bộ dữ liệu từ Kaggle
+├── sync_models.py                     # Script tự động giải nén và đồng bộ Weights từ Google Colab
 ├── chayweb.md                         # Sổ tay tra cứu lệnh Terminal cho Web & Camera
 ├── Trienkhai.md                       # Hồ sơ kỹ thuật toàn diện & Rubric chấm điểm A+
 ├── DOLE.qmd                           # Đặc tả nghiệp vụ chuẩn doanh nghiệp (Dole Food Company)
 ├── me.md                              # Kiến trúc streaming video thời gian thực độ trễ <100ms
+├── danhgia.md                         # Báo cáo hợp nhất kiểm toán toàn diện mã nguồn & kiến trúc hệ thống
+├── vandap.md                          # Bộ câu hỏi & kịch bản vấn đáp chuẩn A+ trước Hội đồng phản biện
 └── README.md                          # Tài liệu tổng quan dự án
 ```
 
@@ -198,14 +201,18 @@ Project SIC/
 ### 1. Cài đặt môi trường
 Khởi động Terminal / PowerShell tại thư mục dự án và chạy:
 ```bash
-pip install -r requirements.txt
+# Khởi tạo môi trường ảo cục bộ
+py -m venv .venv
+
+# Cài đặt thư viện an toàn (NumPy < 2.0, TensorFlow < 2.16)
+.\.venv\Scripts\pip.exe install -r requirements.txt
 ```
 
-### 2. Khởi chạy Ứng dụng Web (Cách đơn giản nhất)
+### 2. Khởi chạy Ứng dụng Web
 - **Cách 1 (Khuyên dùng):** Nhấp đúp chuột vào file [`run_demo.bat`](file:///e:/Project%20SIC/run_demo.bat).
-- **Cách 2:** Chạy dòng lệnh:
+- **Cách 2 (Qua môi trường ảo .venv):**
   ```bash
-  streamlit run app.py
+  .\.venv\Scripts\streamlit.exe run app.py
   ```
 - **Truy cập:**
   - 💻 Trên máy tính: [http://localhost:8501](http://localhost:8501)
@@ -223,6 +230,8 @@ pip install -r requirements.txt
 
 ## 📚 Tài Liệu Kỹ Thuật Chi Tiết
 
+- 🎓 [vandap.md](file:///e:/Project%20SIC/vandap.md): Toàn bộ bộ câu hỏi bẫy và kịch bản vấn đáp bảo vệ đồ án chuẩn điểm A+ dành cho sinh viên.
+- 🛡️ [danhgia.md](file:///e:/Project%20SIC/danhgia.md): Báo cáo hợp nhất kiểm toán toàn diện mã nguồn, thuật toán XAI (Linear Logit Grad-CAM), kiểm soát rò rỉ dữ liệu (Data Leakage) và 7 bản vá mã nguồn cấp công nghiệp.
 - 📘 [Trienkhai.md](file:///e:/Project%20SIC/Trienkhai.md): Hồ sơ kỹ thuật hợp nhất, đặc tả ma trận chi phí rủi ro và rubric chấm điểm.
 - ⚡ [chayweb.md](file:///e:/Project%20SIC/chayweb.md): Sổ tay lệnh Terminal, cấu hình cổng mạng và xử lý sự cố camera.
 - 🏢 [DOLE.qmd](file:///e:/Project%20SIC/DOLE.qmd): Báo cáo đặc tả phân loại nông sản chuẩn tập đoàn Dole plc.

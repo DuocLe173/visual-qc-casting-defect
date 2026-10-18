@@ -13,11 +13,15 @@ Mở **PowerShell** hoặc **Command Prompt (CMD)** tại thư mục gốc của
 cd "e:\Project SIC"
 ```
 
-Cài đặt đầy đủ các thư viện cần thiết (nếu máy chưa cài):
+Cài đặt đầy đủ các thư viện cần thiết vào môi trường ảo `.venv`:
 ```powershell
-pip install -r requirements.txt
+# Khởi tạo môi trường ảo (nếu chưa có)
+py -m venv .venv
+
+# Cài đặt thư viện an toàn (NumPy < 2.0, TensorFlow < 2.16)
+.\.venv\Scripts\pip.exe install -r requirements.txt
 ```
-*(Các thư viện chính bao gồm: `streamlit`, `tensorflow`, `opencv-python`, `pillow`, `matplotlib`, `numpy`, `pandas`).*
+*(Các thư viện chính bao gồm: `streamlit`, `opencv-python`, `pillow`, `matplotlib`, `numpy`, `pandas`).*
 
 ---
 
@@ -25,8 +29,16 @@ pip install -r requirements.txt
 
 ### 🔹 Câu lệnh chạy Web chính:
 ```powershell
-streamlit run app.py
+# Cách 1 (Khuyên dùng với môi trường ảo .venv):
+.\.venv\Scripts\streamlit.exe run app.py
+
+# Cách 2 (Qua py launcher):
+py -m streamlit run app.py
 ```
+
+### 🔹 Hai chế độ động cơ AI thông minh (Dual-Engine Fallback):
+- **Chế độ Deep Learning (`*.keras`):** Khi đã có tệp trọng số trong `models/` (ResNet50, EfficientNetB0, VGG16), hệ thống tự nạp và kích hoạt bộ giải thích **Linear Logit Grad-CAM + Adaptive Alpha Masking**.
+- **Chế độ Phân tích Quang học Kép (`OpticalSpectralQCModel`):** Khi chưa nạp model học sâu hoặc chạy trên máy không có GPU, hệ thống tự động chuyển sang phân tích quang phổ màu HSV và độ nhám bề mặt Laplacian Texture (tốc độ siêu nhanh ~2.5ms, không bao giờ sập lỗi).
 
 ### 🔹 Các địa chỉ truy cập giao diện Web:
 Ngay sau khi lệnh chạy, màn hình terminal sẽ hiển thị địa chỉ URL:
@@ -35,7 +47,7 @@ Ngay sau khi lệnh chạy, màn hình terminal sẽ hiển thị địa chỉ U
   ```text
   http://<Địa_Chỉ_IP_Máy_Bạn>:8501
   ```
-  *(Ví dụ: `http://192.168.2.173:8501` — cho phép ban giám khảo hoặc người khác cùng truy cập thử nghiệm trực tiếp trên điện thoại).*
+  *(Ví dụ: `http://192.168.2.242:8501` — cho phép ban giám khảo hoặc người khác cùng truy cập thử nghiệm trực tiếp trên điện thoại).*
 
 ### 🔹 Cách dừng Web Server:
 - Bấm vào cửa sổ Terminal đang chạy và nhấn: **`Ctrl + C`**

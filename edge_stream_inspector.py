@@ -189,9 +189,14 @@ class RealTimeEdgeQCModel:
         # Central ROI targeting packhouse optical inspection cone
         roi_size = min(h, w) // 2
         cx, cy = w // 2, h // 2
-        x1, y1 = cx - roi_size, cy - roi_size
-        x2, y2 = cx + roi_size, cy + roi_size
+        x1 = max(0, cx - roi_size)
+        y1 = max(0, cy - roi_size)
+        x2 = min(w, cx + roi_size)
+        y2 = min(h, cy + roi_size)
         roi = frame_bgr[y1:y2, x1:x2]
+        if roi.size == 0 or roi.shape[0] < 10 or roi.shape[1] < 10:
+            roi = frame_bgr.copy()
+            x1, y1, x2, y2 = 0, 0, w, h
 
         # 1. DEEP LEARNING INFERENCE (If weights available)
         if self.model is not None:

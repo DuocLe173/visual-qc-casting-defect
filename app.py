@@ -90,9 +90,6 @@ st.caption("Smart Packhouse Optical Inspection System with Real-Time Grad-CAM De
 # ==============================================================================
 # 2. KHỞI TẠO MÔ HÌNH (MODEL LOADING & CACHING)
 # ==============================================================================
-# ==============================================================================
-# 2. KHỞI TẠO MÔ HÌNH (MODEL LOADING & CACHING)
-# ==============================================================================
 class OpticalSpectralQCModel:
     """Mô hình phân tích quang học Computer Vision (Heuristic & Color/Texture Saliency)
     Hoạt động tức thì mà không đòi hỏi nạp nặng nề TensorFlow/GPU."""
@@ -152,21 +149,9 @@ def load_fruit_qc_model():
                 mode = f"Production Trained Weights ({path})"
                 return model, mode, True
                 
-        # Fallback kiến trúc ResNet50 chuẩn ImageNet
-        inputs = layers.Input(shape=(224, 224, 3), name="input_image")
-        from tensorflow.keras.applications.resnet50 import preprocess_input as resnet_preprocess
-        x = resnet_preprocess(inputs)
-        base_model = tf.keras.applications.ResNet50(weights='imagenet', include_top=False, input_tensor=x)
-        base_model._name = "resnet50_base"
-        x = layers.GlobalAveragePooling2D(name="global_avg_pool")(base_model.output)
-        x = layers.BatchNormalization(name="batch_norm")(x)
-        x = layers.Dense(256, activation='relu', name="dense_256")(x)
-        x = layers.Dropout(0.4, name="dropout_0.4")(x)
-        outputs = layers.Dense(1, activation='sigmoid', name="prediction")(x)
-        model = models.Model(inputs=inputs, outputs=outputs, name="FruitQC_ResNet50")
-        mode = "Pretrained ImageNet Backbone (Chế độ Phân Tích Thông Minh)"
-        return model, mode, False
-    except ImportError:
+        # Nếu chưa tìm thấy tệp trọng số huấn luyện trong models/, chuyển thẳng sang chế độ phân tích quang học thuần túy
+        return OpticalSpectralQCModel(), "Computer Vision Spectral Analyzer (Chế độ Phân Tích Quang Học - Chờ Model Huấn Luyện)", False
+    except Exception:
         # Tự động chuyển đổi sang Optical Spectral Engine
         return OpticalSpectralQCModel(), "Computer Vision Spectral Analyzer (Chế độ Phân Tích Quang Học Tức Thì)", False
 
@@ -193,7 +178,9 @@ def generate_fruit_gradcam(img_array, model):
 
             # Xác định tầng tích chập cuối phù hợp cho từng kiến trúc (EfficientNet, ResNet50, VGG16, Baseline)
             target_conv_layer = None
-            known_targets = ["top_conv", "top_activation", "conv5_block3_out", "block5_conv3"]
+            known_targets = ["top_activation", "top_conv", "conv5_block3_out", "block5_conv3"]
+            
+            # 1. Tìm trực tiếp trên các tầng của mô hình
             for name in known_targets:
                 try:
                     target_conv_layer = model.get_layer(name)
@@ -201,40 +188,98 @@ def generate_fruit_gradcam(img_array, model):
                 except Exception:
                     pass
 
+            # 2. Tìm sâu trong base_model hoặc sub-model lồng nhau nếu có
             if target_conv_layer is None:
-                # Quét tự động tầng tích chập cuối cùng
-                conv_layers = [l for l in model.layers if "conv" in l.name.lower() or "block" in l.name.lower()]
-                target_conv_layer = conv_layers[-1] if conv_layers else model.layers[-3]
+                for layer in model.layers:
+                    if hasattr(layer, "layers"):
+                        for name in known_targets:
+                            try:
+                                target_conv_layer = layer.get_layer(name)
+                                break
+                            except Exception:
+                                pass
+                        if target_conv_layer is not None:
+                            break
 
-            # Xây dựng mô hình xuất đồng thời Feature Map và Dự đoán (Multi-Output Grad Model)
-            grad_model = tf.keras.models.Model(
-                inputs=model.inputs,
-                outputs=[target_conv_layer.output, model.output]
-            )
+            # 3. Quét tự động tầng tích chập / activation cuối cùng nếu chưa tìm thấy theo tên
+            if target_conv_layer is None:
+                conv_candidates = [l for l in model.layers if any(k in l.name.lower() for k in ["conv", "block", "act"])]
+                if not conv_candidates:
+                    for layer in model.layers:
+                        if hasattr(layer, "layers"):
+                            conv_candidates = [l for l in layer.layers if any(k in l.name.lower() for k in ["conv", "block", "act"])]
+                            if conv_candidates:
+                                break
+                if conv_candidates:
+                    target_conv_layer = conv_candidates[-1]
 
-            with tf.GradientTape() as tape:
-                conv_outputs, preds = grad_model(img_tensor)
-                loss = preds[:, 0]
+            if target_conv_layer is not None:
+                # Xây dựng mô hình xuất Feature Map và ngõ ra áp chót (Penultimate) để tính Logit tuyến tính
+                penultimate_layer = model.layers[-2]
+                last_layer = model.layers[-1]
 
-            grads = tape.gradient(loss, conv_outputs)
-            if grads is not None:
-                pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-                conv_outputs = conv_outputs[0]
-                heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
-                heatmap = tf.squeeze(heatmap)
+                try:
+                    grad_model = tf.keras.models.Model(
+                        inputs=model.inputs,
+                        outputs=[target_conv_layer.output, penultimate_layer.output, model.output]
+                    )
+                    use_logit = True
+                except Exception:
+                    grad_model = tf.keras.models.Model(
+                        inputs=model.inputs,
+                        outputs=[target_conv_layer.output, model.output]
+                    )
+                    use_logit = False
 
-                heatmap = tf.maximum(heatmap, 0.0) / (tf.math.reduce_max(heatmap) + 1e-10)
-                heatmap_np = heatmap.numpy()
+                with tf.GradientTape() as tape:
+                    if use_logit:
+                        conv_outputs, penultimate_out, preds = grad_model(img_tensor)
+                        tape.watch(conv_outputs)
+                        # Tính Logit tuyến tính z = x @ W + b (TRƯỚC HÀM SIGMOID)
+                        w, b = last_layer.get_weights()
+                        logits = tf.matmul(penultimate_out, w) + b
+                        loss = logits[:, 0]
+                    else:
+                        conv_outputs, preds = grad_model(img_tensor)
+                        tape.watch(conv_outputs)
+                        loss = preds[:, 0]
 
-                heatmap_resized = cv2.resize(heatmap_np, (224, 224))
-                heatmap_colored = np.uint8(255 * heatmap_resized)
-                heatmap_colored = cv2.applyColorMap(heatmap_colored, cv2.COLORMAP_JET)
-                heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+                grads = tape.gradient(loss, conv_outputs)
+                if grads is not None and len(conv_outputs.shape) == 4:
+                    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+                    conv_outputs = conv_outputs[0]
+                    cam = conv_outputs @ pooled_grads[..., tf.newaxis]
+                    cam = tf.squeeze(cam)
 
-                overlay = heatmap_colored * 0.45 + np.uint8(img_array) * 0.55
-                overlay = np.clip(overlay, 0, 255).astype(np.uint8)
+                    # Áp dụng ReLU
+                    cam = tf.maximum(cam, 0.0)
+                    max_val = float(tf.math.reduce_max(cam))
+                    if max_val > 1e-6:
+                        cam_np = (cam / max_val).numpy()
+                    else:
+                        cam_np = np.zeros_like(cam.numpy())
 
-                return heatmap_resized, overlay
+                    # Điều chế nhiệt độ theo xác suất khuyết tật thực tế:
+                    # - Quả lỗi (P >= 0.5): Phát sáng đỏ/vàng rõ rệt vùng thối dập/mốc.
+                    # - Quả đạt chuẩn (P < 0.5): Triệt tiêu nhiễu nền, giữ bản đồ nhiệt êm dịu (xanh mát).
+                    pred_val = float(preds[0, 0])
+                    if pred_val < 0.5:
+                        cam_np = cam_np * pred_val * 0.2
+                    else:
+                        cam_np = cam_np * min(1.0, pred_val)
+
+                    heatmap_resized = cv2.resize(cam_np, (224, 224))
+                    heatmap_colored = np.uint8(255 * heatmap_resized)
+                    heatmap_colored = cv2.applyColorMap(heatmap_colored, cv2.COLORMAP_JET)
+                    heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+
+                    # Mặt nạ trong suốt thông minh (Adaptive Alpha Mask):
+                    # Vùng không khuyết tật giữ 100% màu tự nhiên của quả, không bị ám tím/xanh mù mịt
+                    mask = np.clip((heatmap_resized - 0.12) / 0.88, 0.0, 1.0)[:, :, np.newaxis]
+                    overlay = (heatmap_colored * 0.45 + np.uint8(img_array) * 0.55) * mask + np.uint8(img_array) * (1.0 - mask)
+                    overlay = np.clip(overlay, 0, 255).astype(np.uint8)
+
+                    return heatmap_resized, overlay
         except Exception:
             pass
 
@@ -442,14 +487,7 @@ with tab_camera:
         import cv2
         from edge_stream_inspector import ThreadedCamera, RealTimeEdgeQCModel, draw_industrial_hud
 
-        st.info("🟢 **BĂNG CHUYỀN ĐANG HOẠT ĐỘNG:** Hệ thống đang quét liên tục theo thời gian thực (Real-Time Conveyor Stream). Bạn có thể đưa lần lượt các quả táo, cam, chuối qua trước camera điện thoại.")
-        
-        # Nút điều khiển dừng quét
-        col_ctrl1, col_ctrl2 = st.columns([1, 1])
-        with col_ctrl1:
-            stop_btn = st.button("⏹️ DỪNG QUÉT CAMERA BĂNG CHUYỀN", type="secondary", use_container_width=True)
-        with col_ctrl2:
-            snap_freeze = st.button("📸 BẮT QUẢ HIỆN TẠI ĐỂ SOI GRAD-CAM CHI TIẾT", type="primary", use_container_width=True)
+        st.info("🟢 **BĂNG CHUYỀN ĐANG HOẠT ĐỘNG:** Hệ thống đang quét liên tục theo thời gian thực (Real-Time Conveyor Stream). Bạn có thể đưa lần lượt các quả táo, cam, chuối qua trước camera điện thoại.\n\n💡 *Gợi ý:* Để dừng quét hoặc chụp ảnh quả hiện tại đưa vào soi Grad-CAM chi tiết, bạn chỉ cần gạt tắt công tắc **'🔴 BẬT LUỒNG QUÉT OSD HUD LIÊN TỤC'** ở trên hoặc sử dụng nút **'📸 BẮT ẢNH TỪ CAMERA ĐIỆN THOẠI'**.")
 
         stream_placeholder = st.empty()
         telemetry_placeholder = st.empty()
@@ -475,7 +513,7 @@ with tab_camera:
             
             try:
                 # VÒNG LẶP QUÉT LIÊN TỤC KHÔNG GIỚI HẠN (CONVEYOR STREAM 24/7)
-                while run_live and not stop_btn:
+                while run_live:
                     has_frame, frame, fps_inbound = cam.read()
                     if not has_frame or frame is None:
                         time.sleep(0.01)
@@ -509,20 +547,9 @@ with tab_camera:
                         f"🎯 **Rủi ro khuyết tật:** `{defect_prob*100:.1f}%`"
                     )
 
-                    # Kiểm tra nếu người dùng bấm nút chụp khung hình hiện tại
-                    if snap_freeze:
-                        new_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                        new_caption = f"Ảnh chụp tức thời từ băng chuyền camera ({stream_url})"
-                        st.session_state['current_image'] = new_image
-                        st.session_state['current_caption'] = new_caption
-                        break
-
                     time.sleep(0.015)  # Duy trì 45-60 FPS mượt mà
             finally:
                 cam.stop()
-
-            if snap_freeze:
-                st.rerun()
 
     with st.expander("📷 Hoặc chụp bằng Camera tích hợp của Trình duyệt (Browser Camera)"):
         camera_file = st.camera_input("Chụp ảnh nhanh qua Webcam trình duyệt")
