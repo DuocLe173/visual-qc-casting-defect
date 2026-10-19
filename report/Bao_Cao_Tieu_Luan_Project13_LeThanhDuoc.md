@@ -11,33 +11,42 @@
 
 ---
 
-| Thông tin quản lý | Nội dung chi tiết |
-| :--- | :--- |
-| **Chương trình đào tạo:** | Samsung Innovation Campus 2026 (SIC 2026) |
-| **Giảng viên hướng dẫn:** | Thầy Trần Mạnh Tường |
-| **Học viên thực hiện:** | Lê Thành Được |
-| **Lớp học phần:** | AI1 |
-| **Thông tin liên hệ:** | Email: 2000.leduoc@gmail.com \| SĐT: 0379885508 |
-| **Thời gian hoàn thành:** | Tháng 10 năm 2026 |
+<br>
+
+**Giảng viên hướng dẫn:** Thầy Trần Mạnh Tường  
+**Học viên thực hiện:** Lê Thành Được  
+**Lớp học phần:** AI1  
+**Email liên hệ:** 2000.leduoc@gmail.com  
+**Số điện thoại:** 0379.885.508  
+
+<br>
+
+**TP. HỒ CHÍ MINH — THÁNG 10 NĂM 2026**
 
 ---
 
 ## TRANG PHỤ BÌA — HỒ SƠ ĐỒ ÁN TIỂU LUẬN
 
-### Bảng P.1: Thông tin chung về đề tài đồ án Project 13
+### HỆ THỐNG PHÂN LOẠI CHẤT LƯỢNG NÔNG SẢN BẰNG THỊ GIÁC MÁY TÍNH
+**(PROJECT 13: FRUIT VISUAL QUALITY CONTROL)**
 
-| Hạng mục | Thông tin chi tiết |
-| :--- | :--- |
-| **Đơn vị đào tạo** | Chương trình Samsung Innovation Campus 2026 (SIC 2026) |
-| **Tên học phần** | Trí Tuệ Nhân Tạo & Học Sâu (AI & Deep Learning) |
-| **Mã đề tài** | Project 13: Fruit Visual Quality Control |
-| **Giảng viên hướng dẫn** | Thầy Trần Mạnh Tường |
-| **Học viên thực hiện** | Lê Thành Được |
-| **Lớp học phần** | AI1 |
-| **Tập dữ liệu sử dụng** | 27,198 ảnh RGB chia phân tầng 70/15/15 (SEED = 42) |
-| **Các mô hình nghiên cứu** | Baseline CNN, VGG16, ResNet50, EfficientNetB0 |
-| **Phương pháp giải thích mô hình** | Linear Logit Grad-CAM kết hợp trộn mặt nạ Alpha |
-| **Ứng dụng thử nghiệm** | Giao diện Web Streamlit kết nối camera điện thoại qua DroidCam |
+#### I. THÔNG TIN HỌC THUẬT VÀ NHÂN SỰ
+- **Đơn vị đào tạo:** Chương trình Samsung Innovation Campus 2026 (SIC 2026)
+- **Tên học phần:** Trí Tuệ Nhân Tạo & Học Sâu (AI & Deep Learning)
+- **Giảng viên hướng dẫn:** Thầy Trần Mạnh Tường
+- **Học viên thực hiện:** Lê Thành Được (Lớp học phần: AI1)
+- **Thông tin liên hệ:** Email: 2000.leduoc@gmail.com | SĐT: 0379.885.508
+
+#### II. THÔNG SỐ VÀ CẤU HÌNH KỸ THUẬT CỐT LÕI
+- **Mã đề tài & Dự án:** Project 13: Fruit Visual Quality Control
+- **Tập dữ liệu nghiên cứu:** 27,198 ảnh RGB chia phân tầng 70/15/15 (SEED = 42)
+- **Các mô hình nghiên cứu:** Baseline CNN, VGG16, ResNet50, EfficientNetB0
+- **Phương pháp giải thích AI:** Linear Logit Grad-CAM kết hợp trộn mặt nạ thích nghi Alpha
+- **Ứng dụng thử nghiệm:** Giao diện Web Streamlit kết nối camera thời gian thực (DroidCam)
+
+#### III. THỜI GIAN VÀ ĐỊA ĐIỂM NGHIỆM THU
+- **Thời gian thực hiện:** Khóa đào tạo SIC 2026 (Nghiệm thu tháng 10 năm 2026)
+- **Địa điểm hoàn thành:** Thành phố Hồ Chí Minh
 
 ---
 
@@ -112,7 +121,6 @@ Nếu có bất kỳ sự không trung thực nào về mặt dữ liệu hoặc
 
 | Ký hiệu bảng | Tên bảng nội dung |
 | :--- | :--- |
-| **Bảng P.1** | Thông tin chung về đề tài đồ án Project 13 |
 | **Bảng 1.1** | Thống kê phân bố số lượng ảnh trong tập dữ liệu (27,198 ảnh) |
 | **Bảng 1.2** | Phân chia tập dữ liệu train/val/test theo phân tầng (70/15/15) |
 | **Bảng 1.3** | Các phép biến đổi hình học trong chuỗi tăng cường dữ liệu |
