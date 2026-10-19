@@ -23,33 +23,6 @@
 
 **TP. HỒ CHÍ MINH — THÁNG 10 NĂM 2026**
 
----
-
-## TRANG PHỤ BÌA — HỒ SƠ ĐỒ ÁN TIỂU LUẬN
-
-### HỆ THỐNG PHÂN LOẠI CHẤT LƯỢNG NÔNG SẢN BẰNG THỊ GIÁC MÁY TÍNH
-**(PROJECT 13: FRUIT VISUAL QUALITY CONTROL)**
-
-#### I. THÔNG TIN HỌC THUẬT VÀ NHÂN SỰ
-- **Đơn vị đào tạo:** Chương trình Samsung Innovation Campus 2026 (SIC 2026)
-- **Tên học phần:** Trí Tuệ Nhân Tạo & Học Sâu (AI & Deep Learning)
-- **Giảng viên hướng dẫn:** Thầy Trần Mạnh Tường
-- **Học viên thực hiện:** Lê Thành Được (Lớp học phần: AI1)
-- **Thông tin liên hệ:** Email: 2000.leduoc@gmail.com | SĐT: 0379.885.508
-
-#### II. THÔNG SỐ VÀ CẤU HÌNH KỸ THUẬT CỐT LÕI
-- **Mã đề tài & Dự án:** Project 13: Fruit Visual Quality Control
-- **Tập dữ liệu nghiên cứu:** 27,198 ảnh RGB chia phân tầng 70/15/15 (SEED = 42)
-- **Các mô hình nghiên cứu:** Baseline CNN, VGG16, ResNet50, EfficientNetB0
-- **Phương pháp giải thích AI:** Linear Logit Grad-CAM kết hợp trộn mặt nạ thích nghi Alpha
-- **Ứng dụng thử nghiệm:** Giao diện Web Streamlit kết nối camera thời gian thực (DroidCam)
-
-#### III. THỜI GIAN VÀ ĐỊA ĐIỂM NGHIỆM THU
-- **Thời gian thực hiện:** Khóa đào tạo SIC 2026 (Nghiệm thu tháng 10 năm 2026)
-- **Địa điểm hoàn thành:** Thành phố Hồ Chí Minh
-
----
-
 ## LỜI CẢM ƠN
 
 Để hoàn thành bài tiểu luận cuối khóa đề tài Project 13: Fruit Visual Quality Control trong khuôn khổ học phần Trí Tuệ Nhân Tạo & Học Sâu, em đã nhận được sự quan tâm, tạo điều kiện thuận lợi và hướng dẫn tận tình từ quý thầy cô và Ban Quản lý Chương trình Samsung Innovation Campus 2026 (SIC 2026).
