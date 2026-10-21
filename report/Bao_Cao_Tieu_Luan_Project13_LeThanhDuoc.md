@@ -713,7 +713,8 @@ Project SIC/
 │   ├── 2_Fruit_Baseline_CNN.ipynb
 │   ├── 3_Fruit_Transfer_Learning.ipynb
 │   ├── 4_Fruit_GradCAM_ExplainableAI.ipynb
-│   └── 5_Fruit_Inference_Speed_Benchmark.ipynb
+│   ├── 5_Fruit_Inference_Speed_Benchmark.ipynb
+│   └── Fruit_Full_Pipeline.ipynb  # Master Pipeline toàn diện từ A-Z
 └── report/                        # Báo cáo tiểu luận hoàn thiện
     ├── BaoCao_Project13_LeThanhDuoc_SIC2026.docx  # Báo cáo Word chuẩn nộp thầy
     ├── Bao_Cao_Tieu_Luan_Project13_LeThanhDuoc.md # Báo cáo Markdown đồng bộ GitHub

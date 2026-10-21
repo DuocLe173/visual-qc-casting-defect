@@ -44,12 +44,13 @@
 ## ✨ Các Điểm Nổi Bật Đã Hoàn Thành 100%
 
 - [x] **Dữ liệu chuẩn Doanh nghiệp:** Tự động hóa tải và kết hợp 3 bộ dữ liệu Kaggle (>30,000 ảnh) qua [`download_fruit_data.py`](file:///e:/Project%20SIC/download_fruit_data.py); đã phân chia tập Train/Val/Test chặt chẽ trong [`processed_data/`](file:///e:/Project%20SIC/processed_data/).
-- [x] **Chuỗi 5 Notebooks chuẩn mực (0 Lỗi, Full Output):** 
+- [x] **Chuỗi Notebooks thực nghiệm & Master Pipeline toàn diện (0 Lỗi, Full Output):** 
   - Khám phá dữ liệu, kiểm toán phân tầng & Augmentation (`1_Fruit_EDA_Augmentation.ipynb`).
   - Baseline Custom CNN từ đầu & phân tích Learning Curves (`2_Fruit_Baseline_CNN.ipynb`).
   - Huấn luyện 3 mô hình Transfer Learning theo quy trình 3-Phase chuẩn khoa học (`3_Fruit_Transfer_Learning.ipynb`).
   - Bản đồ nhiệt Grad-CAM minh bạch hóa quyết định (`4_Fruit_GradCAM_ExplainableAI.ipynb`).
   - Đo đạc tốc độ suy luận & Tối ưu ngưỡng cắt rủi ro chi phí (`5_Fruit_Inference_Speed_Benchmark.ipynb`).
+  - **Master Pipeline hợp nhất trọn vẹn từ A-Z** (`Fruit_Full_Pipeline.ipynb`): Tích hợp liền mạch toàn bộ đường ống xử lý dữ liệu, huấn luyện, giải thích mô hình và đối chuẩn tốc độ.
 - [x] **Lưu trữ Model Weights sẵn sàng phục vụ:** Đã huấn luyện và lưu trọn vẹn 3 file trọng số tốt nhất vào thư mục [`models/`](file:///e:/Project%20SIC/models/) (`efficientnetb0_best.keras`, `resnet50_best.keras`, `vgg16_best.keras`).
 - [x] **Giao diện Web Streamlit thông minh ([`app.py`](file:///e:/Project%20SIC/app.py)):**
   - Hỗ trợ tải ảnh kiểm định đơn lẻ kèm điều chỉnh ngưỡng nhạy cảm (Confidence Threshold).
@@ -164,12 +165,13 @@ Project SIC/
 │   ├── resnet50_best.keras            # Mô hình ResNet50 (Recall 100%, 24.12M params)
 │   └── vgg16_best.keras               # Mô hình VGG16 (14.85M params)
 │
-├── notebooks/                         # Chuỗi 5 Jupyter Notebooks thực nghiệm chuẩn mực
+├── notebooks/                         # Chuỗi 5 Notebooks thực nghiệm & 1 Master Pipeline hoàn chỉnh
 │   ├── 1_Fruit_EDA_Augmentation.ipynb           # Khám phá dữ liệu, kiểm toán phân tầng & Data Augmentation
 │   ├── 2_Fruit_Baseline_CNN.ipynb               # Xây dựng và đánh giá mạng Baseline CNN từ đầu
 │   ├── 3_Fruit_Transfer_Learning.ipynb          # Huấn luyện VGG16, ResNet50, EfficientNetB0 (Quy trình 3-Phase)
 │   ├── 4_Fruit_GradCAM_ExplainableAI.ipynb      # Thuật toán Linear Logit Grad-CAM & Heatmap
-│   └── 5_Fruit_Inference_Speed_Benchmark.ipynb  # Đo đạc tốc độ suy luận & Tối ưu hóa ngưỡng rủi ro
+│   ├── 5_Fruit_Inference_Speed_Benchmark.ipynb  # Đo đạc tốc độ suy luận & Tối ưu hóa ngưỡng rủi ro
+│   └── Fruit_Full_Pipeline.ipynb                # Master Pipeline hợp nhất toàn diện từ A đến Z
 │
 ├── processed_data/                    # Siêu dữ liệu phân chia tập dữ liệu chuẩn 27,198 ảnh (Seed 42)
 │   ├── train.csv                      # Tập huấn luyện (19,038 ảnh: 8,265 tươi / 10,773 hỏng)
