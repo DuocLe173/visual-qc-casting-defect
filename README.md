@@ -12,7 +12,6 @@
 > Ứng dụng Convolutional Neural Networks (CNN), Quy trình Transfer Learning 3-Phase, Explainable AI (Grad-CAM) và Edge Video Streaming trong bài toán kiểm soát chất lượng nông sản xuất khẩu (*Fruit Quality Control: Fresh vs. Rotten / Defective Produce*).  
 >
 > 🌐 **Khởi chạy Web Demo 1-Click:** Nhấp đúp vào [`run_demo.bat`](file:///e:/Project%20SIC/run_demo.bat) (hoặc truy cập [http://localhost:8501](http://localhost:8501))  
-> 📱 **Trải nghiệm giao diện tĩnh giả lập:** [preview_app.html](file:///e:/Project%20SIC/preview_app.html)
 
 ---
 
@@ -45,13 +44,12 @@
 ## ✨ Các Điểm Nổi Bật Đã Hoàn Thành 100%
 
 - [x] **Dữ liệu chuẩn Doanh nghiệp:** Tự động hóa tải và kết hợp 3 bộ dữ liệu Kaggle (>30,000 ảnh) qua [`download_fruit_data.py`](file:///e:/Project%20SIC/download_fruit_data.py); đã phân chia tập Train/Val/Test chặt chẽ trong [`processed_data/`](file:///e:/Project%20SIC/processed_data/).
-- [x] **Chuỗi 6 Notebooks chuẩn mực (0 Lỗi, Full Output):** 
-  - Khám phá dữ liệu & Augmentation (`1_Fruit_EDA_Augmentation.ipynb`).
-  - Baseline Custom CNN từ đầu (`2_Fruit_Baseline_CNN.ipynb`).
+- [x] **Chuỗi 5 Notebooks chuẩn mực (0 Lỗi, Full Output):** 
+  - Khám phá dữ liệu, kiểm toán phân tầng & Augmentation (`1_Fruit_EDA_Augmentation.ipynb`).
+  - Baseline Custom CNN từ đầu & phân tích Learning Curves (`2_Fruit_Baseline_CNN.ipynb`).
   - Huấn luyện 3 mô hình Transfer Learning theo quy trình 3-Phase chuẩn khoa học (`3_Fruit_Transfer_Learning.ipynb`).
   - Bản đồ nhiệt Grad-CAM minh bạch hóa quyết định (`4_Fruit_GradCAM_ExplainableAI.ipynb`).
-  - Đo đạc tốc độ suy luận & Tối ưu ngưỡng cắt Precision-Recall (`5_Fruit_Inference_Speed_Benchmark.ipynb`).
-  - Master Pipeline trọn vẹn từ A-Z (`Fruit_Full_Pipeline.ipynb`).
+  - Đo đạc tốc độ suy luận & Tối ưu ngưỡng cắt rủi ro chi phí (`5_Fruit_Inference_Speed_Benchmark.ipynb`).
 - [x] **Lưu trữ Model Weights sẵn sàng phục vụ:** Đã huấn luyện và lưu trọn vẹn 3 file trọng số tốt nhất vào thư mục [`models/`](file:///e:/Project%20SIC/models/) (`efficientnetb0_best.keras`, `resnet50_best.keras`, `vgg16_best.keras`).
 - [x] **Giao diện Web Streamlit thông minh ([`app.py`](file:///e:/Project%20SIC/app.py)):**
   - Hỗ trợ tải ảnh kiểm định đơn lẻ kèm điều chỉnh ngưỡng nhạy cảm (Confidence Threshold).
@@ -69,14 +67,14 @@
 
 Toàn bộ các mô hình đã được huấn luyện đối chuẩn trên phần cứng GPU Google Colab T4 và kiểm định trên tập dữ liệu Test Set độc lập:
 
-### 1. Bảng So Sánh Hiệu Năng 4 Kiến Trúc
+### 1. Bảng So Sánh Hiệu Năng 4 Kiến Trúc (Tập Test Độc Lập 4,080 Mẫu)
 
-| Mô hình | Số tham số (Triệu) | Accuracy (%) | Recall (%) *(Bắt lỗi)* | Precision (%) | F1-Score (%) | Đánh giá kiến trúc |
-|---|:---:|:---:|:---:|:---:|---|
-| **Baseline CNN (Tự xây)** | 11.17M | 98.31% | 99.70% | 97.38% | 98.52% | Đạt mốc đối chuẩn vững chắc, có Dropout chống Overfit |
-| **VGG16 (3-Phase)** | 14.85M | **100.0%** | **100.0%** | **100.0%** | **100.0%** | Học sâu đặc trưng cục bộ, tham số khá lớn |
-| **ResNet50 (3-Phase)** | 24.12M | **100.0%** | **100.0%** | **100.0%** | **100.0%** | Skip-connection mạnh mẽ, độ tin cậy tuyệt đối |
-| **EfficientNetB0 (3-Phase) 🏆** | **4.38M** | **100.0%** | **100.0%** | **100.0%** | **100.0%** | **Tối ưu nhất: Nhẹ nhất gấp 5.5 lần ResNet50, suy luận cực nhanh** |
+| Mô hình | Số tham số | Dung lượng | Accuracy | Recall *(Bắt lỗi)* | Precision | F1-Score | Bỏ sót (FN) | Báo nhầm (FP) |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Baseline CNN (Tự xây)** | 11.17M | 44.7 MB | 97.45% | 99.61% | 96.03% | 0.9779 | 9 quả | 95 quả |
+| **VGG16 (3-Phase)** | 14.85M | 57.2 MB | 99.95% | 99.91% | **100.00%** | 0.9996 | 2 quả | **0 quả** |
+| **ResNet50 (3-Phase)** | 24.12M | 91.8 MB | 99.98% | **100.00%** | 99.96% | 0.9998 | **0 quả** | 1 quả |
+| **EfficientNetB0 (3-Phase) 🏆** | **4.38M** | **33.1 MB** | **100.00%** | **100.00%** | **100.00%** | **1.0000** | **0 quả** | **0 quả** |
 
 *(Dữ liệu trích xuất từ file kết quả thực tế [`results/transfer_learning_benchmark.csv`](file:///e:/Project%20SIC/results/transfer_learning_benchmark.csv))*
 
@@ -145,52 +143,39 @@ Hệ thống được thiết kế theo chuẩn băng chuyền quang học công
 Project SIC/
 ├── app.py                             # Giao diện Web Streamlit tương tác chính (Grad-CAM & DroidCam)
 ├── run_demo.bat                       # Script 1-Click tự động chạy server và mở trình duyệt
-├── edge_stream_inspector.py           # Script HUD OSD công nghiệp đo FPS & quét camera trực tiếp
-├── camera_history.json                # Bộ nhớ đệm lưu danh sách IP camera điện thoại đã kết nối
-├── preview_app.html                   # Bản xem trước giao diện giả lập chạy trực tiếp trên trình duyệt
+├── edge_stream_inspector.py           # Module ThreadedCamera thu nhận luồng video thời gian thực
+├── download_fruit_data.py             # Script tải và kiểm toán dữ liệu 27,198 ảnh từ Kaggle
+├── sync_models.py                     # Script tải và đồng bộ weights từ Google Drive / Colab
 ├── requirements.txt                   # Danh mục thư viện Python bắt buộc
 │
+├── report/                            # Báo cáo tiểu luận tốt nghiệp hoàn thiện
+│   ├── BaoCao_Project13_LeThanhDuoc_SIC2026.docx  # Báo cáo Word chuẩn nộp thầy
+│   ├── Bao_Cao_Tieu_Luan_Project13_LeThanhDuoc.md # Báo cáo Markdown đồng bộ GitHub
+│   └── images/                                   # Các hình ảnh biểu đồ thực nghiệm chuẩn (Hình 1.1 đến 5.2)
+│       ├── image1.png                 # Hình 1.1: Phân bố số lượng ảnh tập dữ liệu (27,198 ảnh)
+│       ├── image2.png                 # Hình 2.1: Tiến trình huấn luyện Baseline CNN (20 Epochs)
+│       ├── image3.png                 # Hình 3.1: Tiến trình huấn luyện Transfer Learning (3-Phase, 22 Epochs)
+│       ├── image4.png                 # Hình 4.1: Đối chiếu ma trận nhầm lẫn 4 mô hình (Test 4,080 ảnh)
+│       ├── image5.png                 # Hình 5.1: Kết quả Grad-CAM khoanh vùng tổn thương trên vỏ quả
+│       └── image6.png                 # Hình 5.2: Khảo sát ngưỡng tối ưu và đối chuẩn tốc độ suy luận
+│
 ├── models/                            # Trọng số mô hình đã huấn luyện hoàn chỉnh (.keras)
-│   ├── efficientnetb0_best.keras      # Mô hình khuyên dùng sản xuất (32.9 MB)
-│   ├── resnet50_best.keras            # Mô hình ResNet50 (181.1 MB)
-│   └── vgg16_best.keras               # Mô hình VGG16 (117.2 MB)
+│   ├── efficientnetb0_best.keras      # Mô hình khuyên dùng sản xuất (33.1 MB, 4.38M params)
+│   ├── resnet50_best.keras            # Mô hình ResNet50 (Recall 100%, 24.12M params)
+│   └── vgg16_best.keras               # Mô hình VGG16 (14.85M params)
 │
-├── results/                           # Biểu đồ và bảng số liệu kết quả thực nghiệm
-│   ├── transfer_learning_benchmark.csv     # Bảng số liệu Accuracy, Recall, Precision, F1
-│   ├── threshold_tuning_analysis.csv       # Bảng số liệu tối ưu ngưỡng & tổn thất FN/FP
-│   ├── transfer_learning_comparison.png    # Biểu đồ cột so sánh hiệu năng 4 mô hình
-│   ├── gradcam_10_samples.png              # Bản đồ nhiệt Grad-CAM trên 10 mẫu lỗi điển hình
-│   ├── inference_speed_benchmark.png       # Biểu đồ đo độ trễ suy luận (ms) và FPS
-│   ├── precision_recall_curve.png          # Đường cong Precision-Recall & ROC
-│   ├── efficientnetb0_confusion_matrix.png # Ma trận nhầm lẫn EfficientNetB0
-│   ├── resnet50_confusion_matrix.png       # Ma trận nhầm lẫn ResNet50
-│   ├── vgg16_confusion_matrix.png          # Ma trận nhầm lẫn VGG16
-│   └── baseline_cnn_confusion_matrix.png   # Ma trận nhầm lẫn Baseline CNN
+├── notebooks/                         # Chuỗi 5 Jupyter Notebooks thực nghiệm chuẩn mực
+│   ├── 1_Fruit_EDA_Augmentation.ipynb           # Khám phá dữ liệu, kiểm toán phân tầng & Data Augmentation
+│   ├── 2_Fruit_Baseline_CNN.ipynb               # Xây dựng và đánh giá mạng Baseline CNN từ đầu
+│   ├── 3_Fruit_Transfer_Learning.ipynb          # Huấn luyện VGG16, ResNet50, EfficientNetB0 (Quy trình 3-Phase)
+│   ├── 4_Fruit_GradCAM_ExplainableAI.ipynb      # Thuật toán Linear Logit Grad-CAM & Heatmap
+│   └── 5_Fruit_Inference_Speed_Benchmark.ipynb  # Đo đạc tốc độ suy luận & Tối ưu hóa ngưỡng rủi ro
 │
-├── notebooks/                         # Chuỗi 6 Jupyter Notebooks đã chạy hoàn chỉnh output
-│   ├── 1_Fruit_EDA_Augmentation.ipynb           # EDA, phân tích màu sắc RGB & Data Augmentation
-│   ├── 2_Fruit_Baseline_CNN.ipynb               # Baseline CNN tự xây & phân tích Learning Curves
-│   ├── 3_Fruit_Transfer_Learning.ipynb          # VGG16, ResNet50, EfficientNet (Quy trình 3-Phase)
-│   ├── 4_Fruit_GradCAM_ExplainableAI.ipynb      # Thuật toán Grad-CAM trực quan hóa ổ bệnh
-│   ├── 5_Fruit_Inference_Speed_Benchmark.ipynb  # Đo đạc tốc độ suy luận & Tinh chỉnh ngưỡng
-│   └── Fruit_Full_Pipeline.ipynb                # Master Pipeline hợp nhất từ A đến Z
+├── processed_data/                    # Siêu dữ liệu phân chia tập dữ liệu chuẩn 27,198 ảnh (Seed 42)
+│   ├── train.csv                      # Tập huấn luyện (19,038 ảnh: 8,265 tươi / 10,773 hỏng)
+│   ├── val.csv                        # Tập kiểm định (4,080 ảnh: 1,771 tươi / 2,309 hỏng)
+│   └── test.csv                       # Tập kiểm thử độc lập (4,080 ảnh: 1,772 tươi / 2,308 hỏng)
 │
-├── processed_data/                    # Siêu dữ liệu phân chia tập dữ liệu chuẩn khoa học
-│   ├── train.csv                      # Danh sách ảnh tập Train
-│   ├── val.csv                        # Danh sách ảnh tập Validation
-│   └── test.csv                       # Danh sách ảnh tập Test
-│
-├── data/                              # Thư mục chứa dữ liệu ảnh nông sản (Train / Val / Test)
-│   └── fruit_metadata.csv             # Bảng metadata tổng hợp thuộc tính
-│
-├── download_fruit_data.py             # Script tải tự động 3 bộ dữ liệu từ Kaggle
-├── sync_models.py                     # Script tự động giải nén và đồng bộ Weights từ Google Colab
-├── chayweb.md                         # Sổ tay tra cứu lệnh Terminal cho Web & Camera
-├── Trienkhai.md                       # Hồ sơ kỹ thuật toàn diện & Rubric chấm điểm A+
-├── DOLE.qmd                           # Đặc tả nghiệp vụ chuẩn doanh nghiệp (Dole Food Company)
-├── me.md                              # Kiến trúc streaming video thời gian thực độ trễ <100ms
-├── danhgia.md                         # Báo cáo hợp nhất kiểm toán toàn diện mã nguồn & kiến trúc hệ thống
-├── vandap.md                          # Bộ câu hỏi & kịch bản vấn đáp chuẩn A+ trước Hội đồng phản biện
 └── README.md                          # Tài liệu tổng quan dự án
 ```
 
@@ -230,10 +215,7 @@ py -m venv .venv
 
 ## 📚 Tài Liệu Kỹ Thuật Chi Tiết
 
-- 🎓 [vandap.md](file:///e:/Project%20SIC/vandap.md): Toàn bộ bộ câu hỏi bẫy và kịch bản vấn đáp bảo vệ đồ án chuẩn điểm A+ dành cho sinh viên.
-- 🛡️ [danhgia.md](file:///e:/Project%20SIC/danhgia.md): Báo cáo hợp nhất kiểm toán toàn diện mã nguồn, thuật toán XAI (Linear Logit Grad-CAM), kiểm soát rò rỉ dữ liệu (Data Leakage) và 7 bản vá mã nguồn cấp công nghiệp.
+- 📘 [report/BaoCao_Project13_LeThanhDuoc_SIC2026.docx](file:///e:/Project%20SIC/report/BaoCao_Project13_LeThanhDuoc_SIC2026.docx): Báo cáo tiểu luận tốt nghiệp Microsoft Word chính thức chuẩn nộp giảng viên.
+- 📄 [report/Bao_Cao_Tieu_Luan_Project13_LeThanhDuoc.md](file:///e:/Project%20SIC/report/Bao_Cao_Tieu_Luan_Project13_LeThanhDuoc.md): Toàn văn báo cáo dạng Markdown đồng bộ trực quan xem trực tiếp trên GitHub.
+- ⚡ [chayweb.md](file:///e:/Project%20SIC/chayweb.md): Sổ tay lệnh Terminal, cấu hình cổng mạng và xử lý sự cố camera DroidCam.
 - 📘 [Trienkhai.md](file:///e:/Project%20SIC/Trienkhai.md): Hồ sơ kỹ thuật hợp nhất, đặc tả ma trận chi phí rủi ro và rubric chấm điểm.
-- ⚡ [chayweb.md](file:///e:/Project%20SIC/chayweb.md): Sổ tay lệnh Terminal, cấu hình cổng mạng và xử lý sự cố camera.
-- 🏢 [DOLE.qmd](file:///e:/Project%20SIC/DOLE.qmd): Báo cáo đặc tả phân loại nông sản chuẩn tập đoàn Dole plc.
-- 📡 [me.md](file:///e:/Project%20SIC/me.md): Tài liệu kỹ thuật chuyên sâu về kiến trúc luồng video thời gian thực <100ms.
-- 🌐 [preview_app.html](file:///e:/Project%20SIC/preview_app.html): Giao diện mô phỏng tĩnh để báo cáo hoặc xem trước không cần máy chủ Python.
