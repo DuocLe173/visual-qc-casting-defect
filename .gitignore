@@ -10,6 +10,7 @@ scratch/
 .ipynb_checkpoints/
 .vscode/
 .idea/
+.quarto/
 
 # Large Datasets (không đẩy lên GitHub vì dung lượng nặng)
 data/
@@ -38,5 +39,10 @@ ketqua.*
 
 # AI Assistant Configurations & Skills (Chỉ dùng nội bộ máy cá nhân)
 .agents/
+
+# Final Submission Packaging & Rubric (Lưu máy cá nhân)
+END/
+huong_dan_tieu_luan_va_rubric_cuoi_khoa.pdf
+
 
 

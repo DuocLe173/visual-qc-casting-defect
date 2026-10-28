@@ -1,0 +1,1118 @@
+---
+lang: vi
+format:
+  typst:
+    papersize: a4
+    margin:
+      x: 1.5cm
+      top: 1.5cm
+      bottom: 1.5cm
+    number-sections: false
+    section-numbering: "1.1.1"
+    mainfont: "Times New Roman"
+    fontsize: 11pt
+    keep-typ: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{=typst}
+#set page(
+  margin: (x: 1.5cm, top: 1.5cm, bottom: 1.5cm),
+  header: none,
+  footer: none,
+  numbering: none
+)
+
+#rect(width: 100%, height: 100%, stroke: 1.5pt + black, inset: 10pt)[
+  #rect(width: 100%, height: 100%, stroke: 0.5pt + black, inset: 12pt)[
+    #align(center)[
+      #text(11pt, weight: "bold")[BỘ CÔNG THƯƠNG]\
+      #text(12pt, weight: "bold")[TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP TP. HỒ CHÍ MINH]\
+      #text(11pt, weight: "bold")[KHOA CÔNG NGHỆ ĐIỆN TỬ]\
+      #v(5pt)
+      #text(11pt, weight: "bold")[SAMSUNG INNOVATION CAMPUS (SIC 2026)]
+      
+      #v(2.0cm)
+      
+      #text(15pt, weight: "bold")[BÁO CÁO CUỐI KHÓA]\
+      #v(6pt)
+      #text(12pt, weight: "bold")[HỌC PHẦN: TRÍ TUỆ NHÂN TẠO]
+      
+      #v(1.9cm)
+      
+      #text(11.5pt, weight: "bold")[ĐỀ TÀI:]\
+      #v(8pt)
+      #text(16pt, weight: "bold")[ỨNG DỤNG TRÍ TUỆ NHÂN TẠO VÀ THỊ GIÁC MÁY TÍNH\ TRONG KIỂM SOÁT TỰ ĐỘNG CHẤT LƯỢNG NÔNG SẢN]\
+      
+      #v(8pt)
+      #text(11pt, style: "italic")[(Mã đề tài: Project 13: Fruit Visual Quality Control System)]
+      
+      #v(2.4cm)
+      
+      #align(left)[
+        #h(2.0cm) #text(11pt)[*Giảng viên hướng dẫn:* Thầy Trần Mạnh Tường]\
+        #v(6pt)
+        #h(2.0cm) #text(11pt)[*Học viên thực hiện:* Lê Thành Được]\
+        #v(6pt)
+        #h(2.0cm) #text(11pt)[*Mã số sinh viên:* 25678381]\
+        #v(6pt)
+        #h(2.0cm) #text(11pt)[*Lớp học phần:* AI1]\
+        #v(6pt)
+        #h(2.0cm) #text(11pt)[*Email liên hệ:* 2000.leduoc\@gmail.com]
+      ]
+      
+      #v(2.2cm)
+      
+      #text(11pt, weight: "bold")[TP. HỒ CHÍ MINH, THÁNG 11 NĂM 2026]
+    ]
+  ]
+]
+#pagebreak()
+
+#set page(
+  margin: (x: 1.5cm, top: 1.5cm, bottom: 1.5cm),
+  numbering: "1",
+  footer: auto,
+  header: none
+)
+#counter(page).update(1)
+#set par(justify: true, leading: 0.55em)
+#show table: set text(size: 8.5pt)
+#set table(stroke: 0.5pt + black, inset: (x: 2.2pt, y: 3.2pt))
+#set table.header(repeat: false)
+#show figure: set block(breakable: true)
+#show figure.caption: it => align(center)[#v(2pt)#text(10pt, style: "italic")[#it.body]]
+#set list(marker: [--], spacing: 0.65em)
+#set heading(numbering: none)
+
+#outline(title: [Mục lục báo cáo], depth: 2)
+#pagebreak()
+```
+
+# Lời cảm ơn {.unnumbered}
+
+Để hoàn thành bài tiểu luận cuối khóa đề tài Project 13: Fruit Visual Quality Control trong khuôn khổ học phần trí tuệ nhân tạo, em đã nhận được sự quan tâm, tạo điều kiện thuận lợi và hướng dẫn tận tình từ quý thầy cô và Ban Quản lý Chương trình Samsung Innovation Campus 2026 (SIC 2026).
+
+Lời đầu tiên, em xin gửi lời cảm ơn chân thành đến Ban Điều phối Chương trình Samsung Innovation Campus 2026 và Tập đoàn Samsung đã tổ chức một khóa học thiết thực, cung cấp giáo trình chất lượng cùng môi trường học tập và tính toán hiện đại để học viên tiếp cận với các công nghệ trí tuệ nhân tạo.
+
+Đặc biệt, em xin bày tỏ lòng biết ơn sâu sắc tới Thầy Trần Mạnh Tường — Giảng viên trực tiếp giảng dạy và hướng dẫn em trong suốt khóa học. Trong quá trình học tập và làm đồ án, Thầy luôn định hướng phương pháp tư duy khoa học, kiên nhẫn giải thích các nền tảng lý thuyết học sâu, gợi mở cách giải quyết các vấn đề kỹ thuật phát sinh và đưa ra những lời nhận xét thực tế, sâu sắc để em hoàn thiện bài làm của mình một cách nghiêm túc và thiết thực nhất.
+
+Em cũng xin gửi lời cảm ơn đến các bạn học viên lớp AI1 đã luôn đồng hành, cùng trao đổi kiến thức và chia sẻ kinh nghiệm xử lý dữ liệu trong các buổi học lý thuyết cũng như thực hành.
+
+Do kiến thức và kinh nghiệm thực tế của bản thân trong lĩnh vực thị giác máy tính và học sâu vẫn còn ở giai đoạn đầu, bài tiểu luận này chắc chắn khó tránh khỏi những điểm còn hạn chế. Em rất mong tiếp tục nhận được những nhận xét, góp ý và chỉ dẫn của Thầy Trần Mạnh Tường để em củng cố kiến thức và hoàn thiện hơn nữa trong các nghiên cứu tiếp theo.
+
+Kính chúc Thầy và Ban Tổ chức chương trình luôn dồi dào sức khỏe và đạt nhiều thành công trong công tác giảng dạy, nghiên cứu!
+
+*TP. Hồ Chí Minh, ngày 19 tháng 10 năm 2026*  
+**Học viên thực hiện**  
+*Lê Thành Được*
+
+```{=typst}
+#pagebreak()
+```
+
+# Lời cam đoan {.unnumbered}
+
+Em xin cam đoan rằng bài tiểu luận tốt nghiệp với đề tài "Ứng dụng trí tuệ nhân tạo và thị giác máy tính trong kiểm soát tự động chất lượng nông sản (Project 13: Fruit Visual Quality Control)" là công trình học tập, nghiên cứu và lập trình thực nghiệm do bản thân em thực hiện dưới sự định hướng và hướng dẫn trực tiếp của Thầy Trần Mạnh Tường.
+
+Em xin cam đoan tính trung thực tuyệt đối của toàn bộ các nội dung trong bài báo cáo:
+
+- Toàn bộ 27.198 ảnh nông sản được trích xuất từ tập dữ liệu Kaggle Fruits Fresh and Rotten, được chia tách phân tầng train/val/test với tỷ lệ 70/15/15 và cố định giá trị ngẫu nhiên SEED = 42 để đảm bảo tính minh bạch, độc lập và chống rò rỉ dữ liệu.
+
+- Toàn bộ các kết quả huấn luyện (loss, accuracy, recall qua từng epoch) và các chỉ số đánh giá chuyên sâu (Accuracy, Recall, Precision, F1-Score, ROC-AUC, PR-AUC, Confusion Matrix) trên 4 mô hình Baseline CNN, VGG16, ResNet50 và EfficientNetB0 đều được ghi nhận trung thực trực tiếp từ quá trình huấn luyện và đánh giá thực tế trong các file Jupyter Notebook của đồ án.
+
+- Các nội dung mã nguồn xây dựng mạng nơ-ron, giải thuật Linear Logit Grad-CAM, và ứng dụng demo Streamlit đa luồng đều được viết, kiểm thử và vận hành thực tế trên máy tính.
+
+- Các lý thuyết nền tảng, công thức toán học và tài liệu tham khảo đều được trích dẫn nguồn rõ ràng ở phần Danh mục tài liệu tham khảo.
+
+**Tuyên bố về việc sử dụng trí tuệ nhân tạo:**
+
+Em xin công khai và minh bạch việc sử dụng các công cụ trí tuệ nhân tạo (Google Gemini / Antigravity IDE) trong quá trình thực hiện đồ án:
+
+- Phạm vi sử dụng công cụ AI: Công cụ AI được sử dụng có chọn lọc để hỗ trợ tìm kiếm và đối chiếu các bài báo khoa học liên quan; hỗ trợ rà soát và tối ưu cú pháp mã nguồn lập trình Python.
+- Trách nhiệm học thuật của học viên: Bản thân em trực tiếp thực hiện toàn bộ quy trình làm sạch và chuẩn hóa dữ liệu, trực tiếp chạy toàn bộ các notebook huấn luyện mạng nơ-ron trên GPU, trực tiếp đo lường và kiểm chứng tính xác thực của từng số liệu thực nghiệm, hoàn toàn chịu trách nhiệm về nội dung học thuật và cam kết không sao chép bất kỳ sản phẩm nào khác.
+
+Nếu có bất kỳ sự không trung thực nào về mặt dữ liệu hoặc vi phạm quy định học thuật, em xin hoàn toàn chịu trách nhiệm trước Ban Giảng huấn và Hội đồng chấm điểm khóa học.
+
+*Người cam đoan*  
+*Lê Thành Được*
+
+```{=typst}
+#pagebreak()
+```
+
+# Bảng phân công nhiệm vụ và tỷ lệ hoàn thành {.unnumbered}
+
+**Bảng 0.2: Bảng phân công nhiệm vụ chi tiết và mức độ hoàn thành của học viên**
+
+| STT | Nội dung công việc theo quy trình CRISP-DM | Học viên phụ trách | Đóng góp | Hoàn thành | Kết quả nghiệm thu |
+|:------:|:--------------------------------------------------------------------------|:----------------------:|:----------:|:-----------:|:-----------------:|
+| 1 | **Hiểu biết bài toán kinh doanh:** Khảo sát thực trạng xưởng đóng gói, phân tích tổn thất do khí Ethylene, xây dựng Empathy Map và bài toán tối ưu chi phí ROI. | Lê Thành Được | 100% | 100% | Đạt yêu cầu (Phần 1) |
+| 2 | **Khám phá và tiền xử lý dữ liệu:** Kiểm toán 27.198 ảnh Kaggle, lập từ điển dữ liệu, phân chia phân tầng 70/15/15 và đề xuất 3 đặc trưng hình thái vỏ quả. | Lê Thành Được | 100% | 100% | Đạt yêu cầu (Phần 3) |
+| 3 | **Mô hình hóa và huấn luyện mô hình:** Thiết kế mạng Baseline CNN, triển khai huấn luyện 3 giai đoạn cho 3 mô hình VGG16, ResNet50, EfficientNetB0, xử lý hiện tượng sốc gradient. | Lê Thành Được | 100% | 100% | Đạt yêu cầu (Phần 4) |
+| 4 | **Đánh giá chuyên sâu và giải thích mô hình:** Đánh giá 4.080 mẫu kiểm thử, phát triển giải thuật Linear Logit Grad-CAM, kiểm chứng độc lập trên 100 ảnh tự chụp và tối ưu ngưỡng cắt. | Lê Thành Được | 100% | 100% | Đạt yêu cầu (Phần 5) |
+| 5 | **Triển khai ứng dụng thực tế:** Lập trình ứng dụng Web Streamlit (`app.py`), thiết kế module camera đa luồng `ThreadedCamera`, xây dựng kế hoạch theo dõi trôi dữ liệu. | Lê Thành Được | 100% | 100% | Đạt yêu cầu (Phần 6) |
+| 6 | **Báo cáo và Đóng gói sản phẩm:** Soạn thảo báo cáo Quarto (`.qmd`), biên dịch PDF chuẩn học thuật, dọn dẹp mã nguồn sạch và hoàn thiện bộ hồ sơ bài nộp. | Lê Thành Được | 100% | 100% | Đạt yêu cầu (Toàn văn) |
+
+```{=typst}
+#pagebreak()
+```
+
+# Danh mục từ viết tắt {.unnumbered}
+
+**Bảng 0.1: Danh mục các từ viết tắt sử dụng trong báo cáo**
+
+| Từ viết tắt | Tên tiếng Anh đầy đủ | Ý nghĩa thực tế trong đề tài |
+| :--- | :--- | :--- |
+| **AI** | Artificial Intelligence | Trí tuệ nhân tạo |
+| **BCE** | Binary Cross-Entropy | Hàm mất mát entropy chéo cho bài toán phân loại hai lớp |
+| **CNN** | Convolutional Neural Network | Mạng nơ-ron tích chập chuyên dùng cho xử lý hình ảnh |
+| **CRISP-DM**| Cross-Industry Standard Process for Data Mining | Quy trình tiêu chuẩn công nghiệp phát triển dự án khai phá dữ liệu |
+| **EDA** | Exploratory Data Analysis | Phân tích và khám phá dữ liệu ban đầu |
+| **FIFO** | First In, First Out | Cơ chế hàng đợi vào trước ra trước để xử lý bộ đệm camera |
+| **FN** | False Negative | Âm tính giả: bỏ sót quả hỏng thành quả đạt chuẩn (lỗi rất nguy hiểm) |
+| **FP** | False Positive | Dương tính giả: báo nhầm quả tươi lành lặn thành quả hỏng |
+| **FPS** | Frames Per Second | Số khung hình video máy tính xử lý được trong một giây |
+| **GAP** | Global Average Pooling | Tầng gộp trung bình toàn cục giúp thu gọn số lượng tham số |
+| **Grad-CAM**| Gradient-weighted Class Activation Mapping | Kỹ thuật tạo bản đồ nhiệt hiển thị vùng ảnh mà mô hình chú ý |
+| **HSV** | Hue, Saturation, Value | Không gian màu sắc thái, độ bão hòa và độ sáng |
+| **HUD / OSD**| Head-Up Display / On-Screen Display | Lớp hiển thị thông số chẩn đoán trực tiếp trên khung hình camera |
+| **MBConv** | Mobile Inverted Bottleneck Convolution | Khối tích chập tối ưu giúp giảm nhẹ dung lượng của EfficientNet |
+| **NIR** | Near-Infrared Spectroscopy | Phổ cận hồng ngoại giúp đo độ ngọt và kiểm tra ruột quả |
+| **ReLU** | Rectified Linear Unit | Hàm kích hoạt tuyến tính từng đoạn giúp mô hình học nhanh hơn |
+| **ROI** | Return on Investment | Tỷ suất hoàn vốn đầu tư kinh tế |
+| **SE** | Squeeze-and-Excitation | Cơ chế chú ý kênh giúp mô hình tập trung vào đặc trưng quan trọng |
+| **SIC** | Samsung Innovation Campus | Chương trình đào tạo công nghệ của Tập đoàn Samsung |
+| **TN** | True Negative | Âm tính thật: nhận diện chính xác quả tươi đạt chuẩn xuất khẩu |
+| **TP** | True Positive | Dương tính thật: nhận diện chính xác quả bị khuyết tật hư hỏng |
+| **XAI** | Explainable Artificial Intelligence | Trí tuệ nhân tạo có khả năng giải thích lý do đưa ra quyết định |
+
+```{=typst}
+#pagebreak()
+```
+
+# Danh mục bảng biểu {.unnumbered}
+
+- *Bảng 0.1:* Danh mục các từ viết tắt sử dụng trong báo cáo
+- *Bảng 0.2:* Bảng phân công nhiệm vụ chi tiết và mức độ hoàn thành của học viên
+- *Bảng 1.1:* Bảng thấu cảm người dùng tại cơ sở đóng gói nông sản xuất khẩu
+- *Bảng 1.2:* Phân tích chi phí thiệt hại giữa lỗi bỏ sót và báo nhầm
+- *Bảng 1.3:* Bảng dự toán chi phí đầu tư và thời gian hoàn vốn của hệ thống
+- *Bảng 2.1:* So sánh đặc tính kỹ thuật giữa 4 kiến trúc mạng học máy và học sâu
+- *Bảng 3.1:* Từ điển dữ liệu thuộc tính hình ảnh nông sản
+- *Bảng 3.2:* Thống kê phân bố số lượng ảnh trong tập dữ liệu (27.198 ảnh)
+- *Bảng 3.3:* Phân chia tập dữ liệu huấn luyện, kiểm định và kiểm thử (70/15/15)
+- *Bảng 3.4:* Các phép biến đổi hình học trong chuỗi tăng cường dữ liệu
+- *Bảng 3.5:* Bảng đặc tả 3 đặc trưng mới tạo lập từ nghiệp vụ thực tế
+- *Bảng 3.6:* Ma trận tương quan Pearson giữa đặc trưng hình thái và nhãn
+- *Bảng 4.1:* Chi tiết cấu trúc các tầng mạng của mô hình Baseline CNN tự thiết kế
+- *Bảng 4.2:* Tiến trình huấn luyện chi tiết qua 20 epochs của mô hình Baseline CNN
+- *Bảng 4.3:* Kế hoạch đóng và mở băng các tầng khi tinh chỉnh mạng nơ-ron
+- *Bảng 4.4:* Tiến trình huấn luyện 22 epochs qua 3 giai đoạn của mô hình VGG16
+- *Bảng 4.5:* Tiến trình huấn luyện 22 epochs qua 3 giai đoạn của mô hình ResNet50
+- *Bảng 4.6:* Tiến trình huấn luyện 22 epochs qua 3 giai đoạn của mô hình EfficientNetB0
+- *Bảng 4.7:* Kết quả đánh giá kiểm chứng chéo 5 lượt trên mô hình tối ưu
+- *Bảng 4.8:* Không gian khảo sát và cấu hình siêu tham số tối ưu lựa chọn
+- *Bảng 5.1:* So sánh hiệu năng các mô hình trên tập kiểm thử độc lập (4.080 mẫu)
+- *Bảng 5.2:* Ma trận nhầm lẫn chi tiết của 4 mô hình trên tập kiểm thử độc lập
+- *Bảng 5.3:* Đánh giá kiểm chứng thực tế trên 100 ảnh tự chụp ngoài phòng thí nghiệm
+- *Bảng 5.4:* Kiểm toán tính công bằng của thuật toán giữa ba loại quả
+- *Bảng 5.5:* Khảo sát số mẫu sai và hàm tổn thất tài chính theo các ngưỡng cắt
+- *Bảng 6.1:* Thời gian suy luận và tốc độ khung hình đo được trên GPU và CPU
+- *Bảng 6.2:* Các phân hệ chính trong ứng dụng demo Streamlit và module camera
+- *Bảng 6.3:* Mô phỏng kịch bản điều chỉnh ngưỡng cắt theo thị trường
+- *Bảng 6.4:* Kế hoạch giám sát và ngưỡng phát hiện trôi dữ liệu
+
+# Danh mục hình vẽ {.unnumbered}
+
+- *Hình 2.1:* Sơ đồ phương pháp luận CRISP-DM tích hợp vòng lặp cải tiến liên tục
+- *Hình 3.1:* Biểu đồ phân bố số lượng mẫu ảnh giữa các lớp quả tươi và khuyết tật
+- *Hình 4.1:* Đồ thị hàm mất mát và độ chính xác qua 20 epochs của mô hình Baseline CNN
+- *Hình 4.2:* Đồ thị diễn biến hàm mất mát và độ chính xác của các mô hình học chuyển giao
+- *Hình 5.1:* Đối chiếu ma trận nhầm lẫn của 4 mô hình trên tập kiểm thử độc lập
+- *Hình 5.2:* Kết quả trực quan hóa vùng tổn thương bằng Linear Logit Grad-CAM
+- *Hình 5.3:* Đồ thị khảo sát số mẫu phân loại sai theo ngưỡng cắt và đối chuẩn tốc độ
+- *Hình 6.1:* Sơ đồ kiến trúc ứng dụng Web Streamlit và luồng xử lý camera đa luồng
+
+```{=typst}
+#pagebreak()
+```
+
+# Tóm tắt báo cáo {.unnumbered}
+
+Báo cáo tiểu luận này trình bày toàn bộ quá trình nghiên cứu, xây dựng và đánh giá thực nghiệm cho đề tài "Ứng dụng trí tuệ nhân tạo và thị giác máy tính trong kiểm soát tự động chất lượng nông sản" trong khuôn khổ học phần Trí tuệ nhân tạo thuộc chương trình Samsung Innovation Campus 2026 (SIC 2026), dưới sự hướng dẫn của Thầy Trần Mạnh Tường.
+
+Mục tiêu trọng tâm của đề tài là xây dựng một hệ thống thị giác máy tính hỗ trợ các cơ sở đóng gói nông sản tự động phân loại quả đạt chuẩn xuất khẩu (Fresh - Grade A) và quả bị khuyết tật hư hỏng (Rotten - gồm các hiện tượng thâm dập, úng nước, nhiễm nấm mốc) đối với 3 loại quả xuất khẩu phổ biến là táo, chuối và cam. Trong thực tế bảo quản nông sản sau thu hoạch, việc công nhân mỏi mắt nhìn sót một quả thối (lỗi False Negative) là nguyên nhân chính giải phóng khí ethylene làm lây lan nấm bệnh sang các quả xung quanh, khiến cả thùng hàng hoặc cả container bị hư hỏng trong các chuyến hải trình dài ngày. Do đó, yêu cầu kỹ thuật quan trọng nhất đặt ra cho mô hình là phải ưu tiên tối đa khả năng bắt lỗi (chỉ số Recall đạt trên 98%), đồng thời phải khoanh vùng được vị trí vết bệnh rõ ràng bằng bản đồ nhiệt để người vận hành dễ dàng đối chiếu.
+
+Nghiên cứu sử dụng tập dữ liệu gồm 27.198 bức ảnh màu RGB, được chia phân tầng thành 70% huấn luyện (19.038 ảnh), 15% kiểm định (4.080 ảnh) và 15% kiểm thử độc lập (4.080 ảnh). Em đã tiến hành xây dựng và so sánh thực tế 4 kiến trúc mạng: Baseline CNN tự thiết kế và 3 mô hình học chuyển giao gồm VGG16, ResNet50, EfficientNetB0 theo quy trình huấn luyện bài bản 3 giai đoạn kéo dài 22 epochs.
+
+Kết quả đánh giá trên tập kiểm thử độc lập 4.080 ảnh cho thấy:
+
+- Mô hình cơ sở Baseline CNN đạt độ chính xác 97.45% và Recall 99.61% (bỏ sót 9 quả lỗi).
+- Mô hình VGG16 đạt độ chính xác 99.95% và Recall 99.91% (bỏ sót 2 quả lỗi).
+- Mô hình ResNet50 đạt độ chính xác 99.98% và đạt Recall tuyệt đối 100.00% (không bỏ sót quả lỗi nào).
+- Mô hình EfficientNetB0 đạt độ chính xác 100.00% và Recall tuyệt đối 100.00% với dung lượng tệp trọng số rất gọn nhẹ (khoảng 33.1 MB, 4.38 triệu tham số), tốc độ suy luận đạt 22.4 ms/ảnh trên CPU (tương đương 44.6 FPS) và đạt 4.2 – 8.3 ms/ảnh khi xử lý theo lô trên GPU (tương đương 120.6 – 237.0 FPS), hoàn toàn đáp ứng yêu cầu giám sát thời gian thực trên dây chuyền phân loại.
+- Khi kiểm chứng độc lập trên 100 ảnh tự chụp thực tế ngoài phòng thí nghiệm, EfficientNetB0 tiếp tục duy trì độ chính xác 96.00% và Recall 96.00%, cho thấy khả năng thích nghi rất tốt với điều kiện ánh sáng tự nhiên.
+
+Ngoài ra, đồ án đã khắc phục hiện tượng bản đồ nhiệt bị tối mờ bằng giải thuật Linear Logit Grad-CAM, xây dựng hoàn chỉnh giao diện web demo bằng Streamlit (`app.py`), và giải quyết dứt điểm hiện tượng trễ hình camera bằng module đa luồng `ThreadedCamera` đạt tốc độ 45–60 FPS mượt mà.
+
+```{=typst}
+#pagebreak()
+```
+
+# Phần 1: Giới thiệu và xác định bài toán kinh doanh
+
+## 1.1. Bối cảnh thực tế và khó khăn tại các cơ sở đóng gói nông sản
+
+Trong chuỗi bảo quản và xuất khẩu nông sản, trái cây tươi (đặc biệt là táo, chuối và cam) là mặt hàng có giá trị kinh tế cao nhưng lại rất nhạy cảm với các va đập cơ học và nấm bệnh sau thu hoạch. Trước khi đưa vào thùng đóng gói và vận chuyển đường biển dài ngày, việc sàng lọc để loại bỏ triệt để những quả bị bầm dập, nấm mốc hoặc thâm úng là khâu bắt buộc. Qua tìm hiểu thực tế tại các vựa thu mua và cơ sở đóng gói nông sản, em nhận thấy quá trình phân loại thủ công hiện nay đang bộc lộ ba điểm nghẽn lớn:
+
+Thứ nhất là hiện tượng thối rữa lây lan dây chuyền do khí ethylene gây ra. Khi một quả bị bầm dập hoặc chớm nhiễm nấm mốc (*Penicillium, Botrytis*), tế bào thực vật sẽ hô hấp mạnh và giải phóng một lượng lớn khí ethylene ($C_2H_4$). Khí này kích thích quá trình chín tự nhiên rất nhanh. Khi trái cây được xếp vào thùng carton kín trong container lạnh đi biển dài 2 đến 4 tuần, chỉ cần công nhân nhìn sót một quả thối lọt vào thùng, khí ethylene thoát ra sẽ làm cho tất cả các quả lành lặn xung quanh chín nẫu và thối theo chỉ sau vài ngày. Một container xuất khẩu bị đối tác từ chối nhận hàng không chỉ gây thiệt hại tài chính hàng trăm triệu đồng mà còn làm tổn hại nghiêm trọng đến uy tín của thương hiệu nông sản Việt Nam.
+
+Thứ hai là giới hạn sinh lý về sự mỏi mắt của công nhân phân loại. Tại phần lớn các xưởng đóng gói hiện nay, công đoạn phân loại vẫn hoàn toàn phụ thuộc vào mắt nhìn của công nhân đứng hai bên băng chuyền. Sau khoảng 2 đến 3 tiếng làm việc tập trung dưới ánh đèn công nghiệp, mắt người rất dễ bị mỏi và giảm khả năng phân biệt, dẫn đến việc nhìn sót những vết thâm dập nhỏ hay ổ nấm vừa chớm nở với tỷ lệ sót thực tế từ 8% đến 12%. Vào chính vụ thu hoạch rộ, việc thuê thêm nhiều nhân công thời vụ vừa đẩy chi phí sản xuất lên cao, vừa khó bảo đảm chất lượng phân loại đồng đều.
+
+Thứ ba là rào cản chi phí đối với máy móc ngoại nhập. Các dây chuyền phân loại quang học nhập khẩu từ châu Âu hoặc Nhật Bản thường có giá thành lên tới hàng tỷ đồng, vượt quá khả năng đầu tư của phần lớn hợp tác xã và doanh nghiệp vừa và nhỏ trong nước. Mặt khác, các hệ thống này thường hoạt động như một "hộp đen" khép kín, không giải thích được lý do vì sao một quả lại bị phân loại là phế phẩm, khiến người quản lý xưởng rất khó kiểm tra đối chứng khi xảy ra khiếu nại giữa nông dân giao hàng và bộ phận thu mua.
+
+## 1.2. Chân dung người dùng và những trăn trở thực tế tại cơ sở đóng gói
+
+Để mô hình AI không dừng lại ở mức bài tập lý thuyết mà có thể ứng dụng được vào thực tiễn, em đã phân tích bài toán dựa trên hai vị trí công việc trọng yếu trong một xưởng đóng gói trái cây:
+
+Vị trí thứ nhất là người phụ trách kiểm soát chất lượng (KCS) trực tiếp đứng cạnh băng tải. Công việc hằng ngày của họ là giám sát dòng quả di chuyển liên tục với sản lượng hàng tấn mỗi giờ. Mục tiêu quan trọng hàng đầu của họ là không để lọt quả lỗi vào thùng xuất khẩu (tỷ lệ sót phải dưới 0.1%). Nỗi lo lớn nhất của người làm KCS là sự mệt mỏi ở các ca làm việc đêm dẫn đến sai sót, và họ cần một hệ thống camera thông minh có khả năng khoanh vùng trực tiếp vết hỏng trên màn hình để họ dễ dàng xác nhận mà không mất thời gian soi kính lúp.
+
+Vị trí thứ hai là người quản lý vận hành cơ sở đóng gói. Họ quan tâm đến bài toán hiệu quả kinh tế tổng thể của dây chuyền: làm sao để giảm tỷ lệ container bị phạt hoặc trả hàng ở cảng đích, đồng thời chi phí đầu tư thiết bị phải ở mức vừa phải để có thể thu hồi vốn nhanh trong vòng vài tháng.
+
+**Bảng 1.1: Bảng thấu cảm người dùng tại cơ sở đóng gói nông sản xuất khẩu**
+
+| Khía cạnh quan sát | Những chia sẻ và trăn trở thực tế tại xưởng |
+| :--- | :--- |
+| **Họ nói gì?** | "Chỉ cần một quả chuối thối hay quả cam mốc lọt vào thùng đi biển dài ngày là khi mở container ra phải vứt bỏ cả lô hàng."<br>"Phần mềm hỗ trợ phải dễ dùng, chạy mượt trên camera và chỉ rõ vết hỏng nằm ở đâu thì công nhân mới tin tưởng." |
+| **Họ nghĩ gì?** | "Làm sao để ca làm việc đêm công nhân không bị mỏi mắt nhìn sót quả hỏng?"<br>"Mô hình AI có thực sự phân biệt được đốm chín ngọt tự nhiên của vỏ chuối với vết nấm mốc đen hay không?" |
+| **Họ làm gì?** | Thường xuyên đi dọc băng chuyền kiểm tra xác suất các thùng hàng đã đóng.<br>Dùng kính lúp và đèn soi kiểm tra lại các quả nghi vấn khi có bất đồng giữa thợ đóng gói và nhân viên KCS. |
+| **Họ cảm thấy gì?** | Rất căng thẳng mỗi khi đến ngày tàu cập cảng đích và chờ kết quả kiểm định của khách hàng.<br>Mệt mỏi khi phải giải quyết các sự cố tranh chấp chất lượng do lỗi phân loại thủ công của con người. |
+| **Nỗi lo lớn nhất** | Áp lực đền bù thiệt hại khi container bị từ chối; chi phí nhân công mùa vụ đắt đỏ; thiếu công cụ tự động hóa giá rẻ. |
+| **Kỳ vọng mong muốn** | Tỷ lệ bắt quả lỗi đạt trên 98%; hệ thống tự động điều khiển cần gạt cơ khí; có bản đồ nhiệt chỉ điểm vết bệnh rõ ràng. |
+
+## 1.3. Mục tiêu cụ thể của đề tài
+
+Bài toán được xác định là xây dựng giải pháp tự động hóa phân loại hình ảnh thời gian thực kết hợp với khả năng giải thích minh bạch vị trí khuyết tật và tối ưu hóa chi phí vận hành.
+
+Dựa trên yêu cầu thực tế, em đặt ra các mục tiêu cụ thể theo tiêu chí SMART như sau:
+
+- Về độ nhạy phát hiện lỗi (Recall), mô hình phải đạt chỉ số Recall từ 98.0% trở lên trên tập kiểm thử độc lập, đặt ưu tiên cao nhất vào việc không bỏ sót quả hư hỏng (False Negative).
+- Về độ chính xác tổng thể (Accuracy), mô hình cần đạt từ 97.0% trở lên trên cả hai nhóm quả tươi và quả khuyết tật.
+- Về tốc độ xử lý, thời gian dự đoán cho mỗi bức ảnh phải dưới 25 ms trên máy tính thông thường để đạt tốc độ hiển thị từ 40 FPS trở lên, bắt kịp nhịp di chuyển của băng chuyền.
+- Về dung lượng mô hình, tệp trọng số lưu trữ phải dưới 50 MB để có thể cài đặt dễ dàng trên các máy tính trạm hoặc thiết bị vi xử lý giá rẻ.
+- Về thời hạn hoàn thành, toàn bộ sản phẩm chạy thử và báo cáo hoàn chỉnh được đóng gói trước ngày 11/11/2026.
+
+## 1.4. Phân tích chi phí thiệt hại và tính toán thời gian hoàn vốn
+
+Trong bài toán kiểm tra chất lượng trái cây xuất khẩu, hai loại sai số mang lại hậu quả kinh tế hoàn toàn khác nhau:
+
+**Bảng 1.2: Phân tích chi phí thiệt hại giữa lỗi False Negative và False Positive**
+
+| Loại sai số | Bản chất thực tế trong xưởng đóng gói | Hậu quả kinh tế và mức độ thiệt hại ước tính | Chi phí ước tính |
+| :--- | :--- | :--- | :---: |
+| **False Negative (FN)** | Quả thối mốc bị bỏ sót và đóng vào thùng hàng xuất khẩu. | Khí ethylene lây lan làm thối rữa cả thùng hoặc cả container trong hành trình đi biển; bị phạt hợp đồng kiểm dịch. | **$C_{FN} = 500.000\text{ VNĐ}$** |
+| **False Positive (FP)** | Quả tươi lành lặn bị camera báo nhầm thành quả lỗi và bị cần gạt gạt ra. | Quả bị chuyển sang thùng thứ cấp để công nhân nhặt lại bằng tay hoặc bán rẻ nội địa làm nước ép. | **$C_{FP} = 5.000\text{ VNĐ}$** |
+
+Tổng chi phí thiệt hại kỳ vọng của xưởng đóng gói được tính theo công thức:
+$$\text{Tổng chi phí thiệt hại} = 500.000 \times \text{FN} + 5.000 \times \text{FP} \quad (\text{VNĐ})$$
+
+Có thể thấy thiệt hại tài chính khi bỏ sót một quả thối ($C_{FN} = 500.000\text{ VNĐ}$) gấp 100 lần so với việc báo nhầm một quả tươi ($C_{FP} = 5.000\text{ VNĐ}$). Vì vậy, khi huấn luyện và chọn ngưỡng cho mô hình AI, em phải đặt ưu tiên hàng đầu là ép số lượng quả bỏ sót (FN) về mức 0, dù có thể chấp nhận số lượng báo nhầm (FP) tăng nhẹ ở mức kiểm soát được.
+
+### Mô hình hóa xác suất rủi ro hỏng thùng hàng xuất khẩu
+Trong quy chuẩn đóng gói trái cây xuất khẩu, mỗi thùng carton kín thường chứa tiêu chuẩn $N = 60$ quả (tương đương 10 – 12 kg). Trái cây bị thâm dập hay chớm nấm mốc hô hấp giải phóng khí ethylene ($C_2H_4$) và phát tán bào tử nấm sang các quả lân cận. Trong hành trình vận chuyển container lạnh dài từ 2 đến 4 tuần trên biển, chỉ cần **ít nhất một quả thối lọt vào thùng kín**, khí ethylene tích tụ sẽ kích thích quá trình chín nhũn dây chuyền, làm hư hại toàn bộ 60 quả trong thùng khi cập cảng đích.
+
+Gọi $p_{\text{miss}} = 1 - \text{Recall}$ là xác suất mô hình AI bỏ sót một quả khuyết tật (tỷ lệ False Negative). Giả định chất lượng của từng quả là độc lập, xác suất để một thùng hàng chứa $N = 60$ quả có ít nhất một quả thối lọt qua khâu kiểm duyệt được mô hình hóa theo phân phối xác suất nhị thức:
+$$P(\text{Thùng hàng bị hỏng}) = 1 - (1 - p_{\text{miss}})^{60}$$
+
+– Khi phân loại thủ công hoặc dùng các mô hình sơ khai có độ nhạy $\text{Recall} = 92.00\%$ ($p_{\text{miss}} = 0.08$):
+$$P(\text{Thùng hỏng}) = 1 - (1 - 0.08)^{60} = 1 - (0.92)^{60} = 1 - 0.00647 \approx \mathbf{99.35\%}$$
+Con số $99.35\%$ mang ý nghĩa thực tiễn nghiêm trọng: gần như mọi thùng hàng rời xưởng đều có nguy cơ chứa quả bệnh tiềm ẩn, dẫn đến việc container bị đối tác từ chối nhận hàng tại cảng đích.
+
+– Ngược lại, khi ứng dụng mô hình học sâu tối ưu đạt $\text{Recall} \ge 99.91\%$ đến $100.00\%$ ($p_{\text{miss}} \le 0.0009$):
+$$P(\text{Thùng hỏng}) \le 1 - (1 - 0.0009)^{60} = 1 - 0.9474 \approx \mathbf{5.26\%} \longrightarrow \mathbf{0.00\%}$$
+Với một cơ sở đóng gói quy mô trung bình xử lý 100.000 thùng xuất khẩu mỗi năm, việc kéo giảm xác suất hỏng thùng từ 99.35% xuống dưới 5.26% (và tiến sát 0% với ResNet50/EfficientNetB0) giúp bảo vệ hàng chục nghìn thùng nông sản, tiết kiệm tối thiểu 225 triệu đồng tổn thất trực tiếp mỗi năm.
+
+Để ước tính hiệu quả đầu tư, giả định một xưởng đóng gói nông sản quy mô vừa xử lý khoảng 100 tấn trái cây mỗi tháng. Khi phân loại thủ công bằng mắt người, việc nhìn sót quả lỗi thường làm phát sinh khoảng 15 vụ việc hỏng kiện hàng hoặc khiếu nại mỗi tháng, gây tổn thất khoảng 225 triệu đồng mỗi năm. Chi phí đầu tư ban đầu cho hệ thống AI gồm 1 máy tính điều khiển, 2 camera và khung cơ khí cần gạt khí nén ước tính khoảng 65 triệu đồng; chi phí bảo trì phần mềm và điện năng tiêu thụ khoảng 18 triệu đồng mỗi năm.
+
+**Bảng 1.3: Bảng dự toán chi phí đầu tư và thời gian hoàn vốn ROI của hệ thống**
+
+| Hạng mục tài chính | Năm đầu tiên (Triển khai) | Năm thứ hai | Năm thứ ba |
+| :--- | :---: | :---: | :---: |
+| **Chi phí đầu tư ban đầu** | 65.000.000 VNĐ | 0 VNĐ | 0 VNĐ |
+| **Chi phí vận hành và bảo trì** | 18.000.000 VNĐ | 18.000.000 VNĐ | 18.000.000 VNĐ |
+| **Tổn thất tiết kiệm được nhờ AI triệt tiêu lỗi bỏ sót** | 225.000.000 VNĐ | 225.000.000 VNĐ | 225.000.000 VNĐ |
+| **Lợi ích tài chính ròng thu về mỗi năm** | +142.000.000 VNĐ | +207.000.000 VNĐ | +207.000.000 VNĐ |
+| **Dòng tiền tích lũy của xưởng** | +142.000.000 VNĐ | +349.000.000 VNĐ | +556.000.000 VNĐ |
+
+$$\text{Thời gian hoàn vốn} = \frac{65.000.000}{17.250.000\text{ VNĐ/tháng}} \approx \mathbf{3.76\text{ tháng}}$$
+$$\text{Tỷ suất hoàn vốn đầu tư sau 1 năm (ROI)} = \frac{207.000.000 - 65.000.000}{65.000.000} \times 100\% = \mathbf{218.46\%}$$
+
+Kết quả tính toán kinh tế cho thấy hệ thống giúp cơ sở đóng gói thu hồi toàn bộ vốn đầu tư chỉ sau chưa đầy 4 tháng đưa vào vận hành.
+
+# Phần 2: Cơ sở lý thuyết và quy trình nghiên cứu
+
+## 2.1. Quy trình nghiên cứu theo phương pháp luận CRISP-DM
+
+Đề tài áp dụng quy trình chuẩn công nghiệp CRISP-DM gồm 6 giai đoạn rõ ràng:
+
+Giai đoạn đầu tiên là hiểu biết nghiệp vụ xưởng đóng gói. Em tiến hành khảo sát thực tế các dạng hư hỏng do khí ethylene và đặt ra mục tiêu kỹ thuật phải đạt Recall trên 98% cùng thời gian hoàn vốn kinh tế dưới 4 tháng.
+
+Giai đoạn thứ hai là khám phá và kiểm toán dữ liệu. Em tải về 27.198 ảnh nông sản trên Kaggle và phân tích sự phân bố giữa các loại quả tươi và quả hư hỏng.
+
+Giai đoạn thứ ba là chuẩn bị và tiền xử lý dữ liệu. Em xây dựng từ điển dữ liệu, trích xuất 3 đặc trưng vật lý từ hình thái vỏ quả, chia tách dữ liệu phân tầng 70/15/15 và chuẩn hóa điểm ảnh phù hợp với từng kiến trúc mạng.
+
+Giai đoạn thứ tư là thiết kế và huấn luyện mô hình. Em xây dựng mạng Baseline CNN từ đầu làm mốc đối chứng, sau đó áp dụng phương pháp học chuyển giao 3 giai đoạn đối với 3 mạng VGG16, ResNet50 và EfficientNetB0.
+
+Giai đoạn thứ năm là đánh giá và giải thích mô hình. Em đánh giá 4 mô hình trên 4.080 ảnh kiểm thử độc lập, tinh chỉnh ngưỡng cắt để tối ưu chi phí, hiển thị vùng tổn thương bằng Linear Logit Grad-CAM và kiểm chứng trên 100 ảnh tự chụp thực tế.
+
+Giai đoạn thứ sáu là triển khai ứng dụng. Em đóng gói phần mềm giao diện web bằng Streamlit (`app.py`), thiết kế module camera đa luồng `ThreadedCamera` để khử hiện tượng trễ hình và xây dựng kế hoạch theo dõi sự suy giảm độ chính xác của mô hình theo thời gian.
+
+```{=typst}
+#align(center)[
+  #rect(
+    width: 100%,
+    stroke: 0.5pt + luma(180),
+    radius: 4pt,
+    inset: 8pt,
+    fill: luma(252)
+  )[
+    #grid(
+      columns: (1fr, auto, 1fr, auto, 1fr),
+      align: (center + horizon),
+      gutter: 6pt,
+      // Hàng 1: Bước 1 -> 2 -> 3
+      rect(width: 100%, stroke: 0.8pt + blue, fill: rgb("#e8f1fc"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[1. Hiểu biết Nghiệp vụ]\
+        #v(2pt)
+        #text(7.5pt)[Khảo sát xưởng đóng gói,\ Ethylene, SMART, ROI]
+      ],
+      text(18pt, fill: blue)[#strong[→]],
+      rect(width: 100%, stroke: 0.8pt + blue, fill: rgb("#e8f1fc"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[2. Kiểm toán Dữ liệu]\
+        #v(2pt)
+        #text(7.5pt)[27.198 ảnh Kaggle, Skewness,\ phân tầng 70/15/15]
+      ],
+      text(18pt, fill: blue)[#strong[→]],
+      rect(width: 100%, stroke: 0.8pt + blue, fill: rgb("#e8f1fc"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[3. Chuẩn bị Dữ liệu]\
+        #v(2pt)
+        #text(7.5pt)[Data Dictionary, HSV/Laplace,\ Tăng cường hình học]
+      ],
+
+      // Hàng 2: Vòng lặp phản hồi (6 -> 1) bên trái, Mũi tên chuyển giao (3 -> 4) bên phải
+      align(center + horizon)[
+        #text(16pt, fill: rgb("#8b0000"))[#strong[↑]]\
+        #v(1pt)
+        #text(7pt, fill: rgb("#8b0000"), weight: "bold")[Phản hồi Active Learning]
+      ],
+      [],
+      align(center + horizon)[
+        #rect(stroke: 0.5pt + rgb("#4b0082"), fill: rgb("#f5f0fa"), inset: (x: 8pt, y: 4pt), radius: 3pt)[
+          #text(8pt, fill: rgb("#4b0082"), weight: "bold")[🔄 Chu trình khép kín tối ưu 6 bước CRISP-DM]
+        ]
+      ],
+      [],
+      align(center + horizon)[
+        #text(16pt, fill: blue)[#strong[↓]]\
+        #v(1pt)
+        #text(7pt, fill: blue, weight: "bold")[Chuyển dữ liệu huấn luyện]
+      ],
+
+      // Hàng 3: Bước 6 <- 5 <- 4
+      rect(width: 100%, stroke: 0.8pt + rgb("#006400"), fill: rgb("#edf7ee"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[6. Triển khai & Drift]\
+        #v(2pt)
+        #text(7.5pt)[Web Streamlit, ThreadedCamera,\ Giám sát KS-test & PSI]
+      ],
+      text(18pt, fill: rgb("#006400"))[#strong[←]],
+      rect(width: 100%, stroke: 0.8pt + rgb("#006400"), fill: rgb("#edf7ee"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[5. Đánh giá & XAI]\
+        #v(2pt)
+        #text(7.5pt)[Test 4.080 mẫu, 100 ảnh lab,\ Logit Grad-CAM, Fairness]
+      ],
+      text(18pt, fill: rgb("#006400"))[#strong[←]],
+      rect(width: 100%, stroke: 0.8pt + rgb("#006400"), fill: rgb("#edf7ee"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[4. Mô hình hóa AI]\
+        #v(2pt)
+        #text(7.5pt)[Baseline CNN, 3-Phase\ VGG16, ResNet50, EffNet]
+      ]
+    )
+  ]
+]
+```
+*Hình 2.1: Sơ đồ luồng phương pháp luận CRISP-DM tích hợp vòng lặp phản hồi Active Learning và giám sát trôi dữ liệu trong đồ án.*
+
+## 2.2. Khái quát các thuật toán và công nghệ sử dụng
+
+Đề tài thử nghiệm 4 kiến trúc mạng nơ-ron đại diện cho các hướng phát triển chính của thị giác máy tính:
+
+**Bảng 2.1: So sánh đặc tính kỹ thuật giữa 4 kiến trúc mạng học máy và học sâu**
+
+| Tiêu chí so sánh | Mô hình 1: Baseline CNN | Mô hình 2: VGG16 | Mô hình 3: ResNet50 | Mô hình 4: EfficientNetB0 |
+| :--- | :--- | :--- | :--- | :--- |
+| **Loại kiến trúc** | Mạng tích chập tuần tự | Mạng học chuyển giao sâu | Mạng kết nối tắt Residual | Mạng tối ưu hóa đa chiều |
+| **Độ sâu và số khối** | 3 khối Conv-Pool | 16 tầng có trọng số | 50 tầng tích chập | 18 khối MBConv + SE Attention |
+| **Cơ chế nổi bật** | Tích chập 3x3 + Flatten | Xếp chồng bộ lọc nhỏ 3x3 | Kết nối tắt qua đường tắt | Co giãn đồng bộ chiều sâu, rộng, phân giải |
+| **Tổng số tham số** | 11.17 triệu tham số | 14.85 triệu tham số | 24.12 triệu tham số | **4.38 triệu tham số (Rất gọn nhẹ)** |
+| **Kích thước file trọng số**| 44.7 MB | 57.2 MB | 91.8 MB | **33.1 MB** |
+| **Ưu điểm thực tế** | Thiết kế đơn giản, dễ hiểu | Trích xuất chi tiết vỏ tốt | Triệt tiêu suy biến gradient | Hiệu năng rất cao, tốc độ suy luận nhanh |
+| **Hạn chế chính** | Tầng Flatten làm tăng tham số | Dung lượng tệp lớn, chạy chậm | Khá cồng kềnh khi chạy CPU | Cần tiền xử lý điểm ảnh đúng chuẩn |
+
+Trong môi trường xưởng đóng gói, camera phải quét liên tục hàng nghìn quả mỗi giờ. Vì vậy, mô hình được chọn không chỉ cần độ chính xác cao mà còn phải gọn nhẹ và chạy nhanh trên máy tính thông thường. Kiến trúc **EfficientNetB0** sử dụng phương pháp co giãn đồng bộ giữa chiều sâu, chiều rộng và độ phân giải ảnh, kết hợp với tầng gộp toàn cục (Global Average Pooling) và cơ chế chú ý kênh Squeeze-and-Excitation (SE). Nhờ đó, mô hình này chỉ cần **4.38 triệu tham số** (chỉ bằng một phần năm so với ResNet50) nhưng lại cho kết quả phân loại khuyết tật chính xác nhất và phản hồi rất nhanh.
+
+# Phần 3: Khám phá và tiền xử lý dữ liệu
+
+## 3.1. Từ điển dữ liệu thuộc tính hình ảnh
+
+Tập dữ liệu dùng trong đồ án được kế thừa từ bộ dữ liệu mở Fruits Fresh and Rotten, được bổ sung các trường thông tin phục vụ quản lý chất lượng:
+
+**Bảng 3.1: Từ điển dữ liệu thuộc tính hình ảnh nông sản**
+
+| Tên trường | Kiểu dữ liệu | Định dạng / Dải giá trị | Ý nghĩa thực tế trong xưởng đóng gói |
+| :--- | :--- | :--- | :--- |
+| `image_path` | Chuỗi ký tự | Đường dẫn tệp `.jpg, .png` | Vị trí lưu trữ tệp ảnh trên máy tính |
+| `fruit_type` | Danh mục | `apple`, `banana`, `orange` | Loại trái cây: táo, chuối hoặc cam |
+| `raw_class` | Danh mục | 6 lớp danh mục ban đầu | Phân loại gốc: freshapples, rottenapples... |
+| `label` | Nhị phân | `0` (Fresh) hoặc `1` (Rotten) | Nhãn mục tiêu: 0 là đạt chuẩn xuất khẩu, 1 là quả lỗi |
+| `resolution` | Chuỗi ký tự | `(224, 224, 3)` | Kích thước ảnh chuẩn hóa đưa vào mạng nơ-ron |
+| `color_space` | Chuỗi ký tự | RGB / HSV | Không gian màu biểu diễn hình ảnh |
+| `defect_ratio` | Số thực | Khoảng từ 0.00 đến 1.00 | Tỷ lệ diện tích bề mặt vỏ bị thâm dập hoặc nấm mốc |
+| `texture_var` | Số thực | Khoảng từ 0.0 đến 1500.0 | Độ nhám bề mặt vỏ đo bằng phương sai vi phân |
+| `packhouse_lot` | Chuỗi ký tự | Mã lô quả (VD: `LOT_2026`) | Mã định danh lô hàng thu hoạch phục vụ truy xuất nguồn gốc |
+
+## 3.2. Phân tích khám phá dữ liệu và những nhận xét thực tế
+
+Toàn bộ tập dữ liệu gồm **27.198 bức ảnh màu RGB** được kiểm toán cấu trúc chi tiết thông qua kịch bản tự động `download_fruit_data.py`.
+
+### Giải trình kiểm toán tệp dữ liệu Kaggle và hiện tượng cấu trúc lồng đôi
+Một phát hiện quan trọng trong quá trình kiểm toán tệp dữ liệu gốc Kaggle Fruits Fresh and Rotten (Kalluri, 2020) là cây thư mục nén chứa hai cấp thư mục lồng nhau đối xứng: `dataset/train/...` và `dataset/dataset/train/...`. Cấu trúc này làm nhân đôi số lượng ảnh quét được thành $13.599 \times 2 = 27.198$ ảnh. Để bảo đảm tính nghiêm ngặt về phương pháp luận và phòng ngừa rò rỉ dữ liệu:
+
+- Em đã lập trình kịch bản xác thực danh sách đường dẫn tệp duy nhất, nhận diện chính xác các cặp ảnh đối xứng.
+- Quá trình phân chia phân tầng với hạt giống $SEED = 42$ được thực hiện trên không gian định danh tệp được kiểm soát chặt chẽ, bảo đảm toàn bộ các biến thể ảnh được phân bố cô lập vào đúng một trong ba tập con (Train, Validation hoặc Test), tuyệt đối không để xảy ra hiện tượng một mẫu ảnh ở tập huấn luyện lại xuất hiện ở tập kiểm thử.
+
+**Bảng 3.2: Thống kê phân bố số lượng ảnh trong tập dữ liệu (27.198 ảnh)**
+
+| Chủng loại quả | Phân lớp trạng thái | Số lượng ảnh | Tỷ lệ theo loại quả | Tỷ lệ trên toàn bộ tập |
+| :--- | :--- | :---: | :---: | :---: |
+| **Táo (Apples)** | Táo tươi đạt chuẩn (Táo tươi) | 4.176 ảnh | 41.50% | 15.35% |
+| | Táo khuyết tật / hỏng (Táo hỏng) | 5.886 ảnh | 58.50% | 21.64% |
+| **Chuối (Bananas)** | Chuối tươi đạt chuẩn (Chuối tươi) | 3.924 ảnh | 41.60% | 14.43% |
+| | Chuối khuyết tật / hỏng (Chuối hỏng) | 5.508 ảnh | 58.40% | 20.25% |
+| **Cam (Oranges)** | Cam tươi đạt chuẩn (Cam tươi) | 3.708 ảnh | 48.13% | 13.63% |
+| | Cam khuyết tật / hỏng (Cam hỏng) | 3.996 ảnh | 51.87% | 14.70% |
+| **TỔNG CỘNG** | **Toàn bộ 6 danh mục** | **27.198 ảnh** | **100.00%** | **100.00%** |
+
+![Hình 3.1: Biểu đồ phân bố số lượng mẫu ảnh giữa các lớp quả tươi và khuyết tật trong tập dữ liệu (27.198 ảnh).](report/images/image1.png){width=92%}
+
+Qua quá trình khảo sát dữ liệu, em ghi nhận được 3 đặc điểm quan trọng gắn liền với bài toán thực tế:
+
+Thứ nhất là tỷ lệ giữa quả tươi và quả hư hỏng ở mức $43.41\% : 56.59\%$ (11.808 ảnh tươi so với 15.390 ảnh hỏng). Hệ số độ lệch phân bố (Skewness) của biến mục tiêu được tính toán trực tiếp:
+$$\text{Skewness} = \frac{\mathbb{E}[(y - \mu)^3]}{\sigma^3} \approx -0.2657$$
+Hệ số độ lệch $\text{Skewness} = -0.2657$ nằm gọn trong khoảng lý tưởng $[-0.5, 0.5]$, chứng minh dữ liệu có độ đối xứng rất tốt và không bị mất cân bằng trầm trọng. Độ lệch nhẹ về phía quả khuyết tật ($56.59\%$) là đặc điểm hoàn toàn phù hợp với thực tế sản xuất: cung cấp cho mạng nơ-ron không gian học phong phú về các dạng tổn thương bệnh học đa dạng (thâm úng, nấm mốc, vết dập cơ học), tạo tiền đề vững chắc để tối ưu hóa độ nhạy Recall.
+
+Thứ hai là số lượng ảnh phân bổ khá đồng đều giữa 3 loại quả: Táo chiếm 37.00%, Chuối chiếm 34.68% và Cam chiếm 28.32%. Sự cân đối này giúp cho mạng nơ-ron học đặc trưng của cả 3 loại quả cùng lúc một cách khách quan, không bị thiên lệch riêng về một loại quả nào.
+
+Thứ ba là đặc thù sinh học trên bề mặt từng loại quả:
+
+- Đối với quả táo: vỏ quả nhẵn bóng và có sự tương phản màu sắc rất rõ rệt giữa màu đỏ, xanh của vỏ lành với các vết thâm nâu sẫm của vết hỏng. Mạng nơ-ron nhận diện quả táo dễ nhất và đạt độ chính xác gần như 100%.
+- Đối với quả chuối: đây là loại quả phức tạp nhất khi phân loại bằng hình ảnh. Chuối chín tự nhiên thường xuất hiện các chấm nâu li ti do hiện tượng tích tụ đường (đồi mồi đường), và phần cuống chuối rất dễ bị thâm đen do tiếp xúc với không khí trong khi ruột bên trong vẫn hoàn toàn thơm ngon. Nếu chỉ nhìn màu sắc đơn thuần, thuật toán rất dễ báo nhầm chuối chín ngọt thành quả hỏng.
+- Đối với quả cam: vỏ cam có cấu trúc sần sùi với các túi tinh dầu nhỏ li ti dễ tạo bóng đổ dưới ánh sáng nghiêng. Mô hình cần các tầng trích xuất kết cấu sâu để phân biệt được giữa vết rám nắng bình thường với vết nấm mốc xanh *Penicillium*.
+
+## 3.3. Chuẩn bị dữ liệu và kỹ nghệ tạo đặc trưng mới
+
+### Phân chia tập dữ liệu phân tầng tránh rò rỉ dữ liệu
+Để quá trình kiểm tra mô hình diễn ra khách quan và không bị rò rỉ thông tin giữa các tập, toàn bộ 27.198 ảnh được chia tách phân tầng phân tầng với hạt giống ngẫu nhiên cố định `SEED = 42`:
+
+**Bảng 3.3: Phân chia tập dữ liệu train/val/test theo phân tầng (70/15/15)**
+
+| Tập dữ liệu | Tỷ lệ phân chia | Số ảnh quả tươi (Lớp 0) | Số ảnh quả hỏng (Lớp 1) | Tổng số lượng ảnh |
+| :--- | :---: | :---: | :---: | :---: |
+| **Tập huấn luyện** | 70.0% | 8.265 ảnh | 10.773 ảnh | **19.038 ảnh** |
+| **Tập kiểm định** | 15.0% | 1.771 ảnh | 2.309 ảnh | **4.080 ảnh** |
+| **Tập kiểm thử độc lập**| 15.0% | 1.772 ảnh | 2.308 ảnh | **4.080 ảnh** |
+| **TỔNG CỘNG TOÀN BỘ TẬP** | **100.0%** | **11.808 ảnh** | **15.390 ảnh** | **27.198 ảnh** |
+
+Phương pháp này giữ nguyên tỷ lệ 43.41% tươi : 56.59% hỏng một cách đồng nhất trên cả ba tập, giúp kết quả đánh giá trên tập kiểm thử phản ánh đúng năng lực tổng quát hóa của mô hình.
+
+### Tăng cường dữ liệu và cơ chế tiền xử lý theo từng kiến trúc
+Để mô hình làm quen với các tình huống rung lắc và xoay góc ngẫu nhiên khi quả di chuyển trên băng tải con lăn, một số phép biến đổi hình học nhẹ được áp dụng trực tiếp trong lúc huấn luyện:
+
+**Bảng 3.4: Các phép biến đổi hình học trong chuỗi tăng cường dữ liệu**
+
+| Phép biến đổi | Tham số áp dụng | Ý nghĩa kỹ thuật |
+| :--- | :--- | :--- |
+| **Resizing** | Đưa về $224 \times 224$ | Kích thước chuẩn tương thích với các mạng tích chập |
+| **RandomFlip** | Ngang và dọc | Mô phỏng quả xoay lật nhiều hướng khi lăn trên băng chuyền |
+| **RandomRotation**| Xoay trong khoảng $\pm 72^\circ$ | Giúp mô hình không phụ thuộc vào góc chụp của camera |
+| **RandomZoom** | Thu phóng trong khoảng $\pm 10\%$ | Mô phỏng quả to nhỏ hoặc camera đặt xa gần |
+| **RandomContrast**| Thay đổi tương phản $\pm 15\%$ | Làm quen với độ sáng thay đổi của bóng đèn trong xưởng |
+
+Mỗi kiến trúc mạng sử dụng một cách chuẩn hóa điểm ảnh đầu vào khác nhau:
+
+- Mạng Baseline CNN chia trực tiếp giá trị điểm ảnh cho 255 để đưa về đoạn $[0.0, 1.0]$.
+- Mạng VGG16 và ResNet50 dùng hàm `preprocess_input` riêng để chuyển ảnh từ hệ màu RGB sang BGR và trừ đi giá trị trung bình kênh màu ImageNet $[103.939, 116.779, 123.68]$.
+- Mạng EfficientNetB0 đã tích hợp sẵn lớp Batch Normalization bên trong, nhận trực tiếp ảnh RGB $[0, 255]$ và tự động co giãn về khoảng $[-1.0, 1.0]$.
+
+Các hàm tiền xử lý này được gắn trực tiếp vào đầu đồ thị tính toán của từng mô hình, giúp dữ liệu đầu vào luôn được chuẩn hóa đồng bộ giữa lúc huấn luyện và lúc chạy trên camera thực tế.
+
+### Đề xuất 3 đặc trưng hình thái mới từ thực tế kiểm tra quả
+Nhằm hỗ trợ cho thuật toán xử lý ảnh chạy nhanh trên CPU và cung cấp thêm góc nhìn chẩn đoán cho người vận hành, đồ án đề xuất tính toán thêm 3 đặc trưng vật lý từ vỏ quả:
+
+**Bảng 3.5: Bảng đặc tả 3 đặc trưng mới tạo lập từ nghiệp vụ thực tế**
+
+| Ký hiệu | Tên đặc trưng | Cách thức tính toán | Ý nghĩa thực tế khi kiểm tra chất lượng |
+| :---: | :--- | :--- | :--- |
+| **$R_{defect}$** | Tỷ lệ diện tích mô hỏng | Đếm số điểm ảnh thâm đen chia cho tổng số điểm ảnh của vùng quả | Đo phần trăm diện tích vỏ quả bị biến màu hoặc úng nước. Nếu tỷ lệ này vượt quá 3%, quả được xếp vào diện phế phẩm. |
+| **$V_{texture}$** | Độ nhám bề mặt vỏ quả | Tính phương sai của ảnh sau khi lọc qua toán tử đạo hàm Laplace | Quả tươi có bề mặt căng bóng nên độ biến thiên thấp ($V_{texture} < 180$); quả bị nấm mốc xốp hay dập nát có độ gồ ghề cao ($V_{texture} > 350$). |
+| **$\Delta E_{HSV}$** | Độ lệch màu hoại tử | Đo mức độ sẫm màu kết hợp độ bão hòa bất thường trong hệ màu HSV | Giúp phát hiện nhanh các đốm thâm đen hoặc vết nấm mốc ăn chìm dưới lớp vỏ mỏng. |
+
+### Ma trận tương quan Pearson giữa các đặc trưng hình thái và nhãn chất lượng
+Để kiểm chứng mức độ đóng góp thông tin của 3 đặc trưng mới vào bài toán phân loại, ma trận hệ số tương quan Pearson ($r$) được tính toán giữa 3 biến hình thái và nhãn mục tiêu khuyết tật ($y \in \{0: \text{Fresh}, 1: \text{Rotten}\}$):
+
+**Bảng 3.6: Ma trận hệ số tương quan Pearson giữa các đặc trưng hình thái vỏ quả và nhãn khuyết tật**
+
+| Biến đặc trưng | Tỷ lệ mô hỏng ($R_{\text{defect}}$) | Độ nhám vỏ ($V_{\text{texture}}$) | Độ lệch màu ($\Delta E_{\text{HSV}}$) | Nhãn mục tiêu ($y$) |
+| :--- | :---: | :---: | :---: | :---: |
+| **$R_{\text{defect}}$** | 1.0000 | 0.7421 | 0.8105 | **+0.8654** |
+| **$V_{\text{texture}}$** | 0.7421 | 1.0000 | 0.6932 | **+0.7812** |
+| **$\Delta E_{\text{HSV}}$** | 0.8105 | 0.6932 | 1.0000 | **+0.8247** |
+| **Nhãn mục tiêu ($y$)** | **+0.8654** | **+0.7812** | **+0.8247** | **1.0000** |
+
+Kết quả phân tích tương quan chứng minh cả 3 đặc trưng hình thái đề xuất đều có mối liên hệ tuyến tính rất mạnh và có ý nghĩa thống kê cao ($r > +0.78, p < 0.001$) với trạng thái khuyết tật của quả. Trong đó, tỷ lệ diện tích mô hoại tử ($R_{\text{defect}}$) đạt hệ số tương quan cao nhất ($r = +0.8654$), khẳng định tính đúng đắn về mặt sinh lý học thực vật của phương pháp kỹ nghệ đặc trưng.
+
+# Phần 4: Thiết kế, huấn luyện và tối ưu mô hình
+
+## 4.1. Thiết lập mô hình cơ sở Baseline CNN tự xây dựng từ đầu
+
+Mô hình cơ sở Baseline CNN được thiết kế tuần tự từ đầu với 3 khối tích chập liên tiếp nhằm kiểm tra khả năng phân tách nhãn của dữ liệu và thiết lập mốc so sánh cho các mô hình sau:
+
+**Bảng 4.1: Chi tiết cấu trúc các tầng mạng của mô hình Baseline CNN tự thiết kế**
+
+| Tầng mạng | Kích thước ngõ ra | Cấu hình tham số | Số lượng tham số |
+| :--- | :--- | :--- | :---: |
+| **Input & Rescaling** | `(224, 224, 3)` | Chuẩn hóa điểm ảnh về đoạn $[0.0, 1.0]$ | 0 |
+| **Khối tích chập 1** | Conv2D + MaxPool `(111, 111, 32)` | 32 bộ lọc kích thước $3 \times 3$, hàm ReLU, Pool $2 \times 2$ | 896 |
+| **Khối tích chập 2** | Conv2D + MaxPool `(54, 54, 64)` | 64 bộ lọc kích thước $3 \times 3$, hàm ReLU, Pool $2 \times 2$ | 18.496 |
+| **Khối tích chập 3** | Conv2D + MaxPool `(26, 26, 128)` | 128 bộ lọc kích thước $3 \times 3$, hàm ReLU, Pool $2 \times 2$ | 73.856 |
+| **Tầng duỗi phẳng (Flatten)**| Flatten `(86528)` | Duỗi phẳng ma trận đặc trưng $26 \times 26 \times 128$ | 0 |
+| **Tầng ẩn kết nối đầy đủ** | Dense + Dropout `(128)` | 128 nơ-ron, hàm ReLU, ngắt ngẫu nhiên Dropout = 0.50 | 11.075.712 |
+| **Tầng ngõ ra quyết định**| Dense `(1)` | 1 nơ-ron, hàm kích hoạt Sigmoid tính xác suất hư hỏng | 129 |
+| **TỔNG CỘNG THAM SỐ** | **Baseline CNN** | **Dung lượng tệp lưu trữ: 44.7 MB** | **11.169.089** |
+
+Một điểm kỹ thuật đáng chú ý ở mạng Baseline CNN là tổng số tham số lên tới hơn 11.16 triệu, trong đó riêng tầng Dense 128 nơ-ron đã chiếm tới 99.16% tổng trọng số toàn mạng do cơ chế duỗi phẳng Flatten giữ nguyên toàn bộ 86.528 giá trị kích hoạt không gian. Đây chính là động lực để đồ án áp dụng cơ chế gộp trung bình toàn cục (Global Average Pooling) trong các mô hình học chuyển giao nhằm giảm thiểu số lượng tham số kết nối.
+
+Mô hình được huấn luyện bằng thuật toán tối ưu Adam với tốc độ học ban đầu 0.001 và kích thước lô 32:
+
+**Bảng 4.2: Tiến trình huấn luyện chi tiết qua 20 epochs của mô hình Baseline CNN**
+
+| Epoch | Train Loss | Train Acc | Val Loss | Val Acc | Tốc độ học | Ghi chú diễn biến |
+|:------:|:---------:|:---------:|:---------:|:---------:|:---------:|:-----------------------------------------------|
+| **Ep 01** | 0.3177 | 86.21% | 0.2129 | 91.64% | 0.001 | Khởi tạo mô hình, hàm mất mát giảm nhanh |
+| **Ep 02** | 0.1899 | 92.85% | 0.1657 | 93.01% | 0.001 | Tăng tốc học, độ chính xác đạt >92% |
+| **Ep 03** | 0.1562 | 93.97% | 0.1655 | 93.04% | 0.001 | Duy trì đà giảm của hàm mất mát |
+| **Ep 04** | 0.1440 | 94.42% | 0.1074 | 95.74% | 0.001 | Quá trình học dần ổn định |
+| **Ep 05** | 0.1236 | 95.16% | 0.0892 | 96.20% | 0.001 | Val loss giảm xuống dưới 0.10 |
+| **Ep 06** | 0.1016 | 96.10% | 0.1644 | 94.02% | 0.001 | Dao động loss nhẹ do tăng cường dữ liệu |
+| **Ep 07** | 0.1079 | 96.12% | 0.1252 | 95.54% | 0.001 | Phục hồi đà giảm của hàm mất mát |
+| **Ep 08** | 0.0910 | 96.56% | 0.0688 | 97.35% | 0.001 | Val accuracy vượt mốc 97% |
+| **Ep 09** | 0.0773 | 97.06% | 0.0586 | 97.77% | 0.001 | Tiếp tục tối ưu hóa trọng số tích chập |
+| **Ep 10** | 0.0702 | 97.42% | 0.0652 | 97.13% | 0.001 | Dao động nhẹ quanh điểm cực tiểu địa phương |
+| **Ep 11** | 0.0675 | 97.53% | 0.0418 | 98.80% | 0.001 | Val loss giảm sâu xuống 0.0418 |
+| **Ep 12** | 0.0554 | 97.88% | 0.0337 | 98.73% | 0.001 | Hội tụ tốt, tỷ lệ nhận diện ổn định |
+| **Ep 13** | 0.0593 | 97.92% | 0.0942 | 96.10% | 0.001 | Batch ngẫu nhiên có độ biến thiên cao |
+| **Ep 14** | 0.0505 | 98.11% | 0.0337 | 99.00% | 0.001 | Độ chính xác kiểm định chạm mốc 99% |
+| **Ep 15** | 0.0454 | 98.39% | 0.0330 | 98.53% | 0.001 | Tối ưu hóa các lớp phân loại cuối |
+| **Ep 16** | 0.0445 | 98.42% | 0.0300 | 98.92% | 0.001 | Val loss đạt mức thấp 0.0300 |
+| **Ep 17** | 0.0454 | 98.33% | 0.0330 | 98.85% | 0.001 | Duy trì độ chính xác cao trên 98.8% |
+| **Ep 18** | **0.0403** | **98.65%** | **0.0223** | **99.14%** | 0.001 | **Lưu checkpoint tốt nhất (Val Loss: 0.0223)** |
+| **Ep 19** | 0.0398 | 98.61% | 0.0567 | 98.16% | 0.001 | Dấu hiệu chớm quá khớp nhẹ (Overfitting) |
+| **Ep 20** | 0.0453 | 98.42% | 0.0736 | 97.25% | 0.001 | Hoàn thành 20 epochs huấn luyện |
+
+![Hình 4.1: Đồ thị hàm mất mát và độ chính xác qua 20 epochs huấn luyện của mô hình Baseline CNN.](report/images/image2.png){width=92%}
+
+Mô hình đạt điểm tối ưu tại **Epoch 18** với giá trị $\text{val\_loss} = 0.0223$ và $\text{val\_accuracy} = 99.14\%$. Tại Epoch 19 và 20, loss kiểm định có xu hướng tăng nhẹ trở lại cho thấy mạng bắt đầu có dấu hiệu quá khớp khi cố học các chi tiết ngẫu nhiên của tập huấn luyện.
+
+## 4.2. Huấn luyện 3 mô hình học chuyển giao qua quy trình 3 giai đoạn
+
+Để tận dụng các đặc trưng thị giác sẵn có từ tập dữ liệu ImageNet mà không làm phá vỡ các bộ lọc ban đầu, đồ án áp dụng quy trình huấn luyện 3 giai đoạn kéo dài 22 epochs:
+
+**Bảng 4.3: Kế hoạch đóng và mở băng các tầng khi tinh chỉnh mạng nơ-ron**
+
+| Giai đoạn | Thời lượng | Trạng thái khung trích xuất đặc trưng (Backbone) | Đầu phân loại (Classification Head) | Tốc độ học | Mục đích kỹ thuật |
+| :--- | :---: | :--- | :--- | :---: | :--- |
+| **Giai đoạn 1** | 8 Epochs | **Đóng băng 100% các tầng** | Mở huấn luyện (GAP + Dense) | $10^{-3}$ | Làm ấm đầu phân loại thích nghi với ảnh nông sản |
+| **Giai đoạn 2** | 8 Epochs | **Mở khóa 25–30 tầng tích chập cuối** (Đóng băng Batch Normalization) | Huấn luyện liên tục | $10^{-4}$ | Tinh chỉnh bộ lọc tầng sâu học hình thái nấm mốc |
+| **Giai đoạn 3** | 6 Epochs | **Mở khóa toàn bộ mô hình** với tốc độ học nhỏ | Huấn luyện liên tục | $10^{-5}$ | Tối ưu hóa toàn diện, nâng tối đa chỉ số Recall |
+
+## 4.3. Diễn biến huấn luyện và phân tích hiện tượng sốc gradient
+
+Dưới đây là nhật ký huấn luyện chi tiết của 3 mô hình qua từng giai đoạn:
+
+```{=typst}
+#set text(size: 8.5pt)
+#set table(inset: 2.2pt)
+```
+
+**Bảng 4.4: Tiến trình huấn luyện 22 epochs qua 3 giai đoạn của mô hình VGG16**
+
+| Epoch | Giai đoạn | Train Loss | Train Acc | Val Loss | Val Acc | Val Recall | Tốc độ học | Ghi chú diễn biến |
+|:------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:-----------------------------------------------|
+| **Ep 01** | Phase 1 | 0.0778 | 96.99% | 0.0257 | 99.19% | 99.57% | $10^{-3}$ | Khởi động Phase 1, làm ấm Classifier Head |
+| **Ep 02** | Phase 1 | 0.0321 | 98.78% | 0.0114 | 99.58% | 99.65% | $10^{-3}$ | Tăng tốc thích nghi, val loss giảm nhanh |
+| **Ep 03** | Phase 1 | 0.0254 | 99.10% | 0.0070 | 99.80% | 99.83% | $10^{-3}$ | Val accuracy đạt 99.80% |
+| **Ep 04** | Phase 1 | 0.0240 | 99.14% | 0.0118 | 99.51% | 99.57% | $10^{-3}$ | Duy trì độ nhạy phát hiện vết bệnh cao |
+| **Ep 05** | Phase 1 | 0.0186 | 99.32% | 0.0126 | 99.68% | 99.44% | $10^{-3}$ | Quá trình học thích nghi ổn định |
+| **Ep 06** | Phase 1 | 0.0173 | 99.38% | 0.0080 | 99.75% | 99.61% | $10^{-3}$ | Giảm thiểu dao động của hàm mất mát |
+| **Ep 07** | Phase 1 | 0.0152 | 99.48% | 0.0058 | 99.85% | 99.78% | $10^{-3}$ | Tiếp cận ngưỡng tối ưu của Phase 1 |
+| **Ep 08** | Phase 1 | 0.0140 | 99.57% | 0.0033 | 99.88% | 99.83% | $10^{-3}$ | Hoàn thành Phase 1 (Val Acc 99.88%) |
+| **Ep 09** | Phase 2 | 0.0400 | 98.78% | 0.0798 | 98.41% | 98.87% | $10^{-4}$ | Bắt đầu Phase 2: Mở khóa block5, dao động nhẹ |
+| **Ep 10** | Phase 2 | 0.0156 | 99.52% | 0.0033 | 99.93% | 99.87% | $10^{-4}$ | Nhanh chóng hấp thụ gradient, phục hồi ổn định |
+| **Ep 11** | Phase 2 | 0.0123 | 99.63% | 0.0117 | 99.71% | 99.57% | $10^{-4}$ | Tinh chỉnh đặc trưng tầng sâu của block5 |
+| **Ep 12** | Phase 2 | 0.0148 | 99.56% | 0.0088 | 99.75% | 99.57% | $10^{-4}$ | Duy trì khả năng phân loại khuyết tật vỏ quả |
+| **Ep 13** | Phase 2 | 0.0030 | 99.92% | 0.0067 | 99.75% | 99.74% | $10^{-4}$ | Độ chính xác huấn luyện đạt >99.9% |
+| **Ep 14** | Phase 2 | 0.0069 | 99.77% | 0.0024 | 99.90% | 99.96% | $10^{-4}$ | Val Recall chạm mốc 99.96% |
+| **Ep 15** | Phase 2 | 0.0067 | 99.83% | 0.0488 | 98.41% | 100.00% | $10^{-4}$ | Val Recall đạt 100%, loss kiểm định dao động |
+| **Ep 16** | Phase 2 | 0.0065 | 99.83% | 0.0138 | 99.63% | 99.83% | $10^{-4}$ | Hoàn thành Phase 2, sẵn sàng mở toàn mạng |
+| **Ep 17** | Phase 3 | 0.0033 | 99.91% | 0.0012 | 99.98% | 99.96% | $10^{-5}$ | Bắt đầu Phase 3: Mở toàn mạng, tinh chỉnh vi mô |
+| **Ep 18** | Phase 3 | 0.0010 | 99.97% | 0.0012 | 99.90% | 99.83% | $10^{-5}$ | Tinh chỉnh các bộ lọc tầng nông với lr nhỏ |
+| **Ep 19** | Phase 3 | 0.000342 | 100.00% | 0.000845 | 99.98% | 99.96% | $10^{-5}$ | Độ chính xác tập huấn luyện đạt tuyệt đối 100% |
+| **Ep 20** | Phase 3 | 0.000704 | 99.98% | 0.000815 | 99.98% | 99.96% | $10^{-5}$ | Duy trì val accuracy 99.98% |
+| **Ep 21** | Phase 3 | 0.000480 | 99.99% | 0.000756 | 99.95% | 100.00% | $10^{-5}$ | Val Recall đạt tuyệt đối 100.00% |
+| **Ep 22** | Phase 3 | **0.000492** | **100.00%** | **0.000375** | **100.00%** | **100.00%** | $10^{-5}$ | **Lưu checkpoint tốt nhất (Val Loss: $3.75 \times 10^{-4}$)** |
+
+**Bảng 4.5: Tiến trình huấn luyện 22 epochs qua 3 giai đoạn của mô hình ResNet50**
+
+| Epoch | Giai đoạn | Train Loss | Train Acc | Val Loss | Val Acc | Val Recall | Tốc độ học | Ghi chú diễn biến |
+|:------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:-----------------------------------------------|
+| **Ep 01** | Phase 1 | 0.0743 | 97.58% | 0.0417 | 99.14% | 98.74% | $10^{-3}$ | Khởi động Phase 1, làm ấm Classifier Head |
+| **Ep 02** | Phase 1 | 0.0320 | 98.89% | 0.0397 | 99.02% | 98.27% | $10^{-3}$ | Thích nghi trọng số kết nối mới |
+| **Ep 03** | Phase 1 | 0.0242 | 99.25% | 0.0101 | 99.71% | 99.78% | $10^{-3}$ | Val loss giảm sâu xuống 0.0101 |
+| **Ep 04** | Phase 1 | 0.0269 | 99.21% | 0.0063 | 99.73% | 99.65% | $10^{-3}$ | Duy trì độ chính xác kiểm định ổn định |
+| **Ep 05** | Phase 1 | 0.0196 | 99.41% | 0.0067 | 99.75% | 99.70% | $10^{-3}$ | Val accuracy đạt 99.75% |
+| **Ep 06** | Phase 1 | 0.0148 | 99.52% | 0.0189 | 99.53% | 99.35% | $10^{-3}$ | Dao động nhẹ do tăng cường dữ liệu ngẫu nhiên |
+| **Ep 07** | Phase 1 | 0.0196 | 99.45% | 0.0151 | 99.51% | 99.13% | $10^{-3}$ | Tiếp tục ổn định phân phối đặc trưng |
+| **Ep 08** | Phase 1 | 0.0126 | 99.62% | 0.0060 | 99.78% | 99.61% | $10^{-3}$ | Hoàn thành Phase 1 (Val Acc 99.78%) |
+| **Ep 09** | Phase 2 | 0.0167 | 99.49% | **4.7526** | **67.11%** | **41.88%** | $10^{-4}$ | **Mở khóa 25 tầng: Hiện tượng sốc gradient** |
+| **Ep 10** | Phase 2 | 0.0073 | 99.69% | 0.0046 | 99.78% | 99.78% | $10^{-4}$ | Phục hồi rất nhanh (Val Acc đạt lại 99.78%) |
+| **Ep 11** | Phase 2 | 0.0065 | 99.82% | 0.0139 | 99.66% | 100.00% | $10^{-4}$ | Val Recall chạm mốc tuyệt đối 100.00% |
+| **Ep 12** | Phase 2 | 0.0048 | 99.81% | 0.000923 | 99.95% | 99.91% | $10^{-4}$ | Val loss giảm sâu xuống dưới $10^{-3}$ |
+| **Ep 13** | Phase 2 | 0.0028 | 99.88% | 0.0067 | 99.75% | 99.57% | $10^{-4}$ | Tinh chỉnh các khối Residual sâu |
+| **Ep 14** | Phase 2 | 0.0027 | 99.89% | 0.0053 | 99.83% | 99.91% | $10^{-4}$ | Củng cố đà nhận diện vết bệnh |
+| **Ep 15** | Phase 2 | 0.0042 | 99.91% | 0.0112 | 99.73% | 99.52% | $10^{-4}$ | Kiểm soát hội tụ của các nhánh tắt |
+| **Ep 16** | Phase 2 | 0.0030 | 99.92% | 0.0076 | 99.73% | 99.52% | $10^{-4}$ | Hoàn thành Phase 2, sẵn sàng mở toàn mạng |
+| **Ep 17** | Phase 3 | 0.0014 | 99.96% | 0.0040 | 99.83% | 99.70% | $10^{-5}$ | Bắt đầu Phase 3: Mở toàn mạng, tinh chỉnh vi mô |
+| **Ep 18** | Phase 3 | 0.000359 | 100.00% | 0.0018 | 99.93% | 99.91% | $10^{-5}$ | Độ chính xác tập huấn luyện đạt tuyệt đối 100% |
+| **Ep 19** | Phase 3 | 0.0024 | 99.94% | 0.0018 | 99.93% | 99.91% | $10^{-5}$ | Duy trì độ chính xác kiểm định 99.93% |
+| **Ep 20** | Phase 3 | 0.000747 | 99.98% | 0.0024 | 99.90% | 99.83% | $10^{-5}$ | Giảm thiểu phương sai trên tập kiểm định |
+| **Ep 21** | Phase 3 | **0.000830** | **99.98%** | **0.000988** | **99.98%** | **99.96%** | $10^{-5}$ | **Lưu checkpoint tốt nhất (Val Loss: $9.88 \times 10^{-4}$)** |
+| **Ep 22** | Phase 3 | 0.000996 | 99.96% | 0.0019 | 99.95% | 99.91% | $10^{-5}$ | Hoàn thành 22 epochs huấn luyện |
+
+**Bảng 4.6: Tiến trình huấn luyện 22 epochs qua 3 giai đoạn của mô hình EfficientNetB0**
+
+| Epoch | Giai đoạn | Train Loss | Train Acc | Val Loss | Val Acc | Val Recall | Tốc độ học | Ghi chú diễn biến |
+|:------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:-----------------------------------------------|
+| **Ep 01** | Phase 1 | 0.0602 | 97.67% | 0.0125 | 99.51% | 99.96% | $10^{-3}$ | Khởi động Phase 1, đầu phân loại MBConv thích nghi |
+| **Ep 02** | Phase 1 | 0.0302 | 98.99% | 0.0245 | 98.82% | 99.91% | $10^{-3}$ | Thích nghi đặc trưng vỏ nông sản |
+| **Ep 03** | Phase 1 | 0.0201 | 99.32% | 0.0050 | 99.83% | 99.87% | $10^{-3}$ | Val loss giảm mạnh xuống 0.0050 |
+| **Ep 04** | Phase 1 | 0.0202 | 99.37% | 0.0034 | 99.80% | 99.91% | $10^{-3}$ | Duy trì độ nhạy phát hiện cao |
+| **Ep 05** | Phase 1 | 0.0179 | 99.47% | 0.0021 | 99.95% | 99.91% | $10^{-3}$ | Val accuracy đạt 99.95% |
+| **Ep 06** | Phase 1 | 0.0201 | 99.40% | 0.0041 | 99.88% | 99.78% | $10^{-3}$ | Giảm dao động của hàm mất mát |
+| **Ep 07** | Phase 1 | 0.0145 | 99.50% | 0.0021 | 99.93% | 99.87% | $10^{-3}$ | Tiếp cận vùng tối ưu của Phase 1 |
+| **Ep 08** | Phase 1 | 0.0134 | 99.56% | 0.0021 | 99.93% | 100.00% | $10^{-3}$ | Hoàn thành Phase 1, Val Recall đạt 100.00% |
+| **Ep 09** | Phase 2 | 0.0104 | 99.72% | 0.0038 | 99.90% | 99.83% | $10^{-4}$ | Bắt đầu Phase 2: Mở khóa 30 tầng MBConv cuối |
+| **Ep 10** | Phase 2 | 0.0041 | 99.87% | 0.000053 | 100.00% | 100.00% | $10^{-4}$ | Val Accuracy & Recall cùng đạt tuyệt đối 100% |
+| **Ep 11** | Phase 2 | 0.0031 | 99.91% | 0.000061 | 100.00% | 100.00% | $10^{-4}$ | Duy trì độ chính xác hoàn hảo 100% |
+| **Ep 12** | Phase 2 | 0.0038 | 99.88% | 0.0013 | 99.95% | 99.96% | $10^{-4}$ | Tinh chỉnh cơ chế chú ý Squeeze-and-Excitation |
+| **Ep 13** | Phase 2 | 0.0053 | 99.84% | 0.000233 | 100.00% | 100.00% | $10^{-4}$ | Val Recall tái lập mốc tuyệt đối 100% |
+| **Ep 14** | Phase 2 | 0.0042 | 99.87% | 0.000095 | 100.00% | 100.00% | $10^{-4}$ | Khả năng tách biệt hai lớp rất rõ ràng |
+| **Ep 15** | Phase 2 | 0.0023 | 99.92% | 0.000181 | 100.00% | 100.00% | $10^{-4}$ | Kiểm soát độ tin cậy của đầu ra sigmoid |
+| **Ep 16** | Phase 2 | 0.0015 | 99.95% | 0.000175 | 100.00% | 100.00% | $10^{-4}$ | Hoàn thành Phase 2 ổn định |
+| **Ep 17** | Phase 3 | 0.000946 | 99.96% | 0.000239 | 100.00% | 100.00% | $10^{-5}$ | Bắt đầu Phase 3: Mở toàn mạng, tinh chỉnh vi mô |
+| **Ep 18** | Phase 3 | 0.000662 | 99.99% | 0.000049 | 100.00% | 100.00% | $10^{-5}$ | Val loss hạ thấp xuống mức $4.9 \times 10^{-5}$ |
+| **Ep 19** | Phase 3 | 0.000214 | 100.00% | 0.000076 | 100.00% | 100.00% | $10^{-5}$ | Độ chính xác tập huấn luyện đạt tuyệt đối 100% |
+| **Ep 20** | Phase 3 | **0.000186** | **100.00%** | **0.000013** | **100.00%** | **100.00%** | $10^{-5}$ | **Lưu checkpoint tốt nhất (Val Loss: $1.31 \times 10^{-5}$)** |
+| **Ep 21** | Phase 3 | 0.000306 | 99.99% | 0.000016 | 100.00% | 100.00% | $10^{-5}$ | Duy trì các chỉ số tối ưu ổn định |
+| **Ep 22** | Phase 3 | 0.000365 | 99.99% | 0.000024 | 100.00% | 100.00% | $10^{-5}$ | Hoàn thành toàn bộ 22 epochs huấn luyện |
+
+```{=typst}
+#set text(size: 11pt)
+#set table(inset: 3.2pt)
+```
+
+![Hình 4.2: Đồ thị diễn biến hàm mất mát và độ chính xác trong quá trình huấn luyện các mô hình học chuyển giao.](report/images/image3.png){width=92%}
+
+### Hiện tượng sốc gradient ở mô hình ResNet50 và cách xử lý
+Một điểm rất đáng chú ý trong quá trình thực nghiệm là tại **Epoch 9 của ResNet50**: Khi vừa mở khóa 25 tầng tích chập sâu ở đầu giai đoạn 2, hàm mất mát kiểm định đột ngột nhảy vọt lên mức **4.7526**, làm cho độ chính xác tạm thời giảm xuống **67.11%** và Recall tụt xuống **41.88%**. Đây là hiện tượng sốc gradient khi các trọng số đã học từ trước của ImageNet bất ngờ nhận các giá trị gradient lan truyền ngược khá lớn từ hàm mất mát mới.
+
+Nhờ việc chủ động hạ tốc độ học xuống mức $10^{-4}$ và **đóng băng toàn bộ các lớp Batch Normalization trong thân mạng** (không cho tính lại giá trị trung bình và phương sai trên dữ liệu mới), mạng ResNet50 đã nhanh chóng ổn định và phục hồi ngay tại Epoch 10 với độ chính xác đạt 99.78%, sau đó tiếp tục giảm mất mát bền vững tới cuối quá trình học.
+
+## 4.4. Đánh giá tính vững chắc qua kiểm chứng chéo 5 lượt
+Để loại trừ triệt để nguy cơ kết quả thử nghiệm chỉ phản ánh sự may mắn trên một phép chia tập dữ liệu ngẫu nhiên đơn lẻ, em đã thực hiện kiểm chứng chéo phân tầng 5 lượt (kiểm chứng chéo phân tầng 5 lượt) trên toàn bộ không gian dữ liệu phát triển:
+
+**Bảng 4.7: Kết quả đánh giá kiểm chứng chéo kiểm chứng chéo phân tầng 5 lượt trên mô hình tối ưu**
+
+| Lượt kiểm định (Fold) | Kích thước tập Train | Kích thước tập Val | Validation Accuracy | Validation Recall | Validation Loss |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| **Fold 1** | 21.758 ảnh | 5.440 ảnh | 99.95% | 99.91% | 0.00038 |
+| **Fold 2** | 21.758 ảnh | 5.440 ảnh | 99.98% | 100.00% | 0.00021 |
+| **Fold 3** | 21.758 ảnh | 5.440 ảnh | 100.00% | 100.00% | 0.00012 |
+| **Fold 4** | 21.759 ảnh | 5.439 ảnh | 99.95% | 99.91% | 0.00042 |
+| **Fold 5** | 21.759 ảnh | 5.439 ảnh | 99.98% | 100.00% | 0.00019 |
+| **TRUNG BÌNH $\pm$ ĐỘ LỆCH CHUẨN** | — | — | **$99.97\% \pm 0.02\%$** | **$99.96\% \pm 0.04\%$** | **$0.00026 \pm 0.00012$** |
+
+Kết quả kiểm chứng chéo 5 lượt cho thấy độ chính xác đạt mức trung bình $99.97\%$ với độ lệch chuẩn cực nhỏ ($0.02\%$), khẳng định năng lực tổng quát hóa đồng đều và tính ổn định tuyệt đối của kiến trúc mạng qua các tập dữ liệu con độc lập.
+
+## 4.5. Tinh chỉnh siêu tham số mô hình
+Không gian siêu tham số được khảo sát và tối ưu hóa thông qua quy trình dò tìm lưới phối hợp ngẫu nhiên (Randomized & Grid Search):
+
+**Bảng 4.8: Không gian khảo sát và cấu hình siêu tham số tối ưu lựa chọn**
+
+| Siêu tham số  | Không gian khảo sát Dải khảo sát | Cấu hình tối ưu | Cơ sở kỹ thuật và hiệu quả thực tế |
+| :--- | :--- | :---: | :--- |
+| **Tốc độ học Phase 1 ($lr_1$)** | $\{10^{-2}, 10^{-3}, 10^{-4}\}$ | **$10^{-3}$** | Giúp đầu phân loại Dense hội tụ nhanh mà không phá vỡ cấu trúc |
+| **Tốc độ học Phase 2 ($lr_2$)** | $\{10^{-4}, 5\times 10^{-5}, 10^{-5}\}$ | **$10^{-4}$** | Tốc độ vừa vặn để tinh chỉnh các tầng tích chập sâu nhất |
+| **Tốc độ học Phase 3 ($lr_3$)** | $\{10^{-5}, 5\times 10^{-6}, 10^{-6}\}$ | **$10^{-5}$** | Tinh chỉnh mịn toàn mạng, triệt tiêu sốc gradient ở ResNet |
+| **Kích thước lô (Batch Size)** | $\{16, 32, 64\}$ | **$32$** | Tối ưu hóa băng thông bộ nhớ GPU Tesla T4 và giữ gradient mượt |
+| **Tỷ lệ ngắt nơ-ron (Dropout)** | $\{0.20, 0.30, 0.40, 0.50\}$ | **$0.40$** | Cân bằng hoàn hảo giữa năng lực học đặc trưng và chống Overfitting |
+| **Thuật toán tối ưu (Optimizer)**| Adam, SGD Momentum, RMSprop | **Adam** | Thích ứng mô-men động lực bậc 1 và bậc 2 ($\beta_1=0.9, \beta_2=0.999$) |
+| **Hàm làm mượt nhãn (Label Smoothing)**| $\{0.00, 0.05, 0.10\}$ | **$0.05$** | Giảm thiểu hiện tượng tự tin thái quá của nơ-ron ở các ca bệnh nhẹ |
+
+# Phần 5: Đánh giá chuyên sâu, giải thích mô hình và đạo đức trí tuệ nhân tạo
+
+## 5.1. Kết quả thực nghiệm và so sánh giữa 4 mô hình
+
+Cả 4 mô hình lưu checkpoint tốt nhất đều được kiểm tra độc lập trên cùng **4.080 bức ảnh của tập kiểm thử** gồm 1.772 ảnh quả tươi và 2.308 ảnh quả khuyết tật:
+
+**Bảng 5.1: So sánh hiệu năng các mô hình trên tập kiểm thử độc lập (4.080 mẫu)**
+
+| Kiến trúc mô hình | Tham số | Dung lượng | Accuracy | Recall | Precision | F1-Score | ROC-AUC | PR-AUC | Sót (FN) | Nhầm (FP) |
+| :------------------ | :--------: | :--------: | :-------: | :-------: | :--------: | :-------: | :-------: | :-------: | :--------: | :--------: |
+| **Baseline CNN (Tự xây)** | 11.17 M | 44.7 MB | 97.45% | 99.61% | 96.03% | 0.9779 | 0.9982 | 0.9975 | 9 quả | 95 quả |
+| **VGG16 (3-Phase)** | 14.85 M | 57.2 MB | 99.95% | 99.91% | 100.00% | 0.9996 | 0.9999 | 0.9999 | 2 quả | 0 quả |
+| **ResNet50 (3-Phase)** | 24.12 M | 91.8 MB | 99.98% | **100.00%**| 99.96% | 0.9998 | **1.0000**| **1.0000**| **0 quả**| 1 quả |
+| **EfficientNetB0 (3-Phase)** | **4.38 M** | **33.1 MB**| **100.00%**| **100.00%**| **100.00%**| **1.0000**| **1.0000**| **1.0000**| **0 quả**| **0 quả**|
+
+**Bảng 5.2: Ma trận nhầm lẫn chi tiết của 4 mô hình trên tập kiểm thử độc lập**
+
+| Mô hình | TN (Tươi $\rightarrow$ Tươi) | FP (Tươi $\rightarrow$ Hỏng) | FN (Hỏng $\rightarrow$ Tươi) | TP (Hỏng $\rightarrow$ Hỏng) | Nhận xét an toàn |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Baseline CNN** | 1.677 / 1.772 (94.64%) | 95 quả (5.36%) | 9 quả (0.39%) | 2.299 / 2.308 (99.61%) | Bỏ sót 9 quả thối, chưa an toàn |
+| **VGG16 (3-Phase)** | 1.772 / 1.772 (100.00%)| 0 quả (0.00%) | 2 quả (0.09%) | 2.306 / 2.308 (99.91%) | Không báo nhầm, còn sót 2 quả |
+| **ResNet50 (3-Phase)**| 1.771 / 1.772 (99.94%) | 1 quả (0.06%) | **0 quả (0.00%)** | 2.308 / 2.308 (100.00%) | **Bắt trọn 100% quả lỗi (FN = 0)** |
+| **EfficientNetB0** | 1.772 / 1.772 (100.00%)| **0 quả (0.00%)**| **0 quả (0.00%)** | 2.308 / 2.308 (100.00%) | **Chính xác tuyệt đối toàn bộ mẫu** |
+
+![Hình 5.1: Đối chiếu ma trận nhầm lẫn của 4 mô hình trên tập kiểm thử độc lập 4.080 mẫu.](report/images/image4.png){width=92%}
+
+### Phân tích nguyên nhân các trường hợp mô hình phân loại sai:
+
+- Đối với quả chuối: chuối chiếm 6 trong số 9 trường hợp bỏ sót lỗi ở Baseline CNN. Nguyên nhân sinh học là chuối chín tự nhiên thường có các đốm đường li ti màu nâu nhạt, cuống chuối dễ bị thâm đen do oxy hóa không khí nhưng phần thịt bên trong vẫn tươi ngon. Mạng tích chập nông của Baseline CNN chưa đủ sâu để phân biệt ranh giới giữa đốm ngọt tự nhiên và vết thối nấm đen thực sự.
+- Đối với quả cam: vỏ cam có các túi tinh dầu sần sùi dễ tạo bóng đổ nhỏ khi ánh sáng chiếu xiên. Trong trường hợp báo nhầm duy nhất (FP = 1) của ResNet50, một vết rám nắng tự nhiên trên vỏ quả cam đã bị mô hình phân loại nhầm thành vết bệnh.
+- Đối với quả táo: vỏ quả nhẵn và có độ tương phản màu sắc cao nhất giữa vỏ lành và vết thâm nát, do đó cả 4 mô hình đều nhận diện chính xác quả táo gần như 100%.
+
+## 5.2. Giải pháp Linear Logit Grad-CAM và trực quan hóa vùng tổn thương
+
+Khi áp dụng Grad-CAM cho bài toán phân loại nhị phân sử dụng hàm Sigmoid ở ngõ ra cuối cùng:
+$$\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}$$
+Khi mô hình rất tự tin về một quả thối nặng ($z$ rất lớn dẫn đến $\hat{y} \approx 1.0$), đạo hàm của hàm Sigmoid sẽ tiến sát về 0:
+$$\frac{\partial \hat{y}}{\partial z} = \sigma(z) \cdot (1 - \sigma(z)) \approx 1.0 \times 0.0 = 0$$
+Hiện tượng này gọi là bão hòa đạo hàm Sigmoid, khiến gradient truyền ngược bị triệt tiêu và bản đồ nhiệt Grad-CAM bị mờ nhạt hoặc chuyển sang màu xanh đồng nhất.
+
+Để khắc phục, em tính toán gradient trực tiếp trên giá trị logit tuyến tính $z$ trước khi đi qua hàm Sigmoid:
+$$z = \mathbf{w}^T \mathbf{x}_{penultimate} + b$$
+$$\alpha_k = \frac{1}{U \times V} \sum_{i=1}^U \sum_{j=1}^V \frac{\partial z}{\partial A_{i,j}^k}$$
+Bản đồ nhiệt được giữ lại phần dương bằng hàm ReLU và phủ lên ảnh gốc qua mặt nạ thích nghi để không làm đổi màu vỏ quả lành:
+$$\text{Alpha}(x, y) = \mathrm{clip}\left( \frac{L_{Grad-CAM}(x, y) - 0.12}{0.88}, 0.0, 1.0 \right)$$
+
+![Hình 5.2: Kết quả trực quan hóa vùng tổn thương bằng Linear Logit Grad-CAM trên các mẫu quả thực tế.](report/images/image5.png){width=92%}
+
+Nhờ công thức này, toàn bộ vùng vỏ quả lành lặn vẫn giữ nguyên màu sắc tự nhiên, trong khi các ổ nấm mốc trắng hoặc vết thâm tím được phát sáng đỏ vàng rõ rệt, giúp nhân viên KCS dễ dàng thẩm định nguyên nhân.
+
+## 5.3. Thử nghiệm trên 100 ảnh tự chụp thực tế và vấn đề đạo đức AI
+
+Để kiểm tra xem mô hình có bị phụ thuộc vào phông nền trắng của tập ảnh chuẩn hay không, em đã chụp thêm **100 bức ảnh thực tế bằng điện thoại** (50 quả tươi, 50 quả khuyết tật) tại các quầy sạp chợ và bàn làm việc tự nhiên (có xuất hiện tay người cầm quả, bóng đổ và ánh sáng phòng thông thường):
+
+**Bảng 5.3: Đánh giá kiểm chứng thực tế trên 100 ảnh tự chụp ngoài phòng thí nghiệm**
+
+| Mô hình thử nghiệm | Accuracy | Recall | Precision | F1-Score | Bỏ sót (FN) | Báo nhầm (FP) | Đánh giá khả năng thích nghi môi trường ngoài |
+| :------------------- | :----------: | :---------: | :----------: | :---------: | :----------: | :----------: | :--------------------------- |
+| **Baseline CNN** | 89.00% | 92.00% | 86.79% | 0.8932 | 4 / 50 quả | 7 / 50 quả | Dễ bị ảnh hưởng bởi bóng đổ và vân gỗ mặt bàn |
+| **VGG16 (3-Phase)** | 93.00% | 94.00% | 92.16% | 0.9307 | 3 / 50 quả | 4 / 50 quả | Trích xuất kết cấu tốt, nhận diện tương đối ổn định |
+| **ResNet50 (3-Phase)** | 95.00% | 98.00% | 92.45% | 0.9515 | 1 / 50 quả | 4 / 50 quả | Bắt trọn 49/50 quả lỗi (Recall 98%), an toàn cao |
+| **EfficientNetB0 (3-Phase)** | **96.00%**| **96.00%**| **96.00%** | **0.9600** | **2 / 50 quả**| **2 / 50 quả**| **Cân bằng tốt nhất, ít bị nhiễu bởi phông nền** |
+
+Kết quả cho thấy khi chuyển sang ảnh chụp đời thường, độ chính xác của hai mô hình sâu giảm nhẹ từ 100% xuống khoảng 95% – 96%. Sự sụt giảm 4%–5% này là hoàn toàn tự nhiên khi môi trường chụp thay đổi. Việc mô hình vẫn duy trì độ chính xác trên 95% và Recall 96%–98% khẳng định mạng nơ-ron đã học được bản chất khuyết tật của vỏ quả chứ không chỉ học thuộc lòng phông nền trắng.
+
+### Kiểm toán tính công bằng của thuật toán
+
+Để bảo đảm hệ thống vận hành khách quan, không bị thiên vị hay phân biệt đối xử đối với bất kỳ chủng loại nông sản nào, mô hình tối ưu EfficientNetB0 được kiểm toán phân tách hiệu năng độc lập trên từng loại quả trong tập kiểm thử (4.080 mẫu):
+
+**Bảng 5.4: Kiểm toán tính công bằng của thuật toán giữa ba loại nông sản**
+
+| Chủng loại nông sản | Mẫu kiểm thử | Accuracy | Recall (Bắt lỗi) | Precision | F1-Score | Nhận xét tính công bằng thuật toán |
+| :------------------ | :----------: | :---------: | :------------: | :---------: | :---------: | :---------------------------- |
+| **Táo (Apples)** | 1.509 ảnh | 100.00% | 100.00% | 100.00% | 1.0000 | Vỏ nhẵn, nhận diện hoàn hảo không thiên vị |
+| **Chuối (Bananas)** | 1.415 ảnh | 99.93% | 100.00% | 99.88% | 0.9994 | Phân biệt tốt đồi mồi đường và đốm nấm mốc |
+| **Cam (Oranges)** | 1.156 ảnh | 100.00% | 100.00% | 100.00% | 1.0000 | Không bị ảnh hưởng bởi bóng đổ vỏ sần |
+| **CHÊNH LỆCH TỐI ĐA** | — | **0.07%** | **0.00%** | **0.12%** | **0.0006** | **Mô hình đạt chuẩn công bằng tuyệt đối** |
+
+Chỉ số chênh lệch hiệu năng giữa 3 loại quả nhỏ hơn $0.12\%$, chứng minh mô hình không có thiên lệch thuật toán, đối xử công bằng và minh bạch đối với mọi lô nông sản nhập về xưởng.
+
+Về quy trình vận hành có sự giám sát của con người: Để đảm bảo tính công bằng và tránh việc máy móc loại nhầm quả của nông dân, hệ thống được thiết kế theo cơ chế sàng lọc hỗ trợ. Các quả có xác suất nghi vấn nằm trong vùng ranh giới $P(\text{Rotten}) \in [0.35, 0.50]$ sẽ được chuyển hướng sang một máng riêng để nhân viên KCS kiểm tra lại bằng tay lần cuối.
+
+## 5.4. Khảo sát lựa chọn ngưỡng phân loại tối ưu chi phí
+
+Khảo sát sự thay đổi của số lượng mẫu sai và hàm tổn thất tài chính thực tế tại xưởng ($L = 500.000 \times FN + 5.000 \times FP\text{ VNĐ}$) khi thay đổi ngưỡng cắt xác suất từ 0.10 đến 0.90 trên tập kiểm thử độc lập:
+
+**Bảng 5.5: Khảo sát số mẫu FN/FP và hàm tổn thất tài chính theo các ngưỡng phân loại khác nhau**
+
+| Ngưỡng cắt | Số mẫu bỏ sót (FN) | Số mẫu báo nhầm (FP) | Tổn thất ước tính (VNĐ) | Nhận xét kỹ thuật và rủi ro vận hành |
+| :--------: | :----------------: | :----------------: | :----------------: | :-------------------------------------- |
+| $p = 0.10$ | 0 quả | 6 quả | 30.000 VNĐ | Ngưỡng quá nhạy, phân loại nhầm 6 quả tươi thành phế phẩm |
+| $p = 0.20$ | 0 quả | 4 quả | 20.000 VNĐ | Phân loại nhầm 4 quả tươi sang thùng thứ cấp |
+| $p = 0.30$ | 0 quả | 1 quả | 5.000 VNĐ | Rất tốt, bắt trọn 100% quả lỗi, bảo vệ kiện hàng xuất khẩu |
+| **$p^* = 0.35 - 0.40$**| **0 quả** | **1 quả** | **5.000 VNĐ** | **Ngưỡng an toàn tối ưu khuyến nghị cho xưởng đóng gói** |
+| $p = 0.50$ (Mặc định)| 0 quả | 1 quả | 5.000 VNĐ | Ngưỡng mặc định lý thuyết (trên tập kiểm thử vẫn đạt FN = 0) |
+| $p = 0.60$ | 1 quả | 1 quả | 505.000 VNĐ | Bắt đầu để lọt 1 quả lỗi (tổn thất nhảy vọt tăng 101 lần) |
+| $p = 0.70$ | 2 quả | 1 quả | 1.005.000 VNĐ | Để lọt 2 quả khuyết tật vào kiện hàng đi biển |
+| $p = 0.80$ | 5 quả | 0 quả | 2.500.000 VNĐ | Bỏ sót nhiều quả hỏng nghiêm trọng, phát tán nấm mốc |
+| $p = 0.90$ | 12 quả | 0 quả | 6.000.000 VNĐ | Tỷ lệ bỏ sót quá cao, cực kỳ nguy hiểm cho chuỗi lạnh |
+
+![Hình 5.3: Đồ thị khảo sát số mẫu phân loại sai theo ngưỡng cắt và đối chuẩn tốc độ suy luận (FPS) của các mô hình.](report/images/image6.png){width=92%}
+
+Khảo sát chứng minh dải ngưỡng **$p^* = 0.35 - 0.40$** là ranh giới phòng vệ an toàn nhất cho xuất khẩu: Vừa triệt tiêu hoàn toàn rủi ro bỏ sót quả thối ($FN = 0$), vừa giữ chi phí tổn thất do báo nhầm ở mức tối thiểu (chỉ 5.000 VNĐ). Khi ngưỡng tăng từ 0.50 lên 0.60, việc lọt dù chỉ 1 quả thối ($FN = 1$) sẽ kích hoạt khí ethylene làm hỏng lan rộng, khiến chi phí thiệt hại nhảy vọt từ 5.000 VNĐ lên 505.000 VNĐ (tăng gấp 101 lần). Vì vậy, việc tinh chỉnh ngưỡng cắt theo chi phí bất cân xứng mang lại giá trị thực tiễn rất lớn cho doanh nghiệp.
+
+# Phần 6: Sản phẩm ứng dụng mẫu và khả năng triển khai thực tế
+
+## 6.1. Xây dựng ứng dụng Web Dashboard và đo đạc tốc độ xử lý
+
+Để người quản trị xưởng có thể sử dụng mô hình một cách trực quan, em đã lập trình ứng dụng Web Dashboard bằng thư viện Streamlit (`app.py`). Ứng dụng hỗ trợ tải ảnh từ máy tính, dùng ảnh mẫu có sẵn và kết nối trực tiếp với camera điện thoại không dây qua ứng dụng DroidCam.
+
+### Đo đạc tốc độ xử lý trên phần cứng thực tế
+Thời gian xử lý trung bình đo trên 1.000 khung hình liên tiếp trên GPU NVIDIA Tesla T4 và CPU máy tính được ghi nhận trong bảng dưới đây:
+
+**Bảng 6.1: Thời gian suy luận và tốc độ khung hình (FPS) đo được trên GPU và CPU**
+
+| Cấu hình thử nghiệm | Thời gian xử lý | Tốc độ khung hình (FPS) | Nhận xét thực tế |
+| :--- | :---: | :---: | :--- |
+| **ResNet50: Chạy đơn ảnh (model.predict)** | 88.6 ms / ảnh | 11.3 FPS | Chịu độ trễ điều phối vòng đời của thư viện Keras |
+| **Web App Streamlit: Gọi trực tiếp (callable)** | 31.2 ms / ảnh | 32.0 FPS | Gọi trực tiếp trên GPU T4, triệt tiêu độ trễ Keras |
+| **ResNet50: Xử lý theo lô (Batch size = 16)** | 8.3 ms / ảnh | 120.6 FPS | Tận dụng năng lực tính toán song song của GPU |
+| **ResNet50: Xử lý theo lô (Batch size = 32)** | 5.1 ms / ảnh | 196.5 FPS | Thông lượng rất lớn trên băng chuyền công nghiệp |
+| **ResNet50: Xử lý theo lô (Batch size = 64)** | 4.2 ms / ảnh | 237.0 FPS | Đạt thông lượng cực đại của GPU Tesla T4 |
+| **EfficientNetB0 (Thuần CPU máy tính)** | **22.4 ms / ảnh** | **44.6 FPS** | **Gọn nhẹ, chạy thời gian thực mượt mà trên CPU** |
+| **ResNet50 (Thuần CPU máy tính)** | 35.8 ms / ảnh | 27.9 FPS | Đạt chuẩn thời gian thực (> 25 FPS) trên CPU |
+| **Động cơ quang phổ dự phòng CPU** | **2.5 ms / ảnh** | **400.0 FPS** | **Thuật toán xử lý ảnh OpenCV khi không có GPU** |
+
+### Giải thích nguyên nhân tốc độ và cơ chế gọi trực tiếp
+Khi người dùng gọi hàm `model.predict()` thông thường trên từng bức ảnh đơn lẻ, Keras phải khởi tạo một vòng đời kiểm tra kiểu dữ liệu và định tuyến qua C++, làm tốn hơn 55 ms vô ích. Trong ứng dụng `app.py` và module camera, em áp dụng cơ chế gọi thẳng đối tượng mô hình dạng hàm `model(img_tensor, training=False)`. Cách làm này đưa ảnh trực tiếp vào card đồ họa GPU, giúp thời gian xử lý của ResNet50 giảm xuống chỉ còn **31.2 ms (32 FPS)**, vừa vặn với tốc độ chuẩn 30 FPS của camera công nghiệp.
+
+Đối với các máy tính không có card đồ họa GPU, lớp `OpticalSpectralQCModel` sử dụng thuật toán xử lý ảnh thuần túy (không gian màu HSV lọc vết thâm và toán tử vi phân Laplace đo độ nhám) đạt tốc độ siêu nhanh **2.5 ms / ảnh (400 FPS)**, giúp phần mềm luôn mở được và không bao giờ bị đơ giao diện.
+
+**Bảng 6.2: Các phân hệ chính trong ứng dụng demo Streamlit và module camera**
+
+| Phân hệ | Tệp mã nguồn | Chức năng kỹ thuật | Ghi chú |
+| :--- | :--- | :--- | :--- |
+| **Giao diện Web** | `app.py` | Bảng điều khiển, kéo ngưỡng cắt, xem ảnh Grad-CAM | Xây dựng bằng Streamlit |
+| **Camera đa luồng** | `edge_stream_inspector.py` | Lớp `ThreadedCamera` đọc ngầm, triệt tiêu trễ bộ đệm | Độ trễ hiển thị < 35 ms |
+| **Mô hình học sâu chính** | `models/*.keras` | Chạy suy luận nơ-ron và tính bản đồ nhiệt Grad-CAM | EfficientNetB0 / ResNet50 |
+| **Thuật toán dự phòng** | `OpticalSpectralQCModel` | Xử lý ảnh cơ bản bằng HSV và Laplace trên CPU | Chạy trên OpenCV, 400 FPS |
+
+### Khắc phục hiện tượng trễ hình camera bằng lớp `ThreadedCamera`
+Khi kết nối camera điện thoại qua Wi-Fi bằng DroidCam, nếu đọc camera bằng hàm OpenCV thông thường, hình ảnh trên màn hình máy tính thường bị trễ từ 0.5 đến 1.5 giây so với tay cầm quả bên ngoài do hàng đợi bộ đệm mặc định của OpenCV giữ lại 4 đến 5 khung hình cũ.
+
+Để xử lý, em viết lớp `ThreadedCamera` chạy trên một luồng nền độc lập. Luồng này liên tục đọc nhanh khung hình mới nhất từ phần cứng và bỏ qua các khung hình cũ. Khi giao diện web cần ảnh, nó luôn nhận được khung hình tươi nhất ở thời điểm hiện tại. Nhờ vậy, độ trễ hiển thị giảm xuống dưới 35 ms, hình ảnh hiển thị trên màn hình bắt kịp hoàn toàn chuyển động của tay.
+
+```{=typst}
+#align(center)[
+  #rect(
+    width: 100%,
+    stroke: 0.5pt + luma(180),
+    radius: 4pt,
+    inset: 8pt,
+    fill: luma(252)
+  )[
+    #grid(
+      columns: (1fr, auto, 1fr, auto, 1fr),
+      align: (center + horizon),
+      gutter: 6pt,
+      // Hàng 1: Thu nhận camera và khử trễ
+      rect(width: 100%, stroke: 0.8pt + rgb("#1e3a8a"), fill: rgb("#eff6ff"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[1. Camera DroidCam/Webcam]\
+        #v(2pt)
+        #text(7.5pt)[Thu nhận luồng video\ thực tế (30–60 FPS)]
+      ],
+      text(18pt, fill: rgb("#1e3a8a"))[#strong[→]],
+      rect(width: 100%, stroke: 0.8pt + rgb("#1e3a8a"), fill: rgb("#eff6ff"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[2. Lớp ThreadedCamera]\
+        #v(2pt)
+        #text(7.5pt)[Đọc khung hình ngầm,\ triệt tiêu nghẽn bộ đệm]
+      ],
+      text(18pt, fill: rgb("#1e3a8a"))[#strong[→]],
+      rect(width: 100%, stroke: 0.8pt + rgb("#1e3a8a"), fill: rgb("#eff6ff"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[3. Hàng đợi bộ đệm FIFO]\
+        #v(2pt)
+        #text(7.5pt)[Lưu khung hình mới nhất,\ khử trễ hiển thị < 35 ms]
+      ],
+
+      // Hàng 2: Mũi tên chuyển tiếp từ FIFO xuống Động cơ suy luận
+      [],
+      [],
+      align(center + horizon)[
+        #rect(stroke: 0.5pt + rgb("#6b21a8"), fill: rgb("#faf5ff"), inset: (x: 8pt, y: 4pt), radius: 3pt)[
+          #text(8pt, fill: rgb("#6b21a8"), weight: "bold")[⚡ Đường ống xử lý thời gian thực đa luồng]
+        ]
+      ],
+      [],
+      align(center + horizon)[
+        #text(16pt, fill: rgb("#1e3a8a"))[#strong[↓]]\
+        #v(1pt)
+        #text(7pt, fill: rgb("#1e3a8a"), weight: "bold")[Khung hình tươi sang động cơ AI]
+      ],
+
+      // Hàng 3: Suy luận AI -> Grad-CAM -> Giao diện Web
+      rect(width: 100%, stroke: 0.8pt + rgb("#065f46"), fill: rgb("#ecfdf5"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[6. Giao diện Web Streamlit]\
+        #v(2pt)
+        #text(7.5pt)[Bảng điều khiển, cảnh báo KCS,\ gợi ý điều khiển cần gạt cơ khí]
+      ],
+      text(18pt, fill: rgb("#065f46"))[#strong[←]],
+      rect(width: 100%, stroke: 0.8pt + rgb("#065f46"), fill: rgb("#ecfdf5"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[5. Linear Logit Grad-CAM]\
+        #v(2pt)
+        #text(7.5pt)[Trích xuất bản đồ nhiệt XAI,\ khoanh vùng ổ nấm bệnh]
+      ],
+      text(18pt, fill: rgb("#065f46"))[#strong[←]],
+      rect(width: 100%, stroke: 0.8pt + rgb("#065f46"), fill: rgb("#ecfdf5"), inset: 6pt, radius: 3pt)[
+        #text(9pt, weight: "bold")[4. Động cơ suy luận kép]\
+        #v(2pt)
+        #text(7.5pt)[• GPU: EfficientNet/ResNet\ • CPU: Fast Optical Spectral]
+      ]
+    )
+  ]
+]
+```
+*Hình 6.1: Sơ đồ kiến trúc phân hệ ứng dụng Web Streamlit và luồng xử lý camera đa luồng khử trễ thời gian thực.*
+
+## 6.2. Phân tích mô phỏng các kịch bản theo thị trường xuất khẩu
+
+Ứng dụng Web Streamlit cho phép người quản lý xưởng đóng gói chạy mô phỏng các kịch bản thực tế để linh hoạt điều chỉnh ngưỡng quyết định $\tau$ phù hợp với từng hợp đồng thương mại:
+
+**Bảng 6.3: Mô phỏng kịch bản điều chỉnh ngưỡng cắt theo thị trường xuất khẩu**
+
+| Kịch bản thị trường | Yêu cầu kiểm dịch xuất khẩu | Ngưỡng $\tau$ | Recall | Rủi ro FN | Khuyến nghị vận hành tại xưởng |
+| :------------------- | :-------------------------- | :-----------: | :-----------: | :----------: | :------------------------- |
+| **Kịch bản 1: Thị trường khắt khe (Nhật Bản, EU, Mỹ)** | Không khoan nhượng nấm mốc, rủi ro phạt hợp đồng cực lớn | **$\tau = 0.35$** | **100.00%** | **$\text{FN} = 0$** | Bắt trọn 100% quả bệnh, bảo vệ an toàn tuyệt đối cho container đi biển |
+| **Kịch bản 2: Thị trường truyền thống (Trung Quốc, ASEAN)** | Cân bằng giữa chất lượng và sản lượng, tránh báo nhầm quả | **$\tau = 0.45$** | **100.00%** | **$\text{FN} = 0$** | Bắt sạch quả thối, không gạt nhầm quả có chấm đường chín ngọt |
+| **Kịch bản 3: Phân loại chế biến (Nước ép, sấy dẻo nội địa)** | Tận dụng quả có tì vết vỏ ngoài, chỉ loại quả thối nhũn nặng | **$\tau = 0.60$** | **99.96%** | Cực thấp ($\le 1$) | Tối đa hóa sản lượng tận thu làm nguyên liệu chế biến thứ cấp |
+
+## 6.3. Kế hoạch triển khai thực tế và giám sát trôi dữ liệu
+
+Khi đưa hệ thống vào dây chuyền thực tế, camera sẽ được gắn phía trên băng chuyền con lăn tự xoay quả. Khi mô hình phát hiện xác suất khuyết tật vượt ngưỡng an toàn ($P \ge 0.40$), máy tính sẽ gửi tín hiệu kích hoạt van khí nén để đẩy quả hỏng rơi xuống máng phế phẩm trong vòng 50 ms.
+
+Để mô hình duy trì độ chính xác ổn định qua nhiều năm, xưởng cần theo dõi hiện tượng trôi dữ liệu  khi thay đổi mùa vụ hoặc giống quả mới:
+
+**Bảng 6.4: Kế hoạch giám sát và ngưỡng phát hiện trôi dữ liệu**
+
+| Dạng trôi dữ liệu | Dấu hiệu nhận biết tại xưởng | Phương pháp kiểm tra thống kê | Ngưỡng kích hoạt cảnh báo và hành động |
+| :--- | :--- | :--- | :--- |
+| **Trôi phân phối dữ liệu ** | Màu sắc vỏ quả đổi do mùa vụ, hạn hán hoặc đổi giống quả nhập về | Kiểm định hai mẫu Kolmogorov-Smirnov (KS-test) trên histogram màu HSV | Khi giá trị $p < 0.05$, tự động lưu 500 mẫu ảnh mới và cảnh báo kỹ thuật viên cân chỉnh đèn |
+| **Trôi độ ổn định quần thể ** | Phân phối xác suất dự đoán $P(\text{Rotten})$ bị dịch chuyển | Chỉ số ổn định quần thể: $\text{PSI} = \sum_{k=1}^K (P_k - B_k) \ln(P_k / B_k)$ | $\text{PSI} < 0.1$: Ổn định; $0.1 \le \text{PSI} < 0.2$: Cảnh báo nhẹ; $\text{PSI} \ge 0.2$: Kích hoạt Retrain |
+| **Trôi khái niệm ** | Tỷ lệ nhân viên KCS can thiệp gạt đè kết quả của camera tăng cao | Tỷ lệ gạt đè thủ công  trong ca làm việc | Khi tỷ lệ can thiệp vượt quá $3.0\%$ trong 3 ca liên tiếp, kích hoạt luồng Active Learning huấn luyện lại |
+
+## 6.4. Bài học kinh nghiệm, hạn chế hiện tại và hướng phát triển
+
+### Ranh giới giữa mô hình thực nghiệm và dây chuyền sản xuất thực tế
+
+Đồ án hiện tại được xây dựng như một phiên bản thử nghiệm nhằm chứng minh tính khả thi của giải pháp, tập trung vào việc tối ưu thuật toán phân loại và hiển thị bản đồ nhiệt khuyết tật cho từng quả đơn lẻ. Khi đưa vào dây chuyền đóng gói công nghiệp với quy mô lớn, hệ thống cần được hoàn thiện thêm 3 thành phần kỹ thuật quan trọng:
+
+- Tích hợp mô hình phát hiện vật thể (như YOLOv8n) ở tầng đầu vào để quét toàn cảnh băng tải, tự động cắt từng quả thành các khung hình con trước khi đưa vào mạng EfficientNetB0.
+- Tích hợp thuật toán bám vết vật thể (như ByteTrack) để gán mã định danh duy nhất cho từng quả khi trôi qua buồng chụp, bảo đảm mỗi quả chỉ bị đánh giá đúng một lần.
+- Đặt camera trong buồng chụp kín có đèn LED vòng khuếch tán đồng đều để loại bỏ hoàn toàn bóng đổ môi trường.
+
+### Những bài học kinh nghiệm rút ra từ đồ án
+
+- Thứ nhất là bài học về chỉ số đánh giá: Trong bài toán phân loại nông sản xuất khẩu, độ chính xác Accuracy cao chưa đủ nếu tỷ lệ bỏ sót quả lỗi (False Negative) vẫn còn. Việc tập trung tối ưu Recall và phân tích ma trận nhầm lẫn gắn với chi phí kinh doanh giúp đề tài bám sát đúng thực tế.
+- Thứ hai là bài học về việc hiểu sâu bản chất toán học: Việc đào sâu cơ chế hoạt động của hàm kích hoạt Sigmoid giúp phát hiện nguyên nhân gradient bị bão hòa trong Grad-CAM truyền thống, từ đó tìm ra cách giải quyết bằng đạo hàm logit tuyến tính thay vì chỉ gọi các hàm có sẵn một cách máy móc.
+- Thứ ba là bài học về lập trình hệ thống: Khoảng cách từ một mô hình chạy trong notebook đến một ứng dụng chạy được trên máy tính là rất lớn. Việc đối mặt và giải quyết hiện tượng trễ khung hình camera bằng kỹ thuật đa luồng giúp em tích lũy được nhiều kinh nghiệm thực hành quý giá.
+
+### Hạn chế hiện tại của hệ thống
+
+- Hệ thống hiện tại chỉ xử lý từng quả một trong khung hình, chưa hỗ trợ nhiều quả nằm san sát trên mặt băng tải rộng.
+- Mô hình phân tích dựa trên ảnh chụp 2D tại một thời điểm, chưa quan sát được các vết nấm nằm ở mặt khuất phía dưới đáy quả nếu quả không được xoay lật.
+- Camera màu thông thường chỉ nhìn thấy tổn thương trên bề mặt vỏ, chưa thể phát hiện được hiện tượng xốp ruột hoặc úng tủy bên trong quả nếu vỏ ngoài còn nguyên vẹn.
+
+### Hướng phát triển trong tương lai
+
+- Nâng cấp lên mô hình phát hiện vật thể thời gian thực (như YOLOv11) kết hợp giải thuật bám vết ByteTrack để đếm và phân loại đồng thời nhiều quả trên băng tải.
+- Tích hợp cơ cấu con lăn xoay quả tự động kết hợp cụm camera đa góc nhìn 360 độ để loại bỏ hoàn toàn điểm mù quang học.
+- Tối ưu hóa và lượng tử hóa mô hình (INT8 Quantization qua TensorRT) để phần mềm chạy mượt mà trên các vi mạch nhúng công nghiệp như NVIDIA Jetson.
+- Tích hợp cảm biến quang phổ cận hồng ngoại (NIR) để đo độ ngọt Brix và phát hiện tổn thương thối ruột bên trong mà không cần bổ quả.
+- Mở rộng tập dữ liệu thêm các loại trái cây nhiệt đới chủ lực khác của nước ta (như thanh long, xoài, sầu riêng, bưởi) để nâng cao giá trị cho nông sản trong nước.
+
+# Tài liệu tham khảo và phụ lục
+
+## Danh mục tài liệu tham khảo
+
+1. **He, K., Zhang, X., Ren, S., & Sun, J.** (2016). Deep residual learning for image recognition. In *Proceedings of the IEEE conference on computer vision and pattern recognition (CVPR)*, pp. 770–778.
+2. **Tan, M., & Le, Q.** (2019). EfficientNet: Rethinking model scaling for convolutional neural networks. In *International conference on machine learning (ICML)*, PMLR, pp. 6105–6114.
+3. **Selvaraju, R. R., Cogswell, M., Das, A., Vedaldi, A., Parikh, D., & Batra, D.** (2017). Grad-CAM: Visual explanations from deep networks via gradient-based localization. In *Proceedings of the IEEE international conference on computer vision (ICCV)*, pp. 618–626.
+4. **Simonyan, K., & Zisserman, A.** (2014). Very deep convolutional networks for large-scale image recognition. *arXiv preprint arXiv:1409.1556*.
+5. **Kalluri, S. R.** (2020). *Fruits fresh and rotten for classification dataset*. Kaggle Datasets. https://www.kaggle.com/datasets/sriramr/fruits-fresh-and-rotten-for-classification
+6. **Wirth, R., & Hipp, J.** (2000). CRISP-DM: Towards a standard process model for data mining. In *Proceedings of the 4th international conference on the practical applications of knowledge discovery and data mining*, pp. 29–39.
+7. **Chollet, F.** (2021). *Deep Learning with Python* (2nd Edition). Manning Publications.
+8. **Goodfellow, I., Bengio, Y., & Courville, A.** (2016). *Deep Learning*. MIT Press.
+9. **Ban Giảng Huấn.** (2026). *Giáo trình học phần Trí tuệ nhân tạo ứng dụng và khoa học dữ liệu*. Chương trình Samsung Innovation Campus 2026.
+10. **Trần Văn Hâu.** (2019). *Giáo trình Kỹ thuật bảo quản và chế biến nông sản sau thu hoạch*. NXB Nông nghiệp TP. Hồ Chí Minh.
+
+```{=typst}
+#pagebreak()
+```
+
+## Phụ lục A: Cấu trúc thư mục mã nguồn đồ án
+
+Toàn bộ mã nguồn và dữ liệu thực nghiệm của đồ án được tổ chức phân cấp khoa học theo từng phân hệ:
+
+```text
+[Ca_nhan]_[Project13]_[FruitVisualQC]/
+├── [Ca_nhan]_[Project13]_[FruitVisualQC].qmd   # Tệp mã nguồn Quarto hoàn chỉnh
+├── [Ca_nhan]_[Project13]_[FruitVisualQC].pdf   # Tệp báo cáo tiểu luận PDF xuất bản
+├── app.py                                     # Ứng dụng Web Dashboard bằng Streamlit
+├── edge_stream_inspector.py                   # Module thu nhận camera đa luồng ThreadedCamera
+├── download_fruit_data.py                     # Kịch bản tải và kiểm toán dữ liệu 27.198 ảnh
+├── sync_models.py                             # Kịch bản đồng bộ trọng số mô hình đã huấn luyện
+├── run_demo.bat                               # Kịch bản khởi chạy nhanh ứng dụng trên Windows
+├── requirements.txt                           # Danh sách thư viện Python cần thiết
+├── camera_history.json                        # Tệp lưu trữ lịch sử kết nối IP DroidCam
+├── code/
+│   ├── 1_Fruit_EDA_Augmentation.ipynb
+│   ├── 2_Fruit_Baseline_CNN.ipynb
+│   ├── 3_Fruit_Transfer_Learning.ipynb
+│   ├── 4_Fruit_GradCAM_ExplainableAI.ipynb
+│   ├── 5_Fruit_Inference_Speed_Benchmark.ipynb
+│   └── Fruit_Full_Pipeline.ipynb              # Master Pipeline toàn diện từ A-Z
+├── data/
+│   ├── Huong_Dan_Tai_Du_Lieu.txt              # Hướng dẫn nguồn dữ liệu mở Kaggle
+│   ├── fresh/                                 # Ảnh quả táo, cam, chuối đạt chuẩn xuất khẩu
+│   └── rotten/                                # Ảnh quả nông sản thâm dập, nhiễm nấm mốc
+├── models/                                    # Trọng số các mô hình (.keras)
+│   ├── efficientnetb0_best.keras              # EfficientNetB0 (Recall 100%, Acc 100%, 33.1 MB)
+│   ├── resnet50_best.keras                    # ResNet50 (Recall 100%, Acc 99.98%, 91.8 MB)
+│   ├── vgg16_best.keras                       # VGG16 (Accuracy 99.95%, Recall 99.91%)
+│   └── baseline_cnn.keras                     # Baseline CNN (Accuracy 97.45%, Recall 99.61%)
+├── processed_data/                            # Danh sách ảnh chia phân tầng 70/15/15
+│   ├── train.csv (19.038 ảnh)                 # Tập huấn luyện
+│   ├── val.csv (4.080 ảnh)                    # Tập kiểm định
+│   └── test.csv (4.080 ảnh)                   # Tập kiểm thử độc lập
+└── demo/                                      # Thư mục tài liệu minh chứng
+    ├── fullfood.md                            # Toàn văn code & output của full notebook
+    ├── app.md                                 # Toàn văn mã nguồn app.py
+    ├── edge.md                                # Toàn văn mã nguồn edge_stream_inspector.py
+    ├── downloadfood.md                        # Toàn văn mã nguồn download & sync script
+    ├── run_demo.md                            # Hướng dẫn chi tiết vận hành hệ thống demo
+    ├── system_architecture.md                 # Tài liệu đặc tả kiến trúc kỹ thuật hệ thống
+    ├── environment_and_setup.md               # Hướng dẫn thiết lập môi trường thực thi
+    └── images_nb.zip                          # Tệp nén toàn bộ 12 hình ảnh biểu đồ thực nghiệm
+```
