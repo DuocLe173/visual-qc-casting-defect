@@ -24,28 +24,32 @@ STREAM_CONFIG = {
 
 
 def classify_fruit_type(
-    H_ref, S_ref, V_ref, green_fraction, inner_aspect_ratio,
+    H_ref, S_ref, V_ref, A_ref, B_ref, green_fraction, inner_aspect_ratio,
     yellow_fraction, red_fraction, is_moldy_orange=False, s_p50=0.0, solidity=1.0
 ):
-    """Ước lượng chủng loại quả (Táo, Cam, Chuối) dựa trên hình dáng mặt nạ thịt quả (đã tách lá) và phổ màu HSV"""
-    # Chuối: Dáng thuôn dài rõ rệt (inner_aspect_ratio > 1.42)
+    """Ước lượng chủng loại quả (Táo, Cam, Chuối) dựa trên hình dáng mặt nạ thịt quả và phổ màu HSV / CIE Lab"""
+    # 1. Chuối đơn hoặc nải chuối: dáng thuôn dài HOẶC mang phổ màu vàng chuối đặc trưng
+    # (Hue 16.5..28.5, sắc đỏ CIE Lab thấp A_ref <= 142, sắc vàng B_ref >= 144, không phải cam bão hòa cao S_ref >= 190)
     if inner_aspect_ratio > 1.42:
         return "Chuối (Banana)"
-    if is_moldy_orange and inner_aspect_ratio <= 1.42:
+    if (
+        16.5 <= H_ref <= 28.5
+        and yellow_fraction >= 0.40
+        and A_ref <= 142.0
+        and B_ref >= 144.0
+        and S_ref < 190.0
+        and red_fraction < 0.10
+    ):
+        return "Chuối (Banana)"
+    if is_moldy_orange:
         return "Cam (Orange)"
     if green_fraction >= 0.32 or (28.5 <= H_ref <= 85.0 and inner_aspect_ratio < 1.45):
         return "Táo xanh (Green Apple)"
     # Cam tươi hoặc cam chớm mốc: Hue cam (14.2..21.5) hoặc độ sáng/bão hòa vỏ cam rất cao (V_ref >= 236, s_p50 >= 190)
-    if (14.2 <= H_ref <= 21.5 and S_ref >= 192.0 and V_ref >= 220.0 and red_fraction < 0.18) or (
+    if (14.2 <= H_ref <= 21.5 and S_ref >= 190.0 and V_ref >= 220.0 and red_fraction < 0.18) or (
         10.0 <= H_ref <= 21.5 and S_ref >= 195.0 and V_ref >= 236.0 and s_p50 >= 190.0
     ):
         return "Cam (Orange)"
-    # Chuối chùm (vỏ vàng không tròn đặc, solidity < 0.92):
-    if (
-        19.5 <= H_ref <= 28.0 and yellow_fraction > 0.60 and V_ref > 210.0
-        and S_ref < 210.0 and red_fraction < 0.08 and solidity < 0.92
-    ):
-        return "Chuối (Banana)"
     return "Táo (Apple)"
 
 
@@ -136,6 +140,9 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
         dist_u8 = np.clip(dist_map / (p99 + 1e-5) * 255.0, 0, 255).astype(np.uint8)
         otsu_t, _ = cv2.threshold(dist_u8[~black_corner_mask], 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         raw_fg = (dist_u8 >= max(int(otsu_t), 75)) & (~black_corner_mask)
+        # Loại bỏ các điểm mặt bàn gỗ tối/xám nhạt bị lẫn vào biên nải chuối
+        wood_table_leak = (S < 62) & (B_chan < 140) & (A_chan < 136) & (V < 155) & (np.abs(L_chan - bg_L_med) < 28.0)
+        raw_fg = raw_fg & (~wood_table_leak)
     else:
         # Nền sáng / trắng studio: Lọc nền trắng và bóng đổ xám nhạt (S thấp và lab_chroma thấp)
         white_or_shadow_bg = ((V > 130) & (S < 32) & (lab_chroma < 14.0)) | ((V > 232) & (S < 22))
@@ -146,18 +153,12 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
         # Phục hồi lớp nấm mốc trắng phấn (Penicillium digitatum) bao quanh tâm mốc xanh xám trên quả cam hỏng
         sage_green_mold_core = (H >= 23) & (H <= 92) & (S >= 25) & (S < 95) & (V >= 85) & (V <= 195) & (A_chan <= 125.5) & raw_fg
         crimson_check = ((H <= 8.0) | (H >= 162.0)) & (S >= 60) & raw_fg
-        if (
-            200 <= np.sum(sage_green_mold_core)
-            and np.sum(raw_fg) < 10500
-            and float(np.median(S[raw_fg])) < 115.0
-            and float(np.mean(sage_green_mold_core[raw_fg])) >= 0.14
-            and np.sum(crimson_check) < 50
-            and bg_V_med > 235.0
-        ):
+        if 200 <= np.sum(sage_green_mold_core) and np.sum(crimson_check) < 50 and bg_V_med > 235.0:
             has_penicillium_core = True
-            mold_search_zone = cv2.dilate(raw_fg.astype(np.uint8) * 255, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (45, 45))) > 0
-            chalky_mold_rim = mold_search_zone & ((S >= 2.0) | (V <= 253.0) | (lab_chroma >= 1.5)) & (center_dist < 0.72)
-            raw_fg = raw_fg | chalky_mold_rim
+            if np.sum(raw_fg) < 10500 and float(np.median(S[raw_fg])) < 115.0:
+                mold_search_zone = cv2.dilate(raw_fg.astype(np.uint8) * 255, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (45, 45))) > 0
+                chalky_mold_rim = mold_search_zone & ((S >= 2.0) | (V <= 253.0) | (lab_chroma >= 1.5)) & (center_dist < 0.72)
+                raw_fg = raw_fg | chalky_mold_rim
 
     fg_u8 = (raw_fg.astype(np.uint8)) * 255
     fg_u8 = cv2.morphologyEx(fg_u8, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
@@ -171,6 +172,14 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
         dist_c = np.hypot((cx - w / 2.0) / w, (cy - h / 2.0) / h)
         if area >= 500 and dist_c < 0.45:
             clean_fg[labels == idx] = 255
+
+    # Kiểm tra trước xem đối tượng có phải vỏ vàng của chuối/nải chuối không để không vẽ bao lồi convexHull
+    fg_bool_pre = clean_fg > 0
+    is_yellow_banana_like = False
+    if np.sum(fg_bool_pre) > 400:
+        yel_pre = float(np.mean((H[fg_bool_pre] >= 16) & (H[fg_bool_pre] <= 32) & (B_chan[fg_bool_pre] >= 142) & (A_chan[fg_bool_pre] <= 140)))
+        if yel_pre >= 0.45:
+            is_yellow_banana_like = True
 
     contours, _ = cv2.findContours(clean_fg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filled_fg = np.zeros((h, w), dtype=np.uint8)
@@ -186,7 +195,7 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
                 solidity = area / hull_area
                 (_, _), (cw, ch), _ = cv2.minAreaRect(cnt)
                 ar = float(max(cw, ch)) / max(float(min(cw, ch)), 1.0)
-                if (is_colored_bg and ar < 1.35 and solidity > 0.68) or has_penicillium_core:
+                if (is_colored_bg and ar < 1.35 and solidity > 0.68 and not is_yellow_banana_like) or has_penicillium_core:
                     cv2.drawContours(filled_fg, [hull], -1, 255, thickness=cv2.FILLED)
                 else:
                     cv2.drawContours(filled_fg, [cnt], -1, 255, thickness=cv2.FILLED)
@@ -262,10 +271,10 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
         if min(iw, ih) > 5:
             inner_aspect_ratio = float(max(iw, ih)) / float(min(iw, ih))
 
-    yellow_pixels = (H >= 19) & (H <= 30) & (S >= 60) & inner_fg
+    yellow_pixels = (H >= 16) & (H <= 32) & (S >= 50) & (B_chan >= 140) & inner_fg
     yellow_fraction = float(np.sum(yellow_pixels)) / float(total_fruit_px)
     fruit_type = classify_fruit_type(
-        H_ref, S_ref, V_ref, green_fraction, inner_aspect_ratio,
+        H_ref, S_ref, V_ref, A_ref, B_ref, green_fraction, inner_aspect_ratio,
         yellow_fraction, red_fraction, is_moldy_orange=is_moldy_orange, s_p50=s_p50, solidity=solidity
     )
 
@@ -277,15 +286,26 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
     if np.sum(inner_deep) < 200:
         inner_deep = inner_fg
 
+    # Bảo vệ vùng vỏ chuối vàng lành lặn bị khuất bóng hoặc khe bóng đổ giữa các ngón chuối trong nải:
+    # Vỏ chuối vàng trong bóng râm vẫn giữ sắc vàng CIE Lab (B_chan >= 142, H = 15.5..32, S >= 65, A_chan <= 140)
+    is_shaded_healthy_banana = (
+        (fruit_type == "Chuối (Banana)")
+        & (H >= 15.5) & (H <= 32.0)
+        & (B_chan >= 142.0)
+        & (A_chan <= 140.0)
+        & (S >= 65.0)
+        & (V >= 48.0)
+    )
+
     # Nhóm 1: Vết thâm đen / hoại tử sẫm màu
-    severe_dark_rot = inner_fg & (
+    severe_dark_rot = inner_fg & (~is_shaded_healthy_banana) & (
         ((V < 78) & (V < 0.62 * max(V_ref, 110.0))) |
         ((V < 115) & (local_v_drop > 18.0) & (dE_lab > 24.0))
     )
 
     # Nhóm 2: Vết thối nhũn màu nâu (bao gồm cả vết thối nhũn nâu sáng màu trên vỏ táo đỏ/vàng)
     is_muddy_brown = (
-        inner_fg &
+        inner_fg & (~is_shaded_healthy_banana) &
         (H >= 5) & (H <= 25) &
         (
             (
@@ -306,7 +326,7 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
 
     # Nhóm 3: Đốm nấm mốc xanh/trắng xám (Penicillium)
     is_fungal_mold = (
-        inner_fg &
+        inner_fg & (~is_shaded_healthy_banana) &
         (
             (
                 (V < 190) &
@@ -325,8 +345,17 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
     sobelx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=3)
     sobely = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=3)
     grad_mag = np.sqrt(sobelx ** 2 + sobely ** 2)
-    non_droplet_deep = inner_deep & (H < 26) & (V < 175) & (S < 170)
+    non_droplet_deep = inner_deep & (~is_shaded_healthy_banana) & (H < 26) & (V < 175) & (S < 170)
     rough_wrinkle_mask = non_droplet_deep & (grad_mag > 38.0) & ((V < 0.82 * max(V_ref, 145.0)) | (S < 135))
+
+    # Nếu là Chuối có > 80% diện tích là vỏ vàng tươi (yellow_fraction >= 0.80), loại bỏ vùng cuống nải chuối ở rìa ngoài
+    if fruit_type == "Chuối (Banana)" and yellow_fraction >= 0.80:
+        banana_core = cv2.erode(inner_fg.astype(np.uint8) * 255, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (19, 19))) > 0
+        if np.sum(banana_core) > 400:
+            severe_dark_rot = severe_dark_rot & banana_core
+            is_muddy_brown = is_muddy_brown & banana_core
+            is_fungal_mold = is_fungal_mold & banana_core
+            rough_wrinkle_mask = rough_wrinkle_mask & banana_core
 
     raw_defect_mask = (severe_dark_rot | is_muddy_brown | is_fungal_mold | rough_wrinkle_mask).astype(np.uint8) * 255
     raw_defect_mask = cv2.morphologyEx(raw_defect_mask, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)))
@@ -351,16 +380,18 @@ def segment_and_analyze_fruit(arr_rgb, check_empty_roi=False):
     max_blob_ratio = float(max_blob_area) / float(total_fruit_px)
     severe_rot_ratio = float(np.sum(severe_dark_rot & clean_defect_mask)) / float(total_fruit_px)
 
-    # Bỏ qua hố cuống quả tự nhiên (diện tích tối < 4.5%, cụm lớn nhất < 2.4% trên nền vỏ sáng)
+    # Bỏ qua hố cuống quả tự nhiên hoặc cuống nải chuối
     is_stem_only = False
-    if defect_ratio < 0.045 and max_blob_ratio < 0.024 and v_p50 > 160.0:
+    if (defect_ratio < 0.045 and max_blob_ratio < 0.024 and v_p50 > 135.0) or (
+        fruit_type == "Chuối (Banana)" and yellow_fraction >= 0.82 and defect_ratio < 0.065
+    ):
         is_stem_only = True
         defect_ratio *= 0.12
         max_blob_ratio *= 0.12
         severe_rot_ratio *= 0.12
         lesion_boxes = []
 
-    global_dark_fruit = 1.0 if (v_p50 < 105.0 or (v_p15 < 65.0 and defect_ratio > 0.04)) else 0.0
+    global_dark_fruit = 1.0 if (v_p50 < 105.0 or (v_p15 < 65.0 and defect_ratio > 0.05)) else 0.0
 
     lesion_strength = (
         (defect_ratio * 32.0) +
@@ -617,10 +648,12 @@ class RealTimeEdgeQCModel:
                 input_tensor = tf.expand_dims(tf.cast(cnn_in, tf.float32), axis=0)
                 raw_out = self.model(input_tensor, training=False)
                 cnn_prob = float(raw_out.numpy()[0][0])
-                if telemetry["defect_ratio_pct"] < 0.8 and opt_prob < 0.15 and telemetry.get("is_colored_bg", False):
-                    raw_prob = 0.30 * cnn_prob + 0.70 * opt_prob
+                if telemetry["defect_ratio_pct"] < 2.2 and opt_prob < 0.20:
+                    raw_prob = 0.15 * cnn_prob + 0.85 * opt_prob
+                elif telemetry["defect_ratio_pct"] >= 8.0 and opt_prob >= 0.80:
+                    raw_prob = max(0.65 * cnn_prob + 0.35 * opt_prob, 0.92 * opt_prob)
                 else:
-                    raw_prob = 0.65 * cnn_prob + 0.35 * opt_prob
+                    raw_prob = 0.60 * cnn_prob + 0.40 * opt_prob
             except Exception:
                 raw_prob = opt_prob
         else:
@@ -723,7 +756,7 @@ def main():
 
     source = args.source
     if source is None:
-        print("\n" + "=" * 65)
+        print("\\n" + "=" * 65)
         print("PROJECT 13: FRUIT VISUAL QC - KIỂM TRA QUA CAMERA")
         print("=" * 65)
         print("Chọn nguồn camera:")
